@@ -1,20 +1,28 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import { useEffect } from 'react';
+import { StyleSheet, Text } from 'react-native';
+
+import { theme } from '../constants';
+
+import { fetchPopularMovies } from '../services/movies.service';
+
+import SafeAreaComponent from '../components/safe-area.component';
 
 const Home = () => {
+  useEffect(() => {
+    fetchPopularMovies();
+  }, []);
+
   return (
-    <View style={styles.constainer}>
-      <Text>Home</Text>
-    </View>
+    <SafeAreaComponent>
+      <Text style={styles.text}>Home</Text>
+    </SafeAreaComponent>
   );
 };
 
 export default Home;
 
 const styles = StyleSheet.create({
-  constainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  text: {
+    color: theme.COLORS.text.primary,
   },
 });

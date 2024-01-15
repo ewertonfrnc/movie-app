@@ -1,10 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import {
-  StyleSheet,
-  SafeAreaView,
-  Platform,
-  StatusBar as RNStatuBar,
-} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -44,23 +39,16 @@ const createScreenOptions = ({ route }: CreateScreenOptionsProps) => {
 export default function App() {
   return (
     <>
-      <StatusBar style='auto' />
+      <StatusBar style='inverted' />
 
-      <SafeAreaView style={styles.container}>
-        <NavigationContainer>
-          <Tab.Navigator screenOptions={createScreenOptions}>
-            <Tab.Screen name='home' component={Home} />
-            <Tab.Screen name='settings' component={Settings} />
-          </Tab.Navigator>
-        </NavigationContainer>
-      </SafeAreaView>
+      <NavigationContainer>
+        <Tab.Navigator screenOptions={createScreenOptions}>
+          <Tab.Screen name='home' component={Home} />
+          <Tab.Screen name='settings' component={Settings} />
+        </Tab.Navigator>
+      </NavigationContainer>
     </>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: Number(Platform.OS === 'android' && RNStatuBar.currentHeight),
-  },
-});
+const styles = StyleSheet.create({});
