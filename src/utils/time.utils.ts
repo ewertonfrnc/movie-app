@@ -9,3 +9,7 @@ export const minToHours = (minutos: number) => {
 
   return formattedHours + formatterMin;
 };
+
+export const getFullYear = (date: string) => {
+  return new Date(date).getFullYear();
+};

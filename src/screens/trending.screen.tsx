@@ -30,8 +30,8 @@ const Trending: FC<TrendingProps> = ({ navigation }) => {
       fetchTrendingTvShows(),
     ]);
 
-      setPopularMovies(movies);
-      setPopularTVShows(tvShows);
+    setPopularMovies(movies);
+    setPopularTVShows(tvShows);
   };
 
   const onPressHandler = (showId: number) => {
@@ -83,6 +83,7 @@ export default Trending;
 const styles = StyleSheet.create({
   sectionHeading: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: theme.SPACING.xlg,
     paddingTop: theme.SPACING.lg,

@@ -9,7 +9,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeStackParamsList } from '../interfaces/navigator.interface';
 
 import { BASE_IMAGE_URL, decimalToPercentage } from '../utils/tmdb.utils';
-import { minToHours } from '../utils/time.utils';
+import { minToHours, getFullYear } from '../utils/time.utils';
 
 import {
   fetchMovieDetails,
@@ -17,6 +17,8 @@ import {
 } from '../services/shows.service';
 
 import { MovieDetails, Cast } from '../interfaces/movie.interface';
+
+import Button from '../components/button.componen';
 import CastAvatar from '../components/cast-avatar.component';
 
 type ShowScreenProps = {} & NativeStackScreenProps<
@@ -38,6 +40,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
 
     setMovieDetails(details);
     setCast(cast);
+    console.log(movieDetails);
   };
 
   useEffect(() => {
@@ -77,9 +80,17 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
                 </Text>
 
                 <Text style={styles.subtitle}>
+                  {getFullYear(movieDetails.release_date)}
+                </Text>
+
+                <Text style={styles.subtitle}>
                   {minToHours(movieDetails.runtime)}
                 </Text>
               </View>
+            </View>
+
+            <View style={styles.sectionContainer}>
+              <Button />
             </View>
 
             <View style={styles.sectionContainer}>
