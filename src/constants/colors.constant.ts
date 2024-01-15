@@ -6,6 +6,6 @@ export const COLORS = {
   },
   text: {
     primary: '#d5d5d5',
-    secondary: '#414242',
+    secondary: '#686969',
   },
 };

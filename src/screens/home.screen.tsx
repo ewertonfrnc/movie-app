@@ -1,53 +1,22 @@
-import { useEffect, useState } from 'react';
-import { StyleSheet, Text, FlatList, View, Image } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import { theme } from '../constants';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { HomeStackParamsList } from '../interfaces/navigator.interface';
 
-import { fetchPopularMovies } from '../services/movies.service';
+import Trending from './trending.screen';
+import ShowScreen from './show.screen';
 
-import SafeAreaComponent from '../components/safe-area.component';
-import ImageCard from '../components/image-card.component';
+const HomeStack = createNativeStackNavigator<HomeStackParamsList>();
 
 const Home = () => {
-  const [popularMovies, setPopularMovies] = useState([]);
-
-  useEffect(() => {
-    const getMovies = async () => {
-      const popularMovies = await fetchPopularMovies();
-      setPopularMovies(popularMovies);
-    };
-
-    getMovies();
-  }, []);
-
   return (
-    <SafeAreaComponent>
-      <View>
-        <View style={styles.sectionHeading}>
-          <Text style={styles.text}>Filmes populares</Text>
-          <Text style={styles.text}>Ver mais</Text>
-        </View>
-
-        <FlatList
-          data={popularMovies}
-          renderItem={({ item }) => <ImageCard show={item} />}
-          keyExtractor={(item) => item.id}
-          horizontal
-        />
-      </View>
-    </SafeAreaComponent>
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+      <HomeStack.Screen name='trending' component={Trending} />
+      <HomeStack.Screen name='showDetails' component={ShowScreen} />
+    </HomeStack.Navigator>
   );
 };
 
 export default Home;
 
-const styles = StyleSheet.create({
-  sectionHeading: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: theme.SPACING.xlg,
-  },
-  text: {
-    color: theme.COLORS.text.primary,
-  },
-});
+const styles = StyleSheet.create({});
