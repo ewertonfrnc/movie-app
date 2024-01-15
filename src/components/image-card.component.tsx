@@ -2,14 +2,13 @@ import React, { FC } from 'react';
 import { StyleSheet, View, Image, Pressable } from 'react-native';
 
 import { theme } from '../constants';
-import { Movie } from '../interfaces/movie.interface';
+import { Show } from '../interfaces/movie.interface';
+import { BASE_IMAGE_URL } from '../utils/tmdb.utils';
 
 type ImageCardProps = {
-  show: Movie;
+  show: Show;
   onPress: (showId: number) => void;
 };
-
-const BASE_URL = 'https://image.tmdb.org/t/p/original';
 
 const ImageCard: FC<ImageCardProps> = ({ show, onPress }) => {
   return (
@@ -21,7 +20,7 @@ const ImageCard: FC<ImageCardProps> = ({ show, onPress }) => {
         <Image
           style={styles.image}
           source={{
-            uri: `${BASE_URL}${show.poster_path}`,
+            uri: `${BASE_IMAGE_URL}${show.poster_path}`,
           }}
         />
       </Pressable>

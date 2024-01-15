@@ -8,4 +8,9 @@ export const COLORS = {
     primary: '#d5d5d5',
     secondary: '#686969',
   },
+  ranks: {
+    bad: '#d93d63',
+    regular: '#cfd22f',
+    good: '#1fc875',
+  },
 };

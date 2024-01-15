@@ -11,7 +11,9 @@ import {
   fetchTrendingTvShows,
 } from '../services/shows.service';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
 import { HomeStackParamsList } from '../interfaces/navigator.interface';
+import { Show } from '../interfaces/movie.interface';
 
 type TrendingProps = {} & NativeStackScreenProps<
   HomeStackParamsList,
@@ -19,27 +21,27 @@ type TrendingProps = {} & NativeStackScreenProps<
 >;
 
 const Trending: FC<TrendingProps> = ({ navigation }) => {
-  const [popularMovies, setPopularMovies] = useState([]);
-  const [popularTVShows, setPopularTVShows] = useState([]);
+  const [popularMovies, setPopularMovies] = useState<Show[]>([]);
+  const [popularTVShows, setPopularTVShows] = useState<Show[]>([]);
 
-  useEffect(() => {
-    const getShows = async () => {
-      const [movies, tvShows] = await Promise.all([
-        fetchTrendingMovies(),
-        fetchTrendingTvShows(),
-      ]);
+  const getShows = async () => {
+    const [movies, tvShows] = await Promise.all([
+      fetchTrendingMovies(),
+      fetchTrendingTvShows(),
+    ]);
 
       setPopularMovies(movies);
       setPopularTVShows(tvShows);
-    };
-
-    getShows();
-  }, []);
+  };
 
   const onPressHandler = (showId: number) => {
     console.log('onPressHandler', showId);
     navigation.navigate('showDetails', { showId });
   };
+
+  useEffect(() => {
+    getShows();
+  }, []);
 
   return (
     <SafeAreaComponent>
