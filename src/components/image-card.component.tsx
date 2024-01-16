@@ -7,15 +7,17 @@ import { BASE_IMAGE_URL } from '../utils/tmdb.utils';
 
 type ImageCardProps = {
   show: Show;
-  onPress: (showId: number) => void;
+  onPress: (params: { showId: number; showType: string }) => void;
 };
 
 const ImageCard: FC<ImageCardProps> = ({ show, onPress }) => {
+  const { id, media_type } = show;
+
   return (
     <View style={styles.container}>
       <Pressable
         style={({ pressed }) => pressed && styles.onPressed}
-        onPress={() => onPress(show.id)}
+        onPress={() => onPress({ showId: id, showType: media_type })}
       >
         <Image
           style={styles.image}

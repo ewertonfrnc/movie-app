@@ -76,6 +76,8 @@ export type MovieDetails = {
   vote_average: number;
   vote_count: number;
   videos: { results: VideoTrailer[] };
+  name: string;
+  first_air_date: string;
 };
 
 export type Cast = {

@@ -17,5 +17,8 @@ export type TabBarIconProps = {
 // Overview types
 export type HomeStackParamsList = {
   trending: undefined;
-  showDetails: { showId: number };
+  showDetails: {
+    showId: number;
+    showType: string;
+  };
 };
