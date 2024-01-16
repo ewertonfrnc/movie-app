@@ -1,4 +1,4 @@
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
 // Home types
 export type RootStackParamsList = {
@@ -21,4 +21,10 @@ export type HomeStackParamsList = {
     showId: number;
     showType: string;
   };
+};
+
+// Account types
+export type AccountStackParamsList = {
+  login: undefined;
+  register: undefined;
 };

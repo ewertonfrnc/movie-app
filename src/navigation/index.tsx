@@ -1,9 +1,8 @@
-import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./app.navigator";
 import AccountNavigator from "./account.navigator";
 
-const isAuthenticated = true;
+const isAuthenticated = false;
 
 const Navigation = () => {
   return (
@@ -14,5 +13,3 @@ const Navigation = () => {
 };
 
 export default Navigation;
-
-const styles = StyleSheet.create({});
