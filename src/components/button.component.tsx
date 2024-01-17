@@ -1,21 +1,33 @@
 import React, { FC } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 import { theme } from "../constants";
 
 type ButtonProps = {
   label: string;
+  loading?: boolean;
   onPress: () => void;
 };
 
-const Button: FC<ButtonProps> = ({ label, onPress }) => {
+const Button: FC<ButtonProps> = ({ label, loading, onPress }) => {
   return (
     <View style={styles.buttonContainer}>
       <Pressable
         style={({ pressed }) => [styles.button, pressed && styles.onPressed]}
         onPress={onPress}
+        disabled={loading}
       >
-        <Text style={styles.text}>{label}</Text>
+        {loading ? (
+          <ActivityIndicator size="small" color={theme.COLORS.silver} />
+        ) : (
+          <Text style={styles.text}>{label}</Text>
+        )}
       </Pressable>
     </View>
   );

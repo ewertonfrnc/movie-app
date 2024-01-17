@@ -11,15 +11,18 @@ import { theme } from "../constants";
 
 type InputProps = {
   label: string;
+  invalid?: boolean;
   textInputConfig: TextInputProps;
 };
 
-const Input: FC<InputProps> = ({ label, textInputConfig }) => {
+const Input: FC<InputProps> = ({ label, invalid, textInputConfig }) => {
   return (
     <View style={styles.inputContainer}>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={[styles.label, invalid && styles.invalidLabel]}>
+        {label}
+      </Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, invalid && styles.invalidInput]}
         {...textInputConfig}
         placeholderTextColor={theme.COLORS.silver}
       />
@@ -50,5 +53,11 @@ const styles = StyleSheet.create({
     fontSize: theme.SIZES.md,
     color: theme.COLORS.silver,
     borderRadius: 6,
+  },
+  invalidLabel: {
+    color: theme.COLORS.red,
+  },
+  invalidInput: {
+    backgroundColor: theme.COLORS.darkRed,
   },
 });

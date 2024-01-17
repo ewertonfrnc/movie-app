@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import Input from "../../../components/Input.component";
@@ -7,8 +7,11 @@ import SafeAreaComponent from "../../../components/safe-area.component";
 
 import { theme } from "../../../constants";
 
+import { signUp } from "../../../services/auth";
+
 import { StackScreenProps } from "@react-navigation/stack";
 import { AccountStackParamsList } from "../../../interfaces/navigator.interface";
+import { AuthContext } from "../../../contexts/user.context";
 
 type RegisterScreenProps = {} & StackScreenProps<
   AccountStackParamsList,
@@ -16,6 +19,9 @@ type RegisterScreenProps = {} & StackScreenProps<
 >;
 
 const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
+  const authContext = useContext(AuthContext);
+
+  const [loading, setLoading] = useState(false);
   const [inputs, setInputs] = useState({
     displayName: { value: "", isValid: true },
     email: { value: "", isValid: true },
@@ -29,13 +35,64 @@ const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
   ) => {
     setInputs((prevState) => ({
       ...prevState,
-      [inputIdentifier]: { value: enteredValue },
+      [inputIdentifier]: { value: enteredValue, isValid: true },
     }));
   };
 
-  const submitHandler = () => {
-    console.log("inputs", inputs);
+  const submitHandler = async () => {
+    const { displayName, email, password, confirmPassword } = inputs;
+
+    const isDisplaynameValid = displayName.value.trim().length > 0;
+    const isEmailValid = email.value.trim().length > 0;
+    const isPasswordValid = password.value.trim().length > 0;
+    const isConfirmPasswordValid =
+      isPasswordValid && password.value === confirmPassword.value;
+
+    if (
+      !isDisplaynameValid ||
+      !isEmailValid ||
+      !isPasswordValid ||
+      !isConfirmPasswordValid
+    ) {
+      setInputs((prevState) => {
+        return {
+          displayName: {
+            value: prevState.displayName.value,
+            isValid: isDisplaynameValid,
+          },
+          email: {
+            value: prevState.email.value,
+            isValid: isEmailValid,
+          },
+          password: {
+            value: prevState.password.value,
+            isValid: isPasswordValid,
+          },
+          confirmPassword: {
+            value: prevState.confirmPassword.value,
+            isValid: isConfirmPasswordValid,
+          },
+        };
+      });
+    }
+
+    try {
+      setLoading(true);
+      const {
+        session: { access_token },
+      } = await signUp(displayName.value, email.value, password.value);
+      authContext.authenticate(access_token);
+    } catch (e) {
+      console.error("error", e);
+    }
+    setLoading(false);
   };
+
+  const isFormValid =
+    !inputs.displayName.isValid ||
+    !inputs.email.isValid ||
+    !inputs.password.isValid ||
+    !inputs.confirmPassword.isValid;
 
   return (
     <SafeAreaComponent>
@@ -49,8 +106,9 @@ const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
           <View style={styles.form}>
             <Input
               label={"Nome completo"}
+              invalid={!inputs.displayName.isValid}
               textInputConfig={{
-                onChangeText: inputChangeHandler.bind(this, "email"),
+                onChangeText: inputChangeHandler.bind(this, "displayName"),
                 placeholder: "Insira seu nome",
                 autoCapitalize: "words",
                 autoCorrect: false,
@@ -60,6 +118,7 @@ const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
 
             <Input
               label={"Email"}
+              invalid={!inputs.email.isValid}
               textInputConfig={{
                 onChangeText: inputChangeHandler.bind(this, "email"),
                 placeholder: "Insira seu email",
@@ -72,6 +131,7 @@ const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
 
             <Input
               label={"Senha"}
+              invalid={!inputs.password.isValid}
               textInputConfig={{
                 onChangeText: inputChangeHandler.bind(this, "password"),
                 placeholder: "Insira sua senha",
@@ -84,6 +144,7 @@ const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
 
             <Input
               label={"Confirmar senha"}
+              invalid={!inputs.confirmPassword.isValid}
               textInputConfig={{
                 onChangeText: inputChangeHandler.bind(this, "confirmPassword"),
                 placeholder: "Confirme sua senha",
@@ -95,7 +156,13 @@ const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
             />
           </View>
 
-          <Button label="Entrar" onPress={submitHandler} />
+          {isFormValid && (
+            <Text style={styles.errorText}>
+              Por favor, verifique os dados informados!
+            </Text>
+          )}
+
+          <Button label="Entrar" loading={loading} onPress={submitHandler} />
         </View>
       </View>
     </SafeAreaComponent>
@@ -128,6 +195,9 @@ const styles = StyleSheet.create({
     fontSize: theme.SIZES.xlg,
     fontWeight: "bold",
     color: theme.COLORS.whiteSmoke,
+  },
+  errorText: {
+    color: theme.COLORS.red,
   },
   titleContainer: {
     width: "100%",

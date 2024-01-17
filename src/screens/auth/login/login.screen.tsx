@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { theme } from "../../../constants";
@@ -7,12 +7,18 @@ import SafeAreaComponent from "../../../components/safe-area.component";
 import Input from "../../../components/Input.component";
 import Button from "../../../components/button.component";
 
+import { logInWithEmailPassword } from "../../../services/auth";
+
 import { StackScreenProps } from "@react-navigation/stack";
 import { AccountStackParamsList } from "../../../interfaces/navigator.interface";
+import { AuthContext } from "../../../contexts/user.context";
 
 type LoginScreenProps = {} & StackScreenProps<AccountStackParamsList, "login">;
 
 const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
+  const authContext = useContext(AuthContext);
+
+  const [loading, setLoading] = useState(false);
   const [inputValues, setInputValues] = useState({
     email: "",
     password: "",
@@ -28,8 +34,20 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
     }));
   };
 
-  const submitHandler = () => {
-    console.log("inputValues", inputValues);
+  const submitHandler = async () => {
+    const { email, password } = inputValues;
+
+    setLoading(true);
+    try {
+      const {
+        session: { access_token },
+      } = await logInWithEmailPassword(email, password);
+      authContext.authenticate(access_token);
+    } catch (e) {
+      console.error("error", e);
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -67,7 +85,7 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
             />
           </View>
 
-          <Button label="Entrar" onPress={submitHandler} />
+          <Button label="Entrar" loading={loading} onPress={submitHandler} />
 
           <View style={styles.createAccSection}>
             <Text style={styles.text}>Ainda não tem conta?</Text>

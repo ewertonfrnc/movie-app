@@ -35,7 +35,6 @@ type ShowScreenProps = {} & NativeStackScreenProps<
 
 const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
   const { showId, showType } = route.params;
-  console.log(showId);
 
   const [movieDetails, setMovieDetails] = useState<MovieDetails>();
   const [cast, setCast] = useState<Cast[]>([]);
@@ -49,7 +48,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
       setMovieDetails(details);
       setCast(cast);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
