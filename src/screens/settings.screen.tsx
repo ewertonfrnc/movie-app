@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 
-import { AuthContext } from "../contexts/user.context";
+import { AuthContext } from "../contexts/auth.context";
 
 const Settings = () => {
   const { logout } = useContext(AuthContext);

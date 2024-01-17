@@ -25,6 +25,7 @@ const createScreenOptions = ({ route }: CreateScreenOptionsProps) => {
       if (focused) iconName = `${TAB_ICON[route.name]}`;
       else iconName = `${TAB_ICON[route.name]}-outline`;
 
+      //@ts-ignore
       return <Ionicons name={iconName} size={size} color={color} />;
     },
     headerShown: false,

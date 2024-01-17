@@ -1,13 +1,13 @@
-import { axiosInstance } from './index';
+import { api } from "./index";
 
 // Show
 export const fetchShowDetails = async (showId: number, mediaType: string) => {
   try {
-    const { data } = await axiosInstance.get(
+    const { data } = await api.get(
       `/${
-        mediaType === 'tv' ? 'tv' : 'movie'
+        mediaType === "tv" ? "tv" : "movie"
       }/${showId}?append_to_response=videos,images`,
-      { params: { language: 'pt-BR' } }
+      { params: { language: "pt-BR" } },
     );
 
     return data;
@@ -18,9 +18,9 @@ export const fetchShowDetails = async (showId: number, mediaType: string) => {
 
 export const fetchShowCredits = async (showId: number, mediaType: string) => {
   try {
-    const { data } = await axiosInstance.get(
-      `/${mediaType === 'tv' ? 'tv' : 'movie'}/${showId}/credits`,
-      { params: { language: 'pt-BR' } }
+    const { data } = await api.get(
+      `/${mediaType === "tv" ? "tv" : "movie"}/${showId}/credits`,
+      { params: { language: "pt-BR" } },
     );
 
     return data.cast;
@@ -32,8 +32,8 @@ export const fetchShowCredits = async (showId: number, mediaType: string) => {
 // Movies
 export const fetchTrendingMovies = async () => {
   try {
-    const { data } = await axiosInstance.get('/trending/movie/week', {
-      params: { language: 'pt-BR' },
+    const { data } = await api.get("/trending/movie/week", {
+      params: { language: "pt-BR" },
     });
 
     return data.results;
@@ -45,8 +45,8 @@ export const fetchTrendingMovies = async () => {
 // TV Shows
 export const fetchTrendingTvShows = async () => {
   try {
-    const { data } = await axiosInstance.get('/trending/tv/week', {
-      params: { language: 'pt-BR' },
+    const { data } = await api.get("/trending/tv/week", {
+      params: { language: "pt-BR" },
     });
 
     return data.results;
@@ -58,8 +58,8 @@ export const fetchTrendingTvShows = async () => {
 // Miscelaneous
 export const fetchTrending = async () => {
   try {
-    const { data } = await axiosInstance.get('/trending/all/week', {
-      params: { language: 'pt-BR' },
+    const { data } = await api.get("/trending/all/week", {
+      params: { language: "pt-BR" },
     });
     return data.results;
   } catch (error) {

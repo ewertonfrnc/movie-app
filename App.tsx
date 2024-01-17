@@ -5,14 +5,14 @@ import { StyleSheet } from "react-native";
 
 import Navigation from "./src/navigation";
 
-import AuthContextProvider from "./src/contexts/user.context";
+import { AuthProvider } from "./src/contexts/auth.context";
 
 export default function App() {
   return (
-    <AuthContextProvider>
+    <AuthProvider>
       <StatusBar style="inverted" />
       <Navigation />
-    </AuthContextProvider>
+    </AuthProvider>
   );
 }
 

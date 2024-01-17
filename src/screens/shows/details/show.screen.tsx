@@ -105,7 +105,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
               </View>
 
               <View style={styles.sectionContainer}>
-                <Button label="▶️ Marcar como assistido" />
+                <Button label="▶️ Marcar como assistido" onPress={() => {}} />
               </View>
 
               <View style={styles.sectionContainer}>

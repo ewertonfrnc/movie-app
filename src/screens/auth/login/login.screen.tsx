@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from "react";
+import { FC, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { theme } from "../../../constants";
@@ -7,18 +7,18 @@ import SafeAreaComponent from "../../../components/safe-area.component";
 import Input from "../../../components/Input.component";
 import Button from "../../../components/button.component";
 
-import { logInWithEmailPassword } from "../../../services/auth";
-
 import { StackScreenProps } from "@react-navigation/stack";
 import { AccountStackParamsList } from "../../../interfaces/navigator.interface";
-import { AuthContext } from "../../../contexts/user.context";
+import { setUser, useAuth } from "../../../contexts/auth.context";
 
 type LoginScreenProps = {} & StackScreenProps<AccountStackParamsList, "login">;
 
 const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
-  const authContext = useContext(AuthContext);
+  const {
+    state: { loading, user, session },
+    authDispatch,
+  } = useAuth();
 
-  const [loading, setLoading] = useState(false);
   const [inputValues, setInputValues] = useState({
     email: "",
     password: "",
@@ -36,18 +36,7 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
 
   const submitHandler = async () => {
     const { email, password } = inputValues;
-
-    setLoading(true);
-    try {
-      const {
-        session: { access_token },
-      } = await logInWithEmailPassword(email, password);
-      authContext.authenticate(access_token);
-    } catch (e) {
-      console.error("error", e);
-    }
-
-    setLoading(false);
+    await setUser(authDispatch, email, password);
   };
 
   return (

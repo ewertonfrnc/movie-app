@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from "react";
+import { FC, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import Input from "../../../components/Input.component";
@@ -7,11 +7,9 @@ import SafeAreaComponent from "../../../components/safe-area.component";
 
 import { theme } from "../../../constants";
 
-import { signUp } from "../../../services/auth";
-
 import { StackScreenProps } from "@react-navigation/stack";
 import { AccountStackParamsList } from "../../../interfaces/navigator.interface";
-import { AuthContext } from "../../../contexts/user.context";
+import { setUser, useAuth } from "../../../contexts/auth.context";
 
 type RegisterScreenProps = {} & StackScreenProps<
   AccountStackParamsList,
@@ -19,9 +17,11 @@ type RegisterScreenProps = {} & StackScreenProps<
 >;
 
 const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
-  const authContext = useContext(AuthContext);
+  const {
+    state: { loading },
+    authDispatch,
+  } = useAuth();
 
-  const [loading, setLoading] = useState(false);
   const [inputs, setInputs] = useState({
     displayName: { value: "", isValid: true },
     email: { value: "", isValid: true },
@@ -76,16 +76,10 @@ const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
       });
     }
 
-    try {
-      setLoading(true);
-      const {
-        session: { access_token },
-      } = await signUp(displayName.value, email.value, password.value);
-      authContext.authenticate(access_token);
-    } catch (e) {
-      console.error("error", e);
-    }
-    setLoading(false);
+    await setUser(authDispatch, email.value, password.value, {
+      isRegister: true,
+      displayName: displayName.value,
+    });
   };
 
   const isFormValid =

@@ -1,7 +1,7 @@
-import axios from 'axios';
-import { API_URL, ACCESS_TOKEN_AUTH } from '@env';
+import axios from "axios";
+import { ACCESS_TOKEN_AUTH, API_URL } from "@env";
 
-export const axiosInstance = axios.create({
+export const api = axios.create({
   baseURL: API_URL,
   headers: {
     Authorization: `Bearer ${ACCESS_TOKEN_AUTH}`,
