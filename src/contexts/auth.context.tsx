@@ -2,7 +2,7 @@ import { createContext, ReactNode, useContext, useReducer } from "react";
 
 import { AuthActions } from "../interfaces/auth.interface";
 
-import { logInWithEmailPassword, signUp } from "../services/auth";
+import { logInWithEmailPassword, signOut, signUp } from "../services/auth";
 import { Session, User } from "@supabase/supabase-js";
 
 type Action = AuthActions;
@@ -23,26 +23,37 @@ const AuthContext = createContext<
 
 function authReducer(state: State, action: Action) {
   switch (action.type) {
-    case "start auth": {
+    case "start auth":
       return { ...state, loading: true };
-    }
 
-    case "finish auth": {
+    case "finish auth":
       return {
         ...state,
         loading: false,
         isAuthenticated: true,
         ...action.payload,
       };
-    }
 
-    case "fail auth": {
+    case "fail auth":
       return { ...state, loading: false, error: action.payload };
-    }
 
-    default: {
+    case "start logout":
+      return { ...state, loading: true };
+
+    case "finish logout":
+      return {
+        ...state,
+        loading: false,
+        isAuthenticated: false,
+        user: null,
+        session: null,
+      };
+
+    case "fail logout":
+      return { ...state, error: action.payload };
+
+    default:
       throw new Error(`Unhandled action type: ${action}`);
-    }
   }
 }
 
@@ -75,6 +86,17 @@ async function setUser(
   }
 }
 
+async function logUserOut(dispatch: Dispatch) {
+  dispatch({ type: "start logout" });
+
+  try {
+    await signOut();
+    dispatch({ type: "finish logout" });
+  } catch (error) {
+    dispatch({ type: "fail logout", payload: error as Error });
+  }
+}
+
 function AuthProvider({ children }: AuthProviderProps) {
   const [state, authDispatch] = useReducer(authReducer, {
     loading: false,
@@ -87,28 +109,6 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   const value = { state, authDispatch };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-
-  // const [authToken, setAuthToken] = useState<string | null>(null);
-  //
-  // const authenticate = (token: string) => setAuthToken(token);
-  //
-  // const logOut = async () => {
-  //   await signOut();
-  //   setAuthToken(null);
-  // };
-  //
-  // return (
-  //   <AuthContext.Provider
-  //     value={{
-  //       token: authToken,
-  //       isAuthenticated: !!authToken,
-  //       authenticate: authenticate,
-  //       logout: logOut,
-  //     }}
-  //   >
-  //     {children}
-  //   </AuthContext.Provider>
-  // );
 }
 
 function useAuth() {
@@ -120,4 +120,4 @@ function useAuth() {
   return context;
 }
 
-export { AuthProvider, useAuth, setUser };
+export { AuthProvider, useAuth, setUser, logUserOut };

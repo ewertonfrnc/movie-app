@@ -6,4 +6,7 @@ export type AuthActions =
       type: "finish auth";
       payload: { session: Session | null; user: User | null };
     }
-  | { type: "fail auth"; payload: Error };
+  | { type: "fail auth"; payload: Error }
+  | { type: "start logout" }
+  | { type: "finish logout" }
+  | { type: "fail logout"; payload: Error };

@@ -1,15 +1,19 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 
-import { AuthContext } from "../contexts/auth.context";
+import { logUserOut, useAuth } from "../contexts/auth.context";
 
 const Settings = () => {
-  const { logout } = useContext(AuthContext);
+  const { authDispatch } = useAuth();
+
+  async function logOut() {
+    await logUserOut(authDispatch);
+  }
 
   return (
-    <View style={styles.constainer}>
+    <View style={styles.container}>
       <Text>Settings</Text>
-      <Button title="Encerrar sessão" onPress={logout} />
+      <Button title="Encerrar sessão" onPress={logOut} />
     </View>
   );
 };
@@ -17,7 +21,7 @@ const Settings = () => {
 export default Settings;
 
 const styles = StyleSheet.create({
-  constainer: {
+  container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",

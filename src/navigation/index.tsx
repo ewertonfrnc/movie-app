@@ -7,10 +7,9 @@ import { useAuth } from "../contexts/auth.context";
 
 const Navigation = () => {
   const {
-    state: { isAuthenticated, user, session },
+    state: { isAuthenticated },
   } = useAuth();
 
-  console.log(user, session);
   return (
     <NavigationContainer>
       {isAuthenticated ? <AppNavigator /> : <AccountNavigator />}
