@@ -81,6 +81,7 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
                 autoCapitalize: "none",
                 autoCorrect: false,
                 value: inputValues.password,
+                secureTextEntry: true,
               }}
             />
           </View>

@@ -1,4 +1,5 @@
 import { createContext, FC, ReactNode, useState } from "react";
+import { signOut } from "../services/auth";
 
 export const AuthContext = createContext({
   token: "",
@@ -16,7 +17,10 @@ const AuthContextProvider: FC<AuthContextProviderProps> = ({ children }) => {
 
   const authenticate = (token: string) => setAuthToken(token);
 
-  const logOut = () => setAuthToken(null);
+  const logOut = async () => {
+    await signOut();
+    setAuthToken(null);
+  };
 
   return (
     <AuthContext.Provider

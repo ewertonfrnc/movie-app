@@ -29,3 +29,8 @@ export const logInWithEmailPassword = async (
 
   return data;
 };
+
+export async function signOut() {
+  const { error } = await supabase.auth.signOut();
+  if (error) throw new Error(error.message);
+}

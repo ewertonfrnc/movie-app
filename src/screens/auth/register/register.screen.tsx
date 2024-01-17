@@ -139,6 +139,7 @@ const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
                 autoCapitalize: "none",
                 autoCorrect: false,
                 value: inputs.password.value,
+                secureTextEntry: true,
               }}
             />
 
@@ -152,6 +153,7 @@ const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
                 autoCapitalize: "none",
                 autoCorrect: false,
                 value: inputs.confirmPassword.value,
+                secureTextEntry: true,
               }}
             />
           </View>
