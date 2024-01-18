@@ -2,9 +2,17 @@ import { createContext, ReactNode, useContext, useReducer } from "react";
 
 import { AuthActions, AuthState } from "../interfaces/auth.interface";
 
-import { logInWithEmailPassword, signOut, signUp } from "../services/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { storeToStorage } from "../utils/async-storage.utils";
+import {
+  insertUserOnUserTable,
+  logInWithEmailPassword,
+  signOut,
+  signUp,
+} from "../services/supabase/auth.service";
+
+import {
+  removeFromStorage,
+  storeToStorage,
+} from "../utils/async-storage.utils";
 
 type Action = AuthActions;
 type State = AuthState;
@@ -79,9 +87,12 @@ async function setUser(
       );
 
       dispatch({ type: "finish auth", payload: { session, user } });
+
       await storeToStorage("token", session!.access_token);
+      await insertUserOnUserTable(user);
     } else {
       const { session, user } = await logInWithEmailPassword(email, password);
+
       dispatch({ type: "finish auth", payload: { session, user } });
       await storeToStorage("token", session?.access_token);
     }
@@ -96,7 +107,7 @@ async function logUserOut(dispatch: Dispatch) {
   try {
     await signOut();
     dispatch({ type: "finish logout" });
-    await AsyncStorage.removeItem("token");
+    await removeFromStorage("token");
   } catch (error) {
     dispatch({ type: "fail logout", payload: error as Error });
   }

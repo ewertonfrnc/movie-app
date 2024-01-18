@@ -1,4 +1,4 @@
-import { api } from "./index";
+import { api } from "../index";
 
 // Show
 export const fetchShowDetails = async (showId: number, mediaType: string) => {

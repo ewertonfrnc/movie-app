@@ -21,7 +21,7 @@ import { getFullYear, minToHours } from "../../../utils/time.utils";
 import {
   fetchShowCredits,
   fetchShowDetails,
-} from "../../../services/shows.service";
+} from "../../../services/tmdb/shows.service";
 
 import { Cast, MovieDetails } from "../../../interfaces/movie.interface";
 

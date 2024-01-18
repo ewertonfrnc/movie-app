@@ -4,7 +4,7 @@ import AppNavigator from "./app.navigator";
 import AccountNavigator from "./account.navigator";
 
 import { useAuth } from "../contexts/auth.context";
-import { supabase } from "../utils/supabase/supabase.utils";
+import supabase from "../services/supabase";
 
 const Navigation = () => {
   const {
@@ -12,8 +12,8 @@ const Navigation = () => {
     authDispatch,
   } = useAuth();
 
-  supabase.auth.onAuthStateChange((event, session) => {
-    // console.log(event, session, { isAuthenticated });
+  const subscription = supabase.auth.onAuthStateChange((event, session) => {
+    console.log(event, session, { isAuthenticated });
 
     if (event === "INITIAL_SESSION") {
       // handle initial session
@@ -30,6 +30,8 @@ const Navigation = () => {
       // handle user updated event
     }
   });
+
+  // subscription.data.subscription.unsubscribe();
 
   return (
     <NavigationContainer>

@@ -1,26 +1,25 @@
-import { useState, useEffect, FC } from 'react';
-import { StyleSheet, Text, View, FlatList, ScrollView } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { FC, useEffect, useState } from "react";
+import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import { theme } from '../../constants';
+import { theme } from "../../constants";
 
-import SafeAreaComponent from '../../components/safe-area.component';
-import ImageCard from '../../components/image-card.component';
+import SafeAreaComponent from "../../components/safe-area.component";
+import ImageCard from "../../components/image-card.component";
 
 import {
+  fetchTrending,
   fetchTrendingMovies,
   fetchTrendingTvShows,
-  fetchTrending,
-} from '../../services/shows.service';
+} from "../../services/tmdb/shows.service";
 
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import { HomeStackParamsList } from '../../interfaces/navigator.interface';
-import { Show } from '../../interfaces/movie.interface';
+import { HomeStackParamsList } from "../../interfaces/navigator.interface";
+import { Show } from "../../interfaces/movie.interface";
 
 type TrendingProps = {} & NativeStackScreenProps<
   HomeStackParamsList,
-  'trending'
+  "trending"
 >;
 
 const Trending: FC<TrendingProps> = ({ navigation }) => {
@@ -41,7 +40,7 @@ const Trending: FC<TrendingProps> = ({ navigation }) => {
   };
 
   const onPressHandler = (params: { showId: number; showType: string }) => {
-    navigation.navigate('showDetails', {
+    navigation.navigate("showDetails", {
       showId: params.showId,
       showType: params.showType,
     });
@@ -68,21 +67,6 @@ const Trending: FC<TrendingProps> = ({ navigation }) => {
             horizontal
           />
         </View>
-
-        {/* <View>
-          <View style={styles.sectionHeading}>
-            <Text style={styles.title}>Seleção semanal de séries</Text>
-            <Text style={styles.subtitle}>Ver mais</Text>
-          </View>
-
-          <FlatList
-            data={popularTVShows}
-            renderItem={({ item }) => (
-              <ImageCard show={item} onPress={onPressHandler} />
-            )}
-            horizontal
-          />
-        </View> */}
       </ScrollView>
     </SafeAreaComponent>
   );
@@ -92,16 +76,16 @@ export default Trending;
 
 const styles = StyleSheet.create({
   sectionHeading: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: theme.SPACING.xlg,
     paddingTop: theme.SPACING.lg,
     marginBottom: theme.SPACING.lg,
     marginTop: theme.SPACING.xxlg,
   },
   title: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: theme.SIZES.lg,
     color: theme.COLORS.text.primary,
   },
