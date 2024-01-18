@@ -1,19 +1,13 @@
 import { createContext, ReactNode, useContext, useReducer } from "react";
 
-import { AuthActions } from "../interfaces/auth.interface";
+import { AuthActions, AuthState } from "../interfaces/auth.interface";
 
 import { logInWithEmailPassword, signOut, signUp } from "../services/auth";
-import { Session, User } from "@supabase/supabase-js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storeToStorage } from "../utils/async-storage.utils";
 
 type Action = AuthActions;
-type State = {
-  loading: boolean;
-  token: string;
-  isAuthenticated: boolean;
-  user: User | null;
-  session: Session | null;
-  error: Error | null;
-};
+type State = AuthState;
 type Dispatch = (action: Action) => void;
 type AuthProviderProps = { children: ReactNode };
 
@@ -23,6 +17,13 @@ const AuthContext = createContext<
 
 function authReducer(state: State, action: Action) {
   switch (action.type) {
+    case "app start":
+      return {
+        ...state,
+        isAuthenticated: !!action.payload,
+        token: action.payload,
+      };
+
     case "start auth":
       return { ...state, loading: true };
 
@@ -76,10 +77,13 @@ async function setUser(
         email,
         password,
       );
+
       dispatch({ type: "finish auth", payload: { session, user } });
+      await storeToStorage("token", session!.access_token);
     } else {
       const { session, user } = await logInWithEmailPassword(email, password);
       dispatch({ type: "finish auth", payload: { session, user } });
+      await storeToStorage("token", session?.access_token);
     }
   } catch (error) {
     dispatch({ type: "fail auth", payload: error as Error });
@@ -92,6 +96,7 @@ async function logUserOut(dispatch: Dispatch) {
   try {
     await signOut();
     dispatch({ type: "finish logout" });
+    await AsyncStorage.removeItem("token");
   } catch (error) {
     dispatch({ type: "fail logout", payload: error as Error });
   }
