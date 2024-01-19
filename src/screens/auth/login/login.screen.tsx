@@ -1,5 +1,6 @@
 import { FC, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { StackScreenProps } from "@react-navigation/stack";
 
 import { theme } from "../../../constants";
 
@@ -7,18 +8,24 @@ import SafeAreaComponent from "../../../components/safe-area.component";
 import Input from "../../../components/Input.component";
 import Button from "../../../components/button.component";
 
-import { StackScreenProps } from "@react-navigation/stack";
 import { AccountStackParamsList } from "../../../interfaces/navigator.interface";
-import { setUser, useAuth } from "../../../contexts/auth.context";
+import { logInWithEmailPassword } from "../../../services/supabase/auth.service";
+
+import { setAuthError, setAuthUser } from "../../../redux/auth/auth.slice";
+import { useAppDispatch } from "../../../hooks/redux";
+
+import { storeToStorage } from "../../../utils/async-storage.utils";
 
 type LoginScreenProps = {} & StackScreenProps<AccountStackParamsList, "login">;
 
 const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
-  const {
-    state: { loading, user, session },
-    authDispatch,
-  } = useAuth();
+  // const {
+  //   state: { loading, user, session },
+  //   authDispatch,
+  // } = useAuth();
+  const dispatch = useAppDispatch();
 
+  const [loading, setLoading] = useState(false);
   const [inputValues, setInputValues] = useState({
     email: "",
     password: "",
@@ -36,7 +43,20 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
 
   const submitHandler = async () => {
     const { email, password } = inputValues;
-    await setUser(authDispatch, email, password);
+
+    setLoading(true);
+    try {
+      const { user } = await logInWithEmailPassword(email, password);
+
+      if (user) {
+        dispatch(setAuthUser(user));
+        await storeToStorage("user-id", user.id);
+      }
+    } catch (error) {
+      dispatch(setAuthError(error as Error));
+    }
+
+    setLoading(false);
   };
 
   return (

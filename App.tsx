@@ -1,23 +1,23 @@
 import "react-native-gesture-handler";
-
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet } from "react-native";
 
 import Navigation from "./src/navigation";
 
-import { AuthProvider } from "./src/contexts/auth.context";
-import { UserProvider } from "./src/contexts/user.context";
+// import { AuthProvider } from "./src/contexts/auth.context";
+
+import { Provider } from "react-redux";
+import { store } from "./src/redux/store";
 
 export default function App() {
   return (
-    <AuthProvider>
+    <Provider store={store}>
+      {/*<AuthProvider>*/}
       <StatusBar style="inverted" />
 
-      <UserProvider>
-        <Navigation />
-      </UserProvider>
-    </AuthProvider>
+      {/*<UserProvider>*/}
+      <Navigation />
+      {/*</UserProvider>*/}
+      {/*</AuthProvider>*/}
+    </Provider>
   );
 }
-
-const styles = StyleSheet.create({});

@@ -1,13 +1,21 @@
 import React from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 
-import { logUserOut, useAuth } from "../contexts/auth.context";
+import { useAppDispatch } from "../hooks/redux";
+import { setAuthError } from "../redux/auth/auth.slice";
+import { signOut } from "../services/supabase/auth.service";
+import { removeFromStorage } from "../utils/async-storage.utils";
 
 const Settings = () => {
-  const { authDispatch } = useAuth();
+  const dispatch = useAppDispatch();
 
   async function logOut() {
-    await logUserOut(authDispatch);
+    try {
+      await signOut();
+      await removeFromStorage("user-id");
+    } catch (error) {
+      dispatch(setAuthError(error as Error));
+    }
   }
 
   return (

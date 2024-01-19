@@ -34,10 +34,7 @@ function userReducer(state: State, action: Action) {
       return {
         ...state,
         loading: false,
-        user: {
-          ...state.user,
-          watchedMovies: [action.payload, ...state.user?.watchedMovies],
-        },
+        user: action.payload,
       };
 
     case "fail updating watched show":
@@ -69,20 +66,17 @@ async function addMovieToWatchList(
   showType: string,
 ) {
   dispatch({ type: "start updating watched show" });
-  const updatedUserObj = {
-    ...user,
-    watchedMovies: [show, ...user.watchedMovies],
-  };
+  const { watchedMovies } = user;
 
   try {
     // const response = await updatedWatchedMovies(user, show, showType);
     // console.log("addMovieToWatchList response", response);
     dispatch({
       type: "finish updating watched show",
-      payload: updatedUserObj,
+      payload: { ...user, watchedMovies: [show, ...watchedMovies] },
     });
 
-    console.log("updated user movies", updatedUserObj);
+    console.log(user, watchedMovies);
   } catch (error) {
     dispatch({ type: "fail updating watched show", payload: error as Error });
   }

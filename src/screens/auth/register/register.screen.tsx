@@ -1,5 +1,6 @@
 import { FC, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { StackScreenProps } from "@react-navigation/stack";
 
 import Input from "../../../components/Input.component";
 import Button from "../../../components/button.component";
@@ -7,9 +8,13 @@ import SafeAreaComponent from "../../../components/safe-area.component";
 
 import { theme } from "../../../constants";
 
-import { StackScreenProps } from "@react-navigation/stack";
+import { signUp } from "../../../services/supabase/auth.service";
+import { insertUserOnUserTable } from "../../../services/supabase/user.service";
 import { AccountStackParamsList } from "../../../interfaces/navigator.interface";
-import { setUser, useAuth } from "../../../contexts/auth.context";
+
+import { useAppDispatch } from "../../../hooks/redux";
+import { setAuthError, setAuthUser } from "../../../redux/auth/auth.slice";
+import { storeToStorage } from "../../../utils/async-storage.utils";
 
 type RegisterScreenProps = {} & StackScreenProps<
   AccountStackParamsList,
@@ -17,11 +22,13 @@ type RegisterScreenProps = {} & StackScreenProps<
 >;
 
 const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
-  const {
-    state: { loading },
-    authDispatch,
-  } = useAuth();
+  // const {
+  //   state: { loading },
+  //   authDispatch,
+  // } = useAuth();
+  const dispatch = useAppDispatch();
 
+  const [loading, setLoading] = useState(false);
   const [inputs, setInputs] = useState({
     displayName: { value: "", isValid: true },
     email: { value: "", isValid: true },
@@ -76,10 +83,26 @@ const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
       });
     }
 
-    await setUser(authDispatch, email.value, password.value, {
-      isRegister: true,
-      displayName: displayName.value,
-    });
+    try {
+      setLoading(true);
+
+      const { user } = await signUp(
+        displayName.value,
+        email.value,
+        password.value,
+      );
+
+      if (user) {
+        dispatch(setAuthUser(user));
+
+        await insertUserOnUserTable(user);
+        await storeToStorage("user-id", user.id);
+      }
+    } catch (error) {
+      dispatch(setAuthError(error as Error));
+    }
+
+    setLoading(false);
   };
 
   const isFormValid =

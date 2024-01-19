@@ -17,7 +17,7 @@ const ImageCard: FC<ImageCardProps> = ({ show, onPress }) => {
     <View style={styles.container}>
       <Pressable
         style={({ pressed }) => pressed && styles.onPressed}
-        onPress={() => onPress({ showId: id, showType: media_type })}
+        onPress={onPress.bind(this, { showId: id, showType: media_type })}
       >
         <Image
           style={styles.image}

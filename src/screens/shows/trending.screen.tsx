@@ -1,14 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-
-import { useIsFocused } from "@react-navigation/native";
+import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { theme } from "../../constants";
@@ -17,12 +8,9 @@ import SafeAreaComponent from "../../components/safe-area.component";
 import ImageCard from "../../components/image-card.component";
 
 import { fetchTrending } from "../../services/tmdb/shows.service";
-import { fetchRecentWatchedMovies } from "../../services/supabase/user.service";
 
 import { HomeStackParamsList } from "../../interfaces/navigator.interface";
 import { MovieDetails } from "../../interfaces/movie.interface";
-
-import { loadUserData, useUser } from "../../contexts/user.context";
 
 type TrendingProps = {} & NativeStackScreenProps<
   HomeStackParamsList,
@@ -30,27 +18,23 @@ type TrendingProps = {} & NativeStackScreenProps<
 >;
 
 const Trending: FC<TrendingProps> = ({ navigation }) => {
-  const isFocused = useIsFocused();
+  // const {
+  //   state: { loading, user },
+  //   userDispatch,
+  // } = useUser();
 
-  const {
-    state: { loading, user },
-    userDispatch,
-  } = useUser();
-
-  const [recentlyWatched, setRecentlyWatched] = useState<MovieDetails[]>(
-    user?.watchedMovies || [],
-  );
+  const [recentlyWatched, setRecentlyWatched] = useState<MovieDetails[]>([]);
   const [trending, setTrending] = useState<MovieDetails[]>([]);
 
-  const getShows = async () => {
-    const [trendingShows, recentMovies] = await Promise.all([
+  async function getShows() {
+    const [trendingShows] = await Promise.all([
       fetchTrending(),
-      user && fetchRecentWatchedMovies(user?.id),
+      // user && fetchRecentWatchedMovies(user?.id),
     ]);
 
     setTrending(trendingShows);
-    setRecentlyWatched(recentMovies);
-  };
+    // setRecentlyWatched(recentMovies);
+  }
 
   const onPressHandler = (params: { showId: number; showType: string }) => {
     navigation.navigate("showDetails", {
@@ -60,19 +44,15 @@ const Trending: FC<TrendingProps> = ({ navigation }) => {
   };
 
   async function getUserData() {
-    return await loadUserData(userDispatch);
+    // return await loadUserData(userDispatch);
   }
 
   useEffect(() => {
+    getUserData();
     getShows();
-    // console.log("recent", recentlyWatched);
-    // console.log("user", user?.id, user?.watchedMovies);
 
-    const userData = getUserData();
-    console.log(
-      "useEffect",
-      userData.then((value) => console.log(value)),
-    );
+    console.log("recent", recentlyWatched);
+    // if (user) console.log("user", user?.id, user?.watchedMovies);
   }, []);
 
   return (
@@ -84,17 +64,13 @@ const Trending: FC<TrendingProps> = ({ navigation }) => {
             <Text style={styles.subtitle}>Ver mais</Text>
           </View>
 
-          {loading ? (
-            <ActivityIndicator size={"large"} color="white" />
-          ) : (
-            <FlatList
-              data={trending}
-              renderItem={({ item }) => (
-                <ImageCard show={item} onPress={onPressHandler} />
-              )}
-              horizontal
-            />
-          )}
+          <FlatList
+            data={trending}
+            renderItem={({ item }) => (
+              <ImageCard show={item} onPress={onPressHandler} />
+            )}
+            horizontal
+          />
         </View>
 
         <View>
@@ -103,9 +79,7 @@ const Trending: FC<TrendingProps> = ({ navigation }) => {
             <Text style={styles.subtitle}>Ver mais</Text>
           </View>
 
-          {loading ? (
-            <ActivityIndicator size={"large"} color="white" />
-          ) : user?.watchedMovies && user.watchedMovies.length ? (
+          {recentlyWatched.length ? (
             <FlatList
               data={recentlyWatched}
               renderItem={({ item }) => (
