@@ -78,6 +78,7 @@ export type MovieDetails = {
   videos: { results: VideoTrailer[] };
   name: string;
   first_air_date: string;
+  media_type: string;
 };
 
 export type Cast = {

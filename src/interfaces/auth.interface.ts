@@ -14,7 +14,7 @@ export type AuthActions =
 
 export type AuthState = {
   loading: boolean;
-  token: string | undefined;
+  userId: string | undefined;
   isAuthenticated: boolean;
   user: User | null;
   session: Session | null;

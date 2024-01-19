@@ -1,5 +1,4 @@
 import supabase from "../supabase";
-import { User } from "@supabase/supabase-js";
 
 export const signUp = async (
   displayName: string,
@@ -16,17 +15,6 @@ export const signUp = async (
 
   return data;
 };
-
-export async function insertUserOnUserTable(userData: User | null) {
-  const { data, error } = await supabase.from("users").insert([userData]);
-
-  console.log("insertUserOnUserTable", data, error);
-  console.log("userData", userData);
-
-  if (error) throw new Error(error.message);
-
-  return data;
-}
 
 export const logInWithEmailPassword = async (
   email: string,

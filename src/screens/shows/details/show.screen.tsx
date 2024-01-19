@@ -27,6 +27,7 @@ import { Cast, MovieDetails } from "../../../interfaces/movie.interface";
 
 import Button from "../../../components/button.component";
 import CastAvatar from "../../../components/cast-avatar.component";
+import { addMovieToWatchList, useUser } from "../../../contexts/user.context";
 
 type ShowScreenProps = {} & NativeStackScreenProps<
   HomeStackParamsList,
@@ -34,6 +35,11 @@ type ShowScreenProps = {} & NativeStackScreenProps<
 >;
 
 const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
+  const {
+    state: { user },
+    userDispatch,
+  } = useUser();
+
   const { showId, showType } = route.params;
 
   const [movieDetails, setMovieDetails] = useState<MovieDetails>();
@@ -51,6 +57,14 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
       console.error(error);
     }
   };
+
+  async function markAsWatched() {
+    if (user && movieDetails) {
+      await addMovieToWatchList(userDispatch, user, movieDetails, showType);
+    } else {
+      console.log("please log in to add a movie to your watchlist");
+    }
+  }
 
   useEffect(() => {
     getMovieDetails();
@@ -105,7 +119,10 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
               </View>
 
               <View style={styles.sectionContainer}>
-                <Button label="▶️ Marcar como assistido" onPress={() => {}} />
+                <Button
+                  label="▶️ Marcar como assistido"
+                  onPress={markAsWatched}
+                />
               </View>
 
               <View style={styles.sectionContainer}>

@@ -3,16 +3,12 @@ import { createContext, ReactNode, useContext, useReducer } from "react";
 import { AuthActions, AuthState } from "../interfaces/auth.interface";
 
 import {
-  insertUserOnUserTable,
   logInWithEmailPassword,
   signOut,
   signUp,
 } from "../services/supabase/auth.service";
-
-import {
-  removeFromStorage,
-  storeToStorage,
-} from "../utils/async-storage.utils";
+import { insertUserOnUserTable } from "../services/supabase/user.service";
+import { storeToStorage } from "../utils/async-storage.utils";
 
 type Action = AuthActions;
 type State = AuthState;
@@ -29,7 +25,7 @@ function authReducer(state: State, action: Action) {
       return {
         ...state,
         isAuthenticated: !!action.payload,
-        token: action.payload,
+        userId: action.payload,
       };
 
     case "start auth":
@@ -66,6 +62,13 @@ function authReducer(state: State, action: Action) {
   }
 }
 
+async function onAppStart(dispatch: Dispatch, userId: string) {
+  dispatch({ type: "app start", payload: userId });
+  console.log("appstart", userId);
+
+  await storeToStorage("user-id", userId);
+}
+
 type AdditionalInformation = {
   isRegister: boolean;
   displayName: string;
@@ -87,14 +90,10 @@ async function setUser(
       );
 
       dispatch({ type: "finish auth", payload: { session, user } });
-
-      await storeToStorage("token", session!.access_token);
       await insertUserOnUserTable(user);
     } else {
       const { session, user } = await logInWithEmailPassword(email, password);
-
       dispatch({ type: "finish auth", payload: { session, user } });
-      await storeToStorage("token", session?.access_token);
     }
   } catch (error) {
     dispatch({ type: "fail auth", payload: error as Error });
@@ -107,7 +106,6 @@ async function logUserOut(dispatch: Dispatch) {
   try {
     await signOut();
     dispatch({ type: "finish logout" });
-    await removeFromStorage("token");
   } catch (error) {
     dispatch({ type: "fail logout", payload: error as Error });
   }
@@ -116,7 +114,7 @@ async function logUserOut(dispatch: Dispatch) {
 function AuthProvider({ children }: AuthProviderProps) {
   const [state, authDispatch] = useReducer(authReducer, {
     loading: false,
-    token: "",
+    userId: "",
     isAuthenticated: false,
     user: null,
     session: null,
@@ -136,4 +134,4 @@ function useAuth() {
   return context;
 }
 
-export { AuthProvider, useAuth, setUser, logUserOut };
+export { AuthProvider, useAuth, setUser, logUserOut, onAppStart };

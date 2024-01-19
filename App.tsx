@@ -6,12 +6,16 @@ import { StyleSheet } from "react-native";
 import Navigation from "./src/navigation";
 
 import { AuthProvider } from "./src/contexts/auth.context";
+import { UserProvider } from "./src/contexts/user.context";
 
 export default function App() {
   return (
     <AuthProvider>
       <StatusBar style="inverted" />
-      <Navigation />
+
+      <UserProvider>
+        <Navigation />
+      </UserProvider>
     </AuthProvider>
   );
 }

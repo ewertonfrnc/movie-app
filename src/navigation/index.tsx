@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./app.navigator";
 import AccountNavigator from "./account.navigator";
 
-import { useAuth } from "../contexts/auth.context";
+import { onAppStart, useAuth } from "../contexts/auth.context";
 import supabase from "../services/supabase";
 
 const Navigation = () => {
@@ -12,26 +12,28 @@ const Navigation = () => {
     authDispatch,
   } = useAuth();
 
-  const subscription = supabase.auth.onAuthStateChange((event, session) => {
-    console.log(event, session, { isAuthenticated });
+  const subscription = supabase.auth.onAuthStateChange(
+    async (event, session) => {
+      console.log(event);
 
-    if (event === "INITIAL_SESSION") {
-      // handle initial session
-    } else if (event === "SIGNED_IN") {
-      // handle sign in event
-      authDispatch({ type: "app start", payload: session?.access_token });
-    } else if (event === "SIGNED_OUT") {
-      // handle sign out event
-    } else if (event === "PASSWORD_RECOVERY") {
-      // handle password recovery event
-    } else if (event === "TOKEN_REFRESHED") {
-      // handle token refreshed event
-    } else if (event === "USER_UPDATED") {
-      // handle user updated event
-    }
-  });
+      if (event === "INITIAL_SESSION") {
+        // handle initial session
+      } else if (event === "SIGNED_IN") {
+        // handle sign in event
+        if (session?.user) await onAppStart(authDispatch, session?.user.id);
+      } else if (event === "SIGNED_OUT") {
+        // handle sign out event
+      } else if (event === "PASSWORD_RECOVERY") {
+        // handle password recovery event
+      } else if (event === "TOKEN_REFRESHED") {
+        // handle token refreshed event
+      } else if (event === "USER_UPDATED") {
+        // handle user updated event
+      }
+    },
+  );
 
-  // subscription.data.subscription.unsubscribe();
+  isAuthenticated && subscription.data.subscription.unsubscribe();
 
   return (
     <NavigationContainer>
