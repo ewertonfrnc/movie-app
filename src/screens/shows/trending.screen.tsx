@@ -1,5 +1,12 @@
 import { FC, useEffect, useState } from "react";
-import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { theme } from "../../constants";
@@ -12,28 +19,36 @@ import { fetchTrending } from "../../services/tmdb/shows.service";
 import { HomeStackParamsList } from "../../interfaces/navigator.interface";
 import { MovieDetails } from "../../interfaces/movie.interface";
 
+import { fetchUser } from "../../services/supabase/user.service";
+import { readStorageItem } from "../../utils/async-storage.utils";
+
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { setUser, setUserError } from "../../redux/user/user.slice";
+
 type TrendingProps = {} & NativeStackScreenProps<
   HomeStackParamsList,
   "trending"
 >;
 
 const Trending: FC<TrendingProps> = ({ navigation }) => {
-  // const {
-  //   state: { loading, user },
-  //   userDispatch,
-  // } = useUser();
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector(({ user }) => user);
 
+  const [loading, setLoading] = useState(false);
   const [recentlyWatched, setRecentlyWatched] = useState<MovieDetails[]>([]);
   const [trending, setTrending] = useState<MovieDetails[]>([]);
 
   async function getShows() {
-    const [trendingShows] = await Promise.all([
-      fetchTrending(),
-      // user && fetchRecentWatchedMovies(user?.id),
-    ]);
+    setLoading(true);
 
-    setTrending(trendingShows);
-    // setRecentlyWatched(recentMovies);
+    try {
+      const [trendingShows] = await Promise.all([fetchTrending()]);
+      setTrending(trendingShows);
+    } catch (error) {
+      console.log("An error occurred while fetching movies", error);
+    }
+
+    setLoading(false);
   }
 
   const onPressHandler = (params: { showId: number; showType: string }) => {
@@ -43,16 +58,27 @@ const Trending: FC<TrendingProps> = ({ navigation }) => {
     });
   };
 
-  async function getUserData() {
-    // return await loadUserData(userDispatch);
+  async function loadUserData() {
+    const userIdFromStorage = await readStorageItem("user-id");
+
+    try {
+      setLoading(true);
+
+      const userData = await fetchUser(userIdFromStorage);
+      dispatch(setUser(userData));
+    } catch (error) {
+      dispatch(setUserError(error as Error));
+    }
+
+    setLoading(false);
   }
 
   useEffect(() => {
-    getUserData();
+    loadUserData();
     getShows();
 
     console.log("recent", recentlyWatched);
-    // if (user) console.log("user", user?.id, user?.watchedMovies);
+    if (user) console.log("user", user?.id, user?.watchedMovies);
   }, []);
 
   return (
@@ -64,13 +90,17 @@ const Trending: FC<TrendingProps> = ({ navigation }) => {
             <Text style={styles.subtitle}>Ver mais</Text>
           </View>
 
-          <FlatList
-            data={trending}
-            renderItem={({ item }) => (
-              <ImageCard show={item} onPress={onPressHandler} />
-            )}
-            horizontal
-          />
+          {loading ? (
+            <ActivityIndicator size={"large"} color={"white"} />
+          ) : (
+            <FlatList
+              data={trending}
+              renderItem={({ item }) => (
+                <ImageCard show={item} onPress={onPressHandler} />
+              )}
+              horizontal
+            />
+          )}
         </View>
 
         <View>
@@ -79,7 +109,9 @@ const Trending: FC<TrendingProps> = ({ navigation }) => {
             <Text style={styles.subtitle}>Ver mais</Text>
           </View>
 
-          {recentlyWatched.length ? (
+          {loading ? (
+            <ActivityIndicator size={"large"} color={"white"} />
+          ) : recentlyWatched.length ? (
             <FlatList
               data={recentlyWatched}
               renderItem={({ item }) => (
