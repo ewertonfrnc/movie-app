@@ -77,7 +77,6 @@ const Trending: FC<TrendingProps> = ({ navigation }) => {
     loadUserData();
     getShows();
 
-    console.log("recent", recentlyWatched);
     if (user) console.log("user", user?.id, user?.watchedMovies);
   }, []);
 
@@ -91,7 +90,7 @@ const Trending: FC<TrendingProps> = ({ navigation }) => {
           </View>
 
           {loading ? (
-            <ActivityIndicator size={"large"} color={"white"} />
+            <ActivityIndicator size={"large"} color={theme.COLORS.darkRed} />
           ) : (
             <FlatList
               data={trending}
@@ -110,10 +109,10 @@ const Trending: FC<TrendingProps> = ({ navigation }) => {
           </View>
 
           {loading ? (
-            <ActivityIndicator size={"large"} color={"white"} />
-          ) : recentlyWatched.length ? (
+            <ActivityIndicator size={"large"} color={theme.COLORS.darkRed} />
+          ) : user?.watchedMovies.length ? (
             <FlatList
-              data={recentlyWatched}
+              data={user?.watchedMovies}
               renderItem={({ item }) => (
                 <ImageCard show={item} onPress={onPressHandler} />
               )}

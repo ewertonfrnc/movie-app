@@ -79,6 +79,7 @@ export type MovieDetails = {
   name: string;
   first_air_date: string;
   media_type: string;
+  isWatched: boolean;
 };
 
 export type Cast = {

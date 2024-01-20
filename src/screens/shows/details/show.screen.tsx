@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   ImageBackground,
   ScrollView,
@@ -27,6 +28,12 @@ import { Cast, MovieDetails } from "../../../interfaces/movie.interface";
 
 import Button from "../../../components/button.component";
 import CastAvatar from "../../../components/cast-avatar.component";
+import { updatedWatchedMovies } from "../../../services/supabase/user.service";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import {
+  setUserError,
+  updateWatchedMovies,
+} from "../../../redux/user/user.slice";
 
 type ShowScreenProps = {} & NativeStackScreenProps<
   HomeStackParamsList,
@@ -34,36 +41,51 @@ type ShowScreenProps = {} & NativeStackScreenProps<
 >;
 
 const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
-  // const {
-  //   state: { user },
-  //   userDispatch,
-  // } = useUser();
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector(({ user }) => user);
 
   const { showId, showType } = route.params;
 
+  const [loading, setLoading] = useState(false);
   const [movieDetails, setMovieDetails] = useState<MovieDetails>();
   const [cast, setCast] = useState<Cast[]>([]);
+  const [isWatchedMovie, setIsWatchedMovie] = useState(false);
 
   const getMovieDetails = async () => {
+    setLoading(true);
+
     try {
       const [details, cast] = await Promise.all([
         fetchShowDetails(showId, showType),
         fetchShowCredits(showId, showType),
       ]);
+
       setMovieDetails(details);
       setCast(cast);
+      setIsWatchedMovie(
+        !!user?.watchedMovies.find((movie) => movie.id === details.id),
+      );
     } catch (error) {
       console.error(error);
     }
+
+    setLoading(false);
   };
 
   async function markAsWatched() {
-    if (movieDetails) {
-      console.log(movieDetails);
-      // await addMovieToWatchList(userDispatch, user, movieDetails, showType);
-    } else {
-      console.log("please log in to add a movie to your watchlist");
+    if (!user || !movieDetails) return;
+
+    try {
+      setLoading(true);
+
+      const { watchedMovies } = await updatedWatchedMovies(user, movieDetails);
+      dispatch(updateWatchedMovies(watchedMovies));
+      setIsWatchedMovie(true);
+    } catch (error) {
+      dispatch(setUserError(error as Error));
     }
+
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -72,7 +94,9 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
 
   return (
     <SafeAreaComponent>
-      {movieDetails && (
+      {!movieDetails ? (
+        <ActivityIndicator size={"large"} color={theme.COLORS.darkRed} />
+      ) : (
         <View style={styles.container}>
           <ScrollView>
             <ImageBackground
@@ -120,7 +144,12 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
 
               <View style={styles.sectionContainer}>
                 <Button
-                  label="▶️ Marcar como assistido"
+                  label={
+                    isWatchedMovie
+                      ? "✅ Você já assistiu esse filme"
+                      : "▶️ Marcar como assistido"
+                  }
+                  loading={loading}
                   onPress={markAsWatched}
                 />
               </View>

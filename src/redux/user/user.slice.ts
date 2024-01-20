@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserData } from "../../interfaces/user.interface";
+import { MovieDetails } from "../../interfaces/movie.interface";
 
 type InitialState = {
   user: UserData | null;
@@ -18,11 +19,15 @@ const userSlice = createSlice({
     setUser: (state, action: PayloadAction<UserData>) => {
       state.user = action.payload;
     },
+    updateWatchedMovies: (state, action: PayloadAction<MovieDetails[]>) => {
+      if (state.user)
+        state.user = { ...state.user, watchedMovies: action.payload };
+    },
     setUserError: (state, action: PayloadAction<Error>) => {
       state.error = action.payload;
     },
   },
 });
 
-export const { setUser, setUserError } = userSlice.actions;
+export const { setUser, setUserError, updateWatchedMovies } = userSlice.actions;
 export default userSlice.reducer;

@@ -37,13 +37,12 @@ export async function insertUserOnUserTable(userData: User | null) {
 export async function updatedWatchedMovies(
   user: UserData,
   show: MovieDetails,
-  showType: string,
-) {
+): Promise<UserData> {
   const { data, error } = await supabase
     .from("users")
     .update({
       ...user,
-      watchedMovies: [{ ...show, showType }, ...user.watchedMovies],
+      watchedMovies: [{ ...show, isWatched: true }, ...user.watchedMovies],
     })
     .eq("id", user.id)
     .select()
@@ -54,14 +53,17 @@ export async function updatedWatchedMovies(
   return data;
 }
 
-export async function fetchRecentWatchedMovies(userId: string) {
+export async function fetchRecentWatchedMovies(
+  userId: string,
+): Promise<MovieDetails[]> {
   const { data, error } = await supabase
     .from("users")
     .select()
     .eq("id", userId)
-    .select("watchedMovies");
+    .select("watchedMovies")
+    .single();
 
   if (error) throw new Error(error.message);
 
-  return data[0].watchedMovies;
+  return data.watchedMovies;
 }

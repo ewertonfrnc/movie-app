@@ -12,16 +12,17 @@ import { theme } from "../constants";
 type ButtonProps = {
   label: string;
   loading?: boolean;
+  disabled?: boolean;
   onPress: () => void;
 };
 
-const Button: FC<ButtonProps> = ({ label, loading, onPress }) => {
+const Button: FC<ButtonProps> = ({ label, loading, disabled, onPress }) => {
   return (
     <View style={styles.buttonContainer}>
       <Pressable
         style={({ pressed }) => [styles.button, pressed && styles.onPressed]}
         onPress={onPress}
-        disabled={loading}
+        disabled={disabled || loading}
       >
         {loading ? (
           <ActivityIndicator size="small" color={theme.COLORS.silver} />
@@ -51,5 +52,8 @@ const styles = StyleSheet.create({
   },
   onPressed: {
     opacity: 0.5,
+  },
+  disabled: {
+    backgroundColor: theme.COLORS.ashGrey,
   },
 });
