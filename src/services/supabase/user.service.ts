@@ -40,10 +40,23 @@ export async function updatedWatchedMovies(
 ): Promise<UserData> {
   const { data, error } = await supabase
     .from("users")
-    .update({
-      ...user,
-      watchedMovies: [{ ...show, isWatched: true }, ...user.watchedMovies],
-    })
+    .update({ ...user, watchedMovies: [{ ...show }, ...user.watchedMovies] })
+    .eq("id", user.id)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function removeFromWatchedMovies(
+  user: UserData,
+  shows: MovieDetails[],
+): Promise<UserData> {
+  const { data, error } = await supabase
+    .from("users")
+    .update({ ...user, watchedMovies: shows })
     .eq("id", user.id)
     .select()
     .single();

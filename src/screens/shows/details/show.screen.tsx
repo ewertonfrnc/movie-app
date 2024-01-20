@@ -8,27 +8,23 @@ import {
   Text,
   View,
 } from "react-native";
-
 import SafeAreaComponent from "../../../components/safe-area.component";
-
 import { theme } from "../../../constants";
-
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { HomeStackParamsList } from "../../../interfaces/navigator.interface";
-
 import { BASE_IMAGE_URL, decimalToPercentage } from "../../../utils/tmdb.utils";
 import { getFullYear, minToHours } from "../../../utils/time.utils";
-
 import {
   fetchShowCredits,
   fetchShowDetails,
 } from "../../../services/tmdb/shows.service";
-
 import { Cast, MovieDetails } from "../../../interfaces/movie.interface";
-
 import Button from "../../../components/button.component";
 import CastAvatar from "../../../components/cast-avatar.component";
-import { updatedWatchedMovies } from "../../../services/supabase/user.service";
+import {
+  removeFromWatchedMovies,
+  updatedWatchedMovies,
+} from "../../../services/supabase/user.service";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import {
   setUserError,
@@ -78,9 +74,25 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
     try {
       setLoading(true);
 
-      const { watchedMovies } = await updatedWatchedMovies(user, movieDetails);
-      dispatch(updateWatchedMovies(watchedMovies));
-      setIsWatchedMovie(true);
+      if (!isWatchedMovie) {
+        const { watchedMovies } = await updatedWatchedMovies(
+          user,
+          movieDetails,
+        );
+        dispatch(updateWatchedMovies(watchedMovies));
+        setIsWatchedMovie(true);
+      } else {
+        const updatedWatchedList = user?.watchedMovies.filter(
+          (movie) => movie.id !== movieDetails.id,
+        );
+
+        const { watchedMovies } = await removeFromWatchedMovies(
+          user,
+          updatedWatchedList,
+        );
+        dispatch(updateWatchedMovies(watchedMovies));
+        setIsWatchedMovie(false);
+      }
     } catch (error) {
       dispatch(setUserError(error as Error));
     }
