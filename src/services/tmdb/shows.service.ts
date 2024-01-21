@@ -1,7 +1,32 @@
 import { api } from "../index";
 
-// Show
-export const fetchShowDetails = async (showId: number, mediaType: string) => {
+// Movies
+export async function fetchTrendingMovies() {
+  try {
+    const { data } = await api.get("/trending/movie/day", {
+      params: { language: "pt-BR" },
+    });
+
+    return data.results;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Tv Shows
+export async function fetchTrendingTvShows() {
+  try {
+    const { data } = await api.get("/trending/tv/day", {
+      params: { language: "pt-BR" },
+    });
+
+    return data.results;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function fetchShowDetails(showId: number, mediaType: string) {
   try {
     const { data } = await api.get(
       `/${
@@ -14,30 +39,19 @@ export const fetchShowDetails = async (showId: number, mediaType: string) => {
   } catch (error) {
     console.error(error);
   }
-};
+}
 
-// Movies
-export const fetchTrendingMovies = async () => {
+export async function fetchShowSeasonDetails(
+  seriesId: number,
+  seasonNumber: number,
+) {
   try {
-    const { data } = await api.get("/trending/movie/day", {
+    const data = await api.get(`/tv/${seriesId}/season/${seasonNumber}`, {
       params: { language: "pt-BR" },
     });
 
-    return data.results;
+    console.log("fetchShowSeasonDetails data", data);
   } catch (error) {
     console.error(error);
   }
-};
-
-// Tv Shows
-export const fetchTrendingTvShows = async () => {
-  try {
-    const { data } = await api.get("/trending/tv/day", {
-      params: { language: "pt-BR" },
-    });
-
-    return data.results;
-  } catch (error) {
-    console.error(error);
-  }
-};
+}

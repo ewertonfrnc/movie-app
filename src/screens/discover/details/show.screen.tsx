@@ -4,6 +4,7 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -29,6 +30,8 @@ import {
   updateWatchedMovies,
 } from "../../../redux/user/user.slice";
 import Button from "../../../components/button.component";
+import Progress from "./components/progress";
+import RadioButton from "../../../components/radio-button";
 
 type ShowScreenProps = {} & NativeStackScreenProps<
   HomeStackParamsList,
@@ -96,6 +99,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
 
   useEffect(() => {
     getMovieDetails();
+    console.log("details", movieDetails);
   }, []);
 
   return (
@@ -125,8 +129,8 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
                 <Button
                   label={
                     isWatchedMovie
-                      ? "✅ Você já assistiu esse filme"
-                      : "▶️ Marcar como assistido"
+                      ? "➖ Remover da lista"
+                      : "➕ Adicionar à lista"
                   }
                   loading={loading}
                   onPress={markAsWatched}
@@ -175,6 +179,37 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
 
               <View style={styles.divider} />
 
+              {showType === "tv" && (
+                <View style={styles.sectionContainer}>
+                  <Text style={styles.title}>Temporadas</Text>
+
+                  {movieDetails?.seasons.map((season) => (
+                    <Pressable
+                      key={season.id}
+                      style={({ pressed }) => [
+                        styles.progressContainer,
+                        pressed && styles.pressed,
+                      ]}
+                    >
+                      <RadioButton selected={true} />
+
+                      <View style={styles.progressInfoContainer}>
+                        <Text style={styles.subtitle}>{season.name}</Text>
+
+                        <Progress
+                          currentValue={3}
+                          totalValue={season.episode_count}
+                        />
+
+                        <Text
+                          style={styles.subtitle}
+                        >{`0 / ${season.episode_count}  >`}</Text>
+                      </View>
+                    </Pressable>
+                  ))}
+                </View>
+              )}
+
               <View style={styles.sectionContainer}>
                 <Text style={styles.title}>Sinopse</Text>
                 <ScrollView>
@@ -202,6 +237,24 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
 export default ShowScreen;
 
 const styles = StyleSheet.create({
+  progressContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 20,
+    paddingVertical: theme.SPACING.xlg,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.COLORS.lightDark,
+  },
+  pressed: {
+    opacity: 0.5,
+  },
+  progressInfoContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 20,
+  },
   container: {
     flex: 1,
   },
