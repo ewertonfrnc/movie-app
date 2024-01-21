@@ -6,7 +6,7 @@ export const fetchShowDetails = async (showId: number, mediaType: string) => {
     const { data } = await api.get(
       `/${
         mediaType === "tv" ? "tv" : "movie"
-      }/${showId}?append_to_response=videos,images,watch/providers,credits`,
+      }/${showId}?append_to_response=videos,images,credits`,
       { params: { language: "pt-BR" } },
     );
 

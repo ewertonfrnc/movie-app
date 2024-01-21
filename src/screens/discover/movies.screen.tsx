@@ -116,7 +116,7 @@ const MoviesScreen: FC<MoviesProps> = ({ navigation }) => {
           )}
         </View>
 
-        <View>
+        <View style={styles.lastChild}>
           <View style={styles.sectionHeading}>
             <Text style={styles.title}>Vistos recentemente</Text>
             <Text style={styles.subtitle}>Ver mais</Text>
@@ -146,6 +146,9 @@ const MoviesScreen: FC<MoviesProps> = ({ navigation }) => {
 export default MoviesScreen;
 
 const styles = StyleSheet.create({
+  lastChild: {
+    paddingBottom: theme.SPACING.xxxlg,
+  },
   heroImage: {
     height: 400,
   },

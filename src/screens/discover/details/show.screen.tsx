@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Image,
   ImageBackground,
   ScrollView,
   StyleSheet,
@@ -9,6 +10,7 @@ import {
   View,
 } from "react-native";
 import SafeAreaComponent from "../../../components/safe-area.component";
+
 import { theme } from "../../../constants";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { HomeStackParamsList } from "../../../interfaces/navigator.interface";
@@ -16,7 +18,6 @@ import { BASE_IMAGE_URL, decimalToPercentage } from "../../../utils/tmdb.utils";
 import { getFullYear, minToHours } from "../../../utils/time.utils";
 import { fetchShowDetails } from "../../../services/tmdb/shows.service";
 import { MovieDetails } from "../../../interfaces/movie.interface";
-import Button from "../../../components/button.component";
 import CastAvatar from "./components/cast-avatar.component";
 import {
   removeFromWatchedMovies,
@@ -27,6 +28,7 @@ import {
   setUserError,
   updateWatchedMovies,
 } from "../../../redux/user/user.slice";
+import Button from "../../../components/button.component";
 
 type ShowScreenProps = {} & NativeStackScreenProps<
   HomeStackParamsList,
@@ -41,20 +43,15 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
 
   const [loading, setLoading] = useState(false);
   const [movieDetails, setMovieDetails] = useState<MovieDetails>();
-  // const [cast, setCast] = useState<Cast[]>([]);
   const [isWatchedMovie, setIsWatchedMovie] = useState(false);
 
   const getMovieDetails = async () => {
     setLoading(true);
 
     try {
-      const [details] = await Promise.all([
-        fetchShowDetails(showId, showType),
-        // fetchShowCredits(showId, showType),
-      ]);
+      const [details] = await Promise.all([fetchShowDetails(showId, showType)]);
 
       setMovieDetails(details);
-      // setCast(cast);
       setIsWatchedMovie(
         !!user?.watchedMovies.find((movie) => movie.id === details.id),
       );
@@ -117,12 +114,33 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
             />
 
             <View style={styles.informationContainer}>
+              <Image
+                style={styles.posterImage}
+                source={{
+                  uri: `${BASE_IMAGE_URL}${movieDetails.poster_path}`,
+                }}
+              />
+
+              <View style={styles.watchBtnContainer}>
+                <Button
+                  label={
+                    isWatchedMovie
+                      ? "✅ Você já assistiu esse filme"
+                      : "▶️ Marcar como assistido"
+                  }
+                  loading={loading}
+                  onPress={markAsWatched}
+                />
+              </View>
+
               <View style={styles.sectionContainer}>
                 <Text style={styles.title}>
                   {movieDetails.title || movieDetails.name}
                 </Text>
                 <Text style={styles.subtitle}>{movieDetails.tagline}</Text>
               </View>
+
+              <View style={styles.divider} />
 
               <View style={styles.sectionContainer}>
                 <View style={styles.stats}>
@@ -136,7 +154,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
                           : styles.awesomeRank,
                     ]}
                   >
-                    {decimalToPercentage(movieDetails.vote_average)}
+                    ⭐ {decimalToPercentage(movieDetails.vote_average)}
                   </Text>
 
                   <Text style={styles.subtitle}>
@@ -146,24 +164,16 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
                   </Text>
 
                   <Text style={styles.subtitle}>
-                    {minToHours(movieDetails.runtime)}
+                    {movieDetails.genres[0].name}
+                  </Text>
+
+                  <Text style={styles.subtitle}>
+                    ⏳ {minToHours(movieDetails.runtime)}
                   </Text>
                 </View>
               </View>
 
               <View style={styles.divider} />
-
-              <View style={styles.sectionContainer}>
-                <Button
-                  label={
-                    isWatchedMovie
-                      ? "✅ Você já assistiu esse filme"
-                      : "▶️ Marcar como assistido"
-                  }
-                  loading={loading}
-                  onPress={markAsWatched}
-                />
-              </View>
 
               <View style={styles.sectionContainer}>
                 <Text style={styles.title}>Sinopse</Text>
@@ -200,7 +210,7 @@ const styles = StyleSheet.create({
     height: 300,
   },
   divider: {
-    height: 3,
+    height: 1,
     borderRadius: theme.SIZES.lg,
     marginHorizontal: theme.SPACING.xlg,
     marginBottom: theme.SPACING.xlg,
@@ -210,6 +220,7 @@ const styles = StyleSheet.create({
   informationContainer: {
     marginTop: theme.SPACING.lg,
     padding: theme.SPACING.lg,
+    paddingTop: theme.SPACING.xxxlg,
   },
   sectionContainer: {
     paddingHorizontal: theme.SPACING.xlg,
@@ -226,6 +237,7 @@ const styles = StyleSheet.create({
   },
   stats: {
     flexDirection: "row",
+    justifyContent: "space-evenly",
     gap: theme.SPACING.lg,
   },
   rank: {
@@ -240,5 +252,20 @@ const styles = StyleSheet.create({
   },
   awesomeRank: {
     color: theme.COLORS.ranks.good,
+  },
+  posterImage: {
+    width: 75,
+    height: 100,
+    borderRadius: 4,
+
+    position: "absolute",
+    top: -50,
+    left: 20,
+  },
+  watchBtnContainer: {
+    width: "65%",
+    position: "absolute",
+    top: 10,
+    right: 20,
   },
 });

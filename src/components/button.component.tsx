@@ -8,15 +8,23 @@ import {
 } from "react-native";
 
 import { theme } from "../constants";
+import { Ionicons } from "@expo/vector-icons";
 
 type ButtonProps = {
-  label: string;
+  label?: string;
+  iconName?: string;
   loading?: boolean;
   disabled?: boolean;
   onPress: () => void;
 };
 
-const Button: FC<ButtonProps> = ({ label, loading, disabled, onPress }) => {
+const Button: FC<ButtonProps> = ({
+  label,
+  iconName,
+  loading,
+  disabled,
+  onPress,
+}) => {
   return (
     <View style={styles.buttonContainer}>
       <Pressable
@@ -27,7 +35,10 @@ const Button: FC<ButtonProps> = ({ label, loading, disabled, onPress }) => {
         {loading ? (
           <ActivityIndicator size="small" color={theme.COLORS.silver} />
         ) : (
-          <Text style={styles.text}>{label}</Text>
+          <Text style={styles.text}>
+            <Ionicons name={iconName} size={24} color="white" />
+            {label && label}
+          </Text>
         )}
       </Pressable>
     </View>

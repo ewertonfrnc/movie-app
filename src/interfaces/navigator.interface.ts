@@ -18,7 +18,6 @@ export type TabBarIconProps = {
 // Overview types
 export type HomeStackParamsList = {
   movies: undefined;
-  tvshows: undefined;
   showDetails: {
     showId: number;
     showType: string;
