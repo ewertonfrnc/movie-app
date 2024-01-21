@@ -8,7 +8,6 @@ import { RootStackParamsList } from "../interfaces/navigator.interface";
 import BottomTabBar from "../components/BottomTabBar";
 import HomeNavigator from "./home.navigator";
 import Settings from "../screens/settings.screen";
-import TvShowsScreen from "../screens/discover/tv-shows.screen";
 
 const Tab = createBottomTabNavigator<RootStackParamsList>();
 
@@ -19,7 +18,6 @@ export default function AppNavigator() {
       tabBar={(props: BottomTabBarProps) => <BottomTabBar {...props} />}
     >
       <Tab.Screen name="home" component={HomeNavigator} />
-      <Tab.Screen name="tvshows" component={TvShowsScreen} />
       <Tab.Screen name="settings" component={Settings} />
     </Tab.Navigator>
   );

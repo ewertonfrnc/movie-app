@@ -28,3 +28,16 @@ export const fetchTrendingMovies = async () => {
     console.error(error);
   }
 };
+
+// Tv Shows
+export const fetchTrendingTvShows = async () => {
+  try {
+    const { data } = await api.get("/trending/tv/day", {
+      params: { language: "pt-BR" },
+    });
+
+    return data.results;
+  } catch (error) {
+    console.error(error);
+  }
+};

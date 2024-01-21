@@ -16,14 +16,8 @@ const TABS: Tab[] = [
   {
     label: "Filmes",
     type: "material",
-    activeIcon: "movie-play",
-    inActiveIcon: "movie-play-outline",
-  },
-  {
-    label: "Séries",
-    type: "ionicons",
-    activeIcon: "tv",
-    inActiveIcon: "tv-outline",
+    activeIcon: "star-four-points",
+    inActiveIcon: "star-four-points-outline",
   },
   {
     label: "Conta",

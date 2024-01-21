@@ -4,7 +4,7 @@ import {
 } from "@react-navigation/stack";
 import { HomeStackParamsList } from "../interfaces/navigator.interface";
 
-import MoviesScreen from "../screens/discover/movies.screen";
+import HomeScreen from "../screens/discover/home.screen";
 import ShowScreen from "../screens/discover/details";
 
 const HomeStack = createStackNavigator<HomeStackParamsList>();
@@ -17,7 +17,7 @@ const HomeNavigator = () => {
         ...TransitionPresets.SlideFromRightIOS,
       }}
     >
-      <HomeStack.Screen name="movies" component={MoviesScreen} />
+      <HomeStack.Screen name="movies" component={HomeScreen} />
       <HomeStack.Screen name="showDetails" component={ShowScreen} />
     </HomeStack.Navigator>
   );
