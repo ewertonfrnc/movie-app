@@ -1,24 +1,24 @@
 import {
-  createStackNavigator,
-  TransitionPresets,
-} from "@react-navigation/stack";
+  BottomTabBarProps,
+  createBottomTabNavigator,
+} from "@react-navigation/bottom-tabs";
+
 import { HomeStackParamsList } from "../interfaces/navigator.interface";
 
+import BottomTabBar from "../components/BottomTabBar";
 import HomeScreen from "../screens/discover/home.screen";
-import ShowScreen from "../screens/discover/details";
+import SettingsScreen from "../screens/settings.screen";
 
-const HomeStack = createStackNavigator<HomeStackParamsList>();
+const HomeStack = createBottomTabNavigator<HomeStackParamsList>();
 
 const HomeNavigator = () => {
   return (
     <HomeStack.Navigator
-      screenOptions={{
-        headerShown: false,
-        ...TransitionPresets.SlideFromRightIOS,
-      }}
+      screenOptions={{ headerShown: false }}
+      tabBar={(props: BottomTabBarProps) => <BottomTabBar {...props} />}
     >
       <HomeStack.Screen name="movies" component={HomeScreen} />
-      <HomeStack.Screen name="showDetails" component={ShowScreen} />
+      <HomeStack.Screen name="settings" component={SettingsScreen} />
     </HomeStack.Navigator>
   );
 };

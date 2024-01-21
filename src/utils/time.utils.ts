@@ -1,11 +1,13 @@
+import moment from "moment";
+
 export const minToHours = (minutos: number) => {
   if (minutos < 0) return;
 
   const hours = Math.floor(minutos / 60);
   const remainderMin = minutos % 60;
 
-  const formattedHours = hours > 0 ? `${hours}h` : '';
-  const formatterMin = remainderMin > 0 ? `${remainderMin}m` : '';
+  const formattedHours = hours > 0 ? `${hours}h` : "";
+  const formatterMin = remainderMin > 0 ? `${remainderMin}m` : "";
 
   return formattedHours + formatterMin;
 };
@@ -13,3 +15,7 @@ export const minToHours = (minutos: number) => {
 export const getFullYear = (date: string) => {
   return new Date(date).getFullYear();
 };
+
+export function formatDate(date: string) {
+  return moment(date).format("ll");
+}

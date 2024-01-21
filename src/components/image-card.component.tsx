@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 
 import { theme } from "../constants";
-import { MovieDetails } from "../interfaces/movie.interface";
+import { MovieDetails } from "../interfaces/show.interface";
 import { BASE_IMAGE_URL } from "../utils/tmdb.utils";
 
 type ImageCardProps = {

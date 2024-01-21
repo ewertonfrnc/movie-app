@@ -9,7 +9,7 @@ import {
 
 import { theme } from "../../../constants";
 import ImageCard from "../../../components/image-card.component";
-import { MovieDetails } from "../../../interfaces/movie.interface";
+import { MovieDetails } from "../../../interfaces/show.interface";
 
 type MoviesProps = {
   loading: boolean;

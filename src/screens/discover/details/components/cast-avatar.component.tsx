@@ -3,7 +3,7 @@ import { ImageBackground, StyleSheet, Text, View } from "react-native";
 
 import { theme } from "../../../../constants";
 
-import { Cast } from "../../../../interfaces/movie.interface";
+import { Cast } from "../../../../interfaces/show.interface";
 import { BASE_IMAGE_URL } from "../../../../utils/tmdb.utils";
 import { LinearGradient } from "expo-linear-gradient";
 

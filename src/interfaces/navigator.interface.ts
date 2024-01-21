@@ -2,15 +2,20 @@
 export type RootStackParamsList = {
   home: undefined;
   settings: undefined;
+  showDetails: {
+    showId: number;
+    showType: string;
+  };
+  episodes: {
+    seriesId: number;
+    seasonNumber: number;
+  };
 };
 
 // Overview types
 export type HomeStackParamsList = {
   movies: undefined;
-  showDetails: {
-    showId: number;
-    showType: string;
-  };
+  settings: undefined;
 };
 
 // Account types

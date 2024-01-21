@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 
-import { MovieDetails } from "../../../interfaces/movie.interface";
+import { MovieDetails } from "../../../interfaces/show.interface";
 import { theme } from "../../../constants";
 import ImageCard from "../../../components/image-card.component";
 

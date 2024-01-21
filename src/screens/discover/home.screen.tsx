@@ -5,7 +5,7 @@ import { theme } from "../../constants";
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import { MovieDetails } from "../../interfaces/movie.interface";
+import { MovieDetails } from "../../interfaces/show.interface";
 import { HomeStackParamsList } from "../../interfaces/navigator.interface";
 
 import { readStorageItem } from "../../utils/async-storage.utils";

@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 import { theme } from "../../../constants";
-import { MovieDetails } from "../../../interfaces/movie.interface";
+import { MovieDetails } from "../../../interfaces/show.interface";
 
 import ImageCard from "../../../components/image-card.component";
 import { LinearGradient } from "expo-linear-gradient";

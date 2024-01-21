@@ -46,11 +46,11 @@ export async function fetchShowSeasonDetails(
   seasonNumber: number,
 ) {
   try {
-    const data = await api.get(`/tv/${seriesId}/season/${seasonNumber}`, {
+    const { data } = await api.get(`/tv/${seriesId}/season/${seasonNumber}`, {
       params: { language: "pt-BR" },
     });
 
-    console.log("fetchShowSeasonDetails data", data);
+    return data;
   } catch (error) {
     console.error(error);
   }

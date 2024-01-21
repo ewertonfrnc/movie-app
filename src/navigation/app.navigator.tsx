@@ -1,24 +1,27 @@
 import {
-  BottomTabBarProps,
-  createBottomTabNavigator,
-} from "@react-navigation/bottom-tabs";
+  createStackNavigator,
+  TransitionPresets,
+} from "@react-navigation/stack";
+
+import HomeNavigator from "./home.navigator";
+import ShowScreen from "../screens/discover/details";
+import EpisodesScreen from "../screens/discover/details/episodes.screen";
 
 import { RootStackParamsList } from "../interfaces/navigator.interface";
 
-import BottomTabBar from "../components/BottomTabBar";
-import HomeNavigator from "./home.navigator";
-import Settings from "../screens/settings.screen";
-
-const Tab = createBottomTabNavigator<RootStackParamsList>();
+const Stack = createStackNavigator<RootStackParamsList>();
 
 export default function AppNavigator() {
   return (
-    <Tab.Navigator
-      screenOptions={{ headerShown: false }}
-      tabBar={(props: BottomTabBarProps) => <BottomTabBar {...props} />}
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        ...TransitionPresets.SlideFromRightIOS,
+      }}
     >
-      <Tab.Screen name="home" component={HomeNavigator} />
-      <Tab.Screen name="settings" component={Settings} />
-    </Tab.Navigator>
+      <Stack.Screen name="home" component={HomeNavigator} />
+      <Stack.Screen name="showDetails" component={ShowScreen} />
+      <Stack.Screen name="episodes" component={EpisodesScreen} />
+    </Stack.Navigator>
   );
 }

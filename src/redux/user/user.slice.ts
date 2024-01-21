@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserData } from "../../interfaces/user.interface";
-import { MovieDetails } from "../../interfaces/movie.interface";
+import { MovieDetails } from "../../interfaces/show.interface";
 
 type InitialState = {
   user: UserData | null;

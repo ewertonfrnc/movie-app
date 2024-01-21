@@ -1,4 +1,4 @@
-import { MovieDetails } from "./movie.interface";
+import { MovieDetails } from "./show.interface";
 
 export type UserState = {
   loading: boolean;

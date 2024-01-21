@@ -2,7 +2,7 @@ import { User } from "@supabase/supabase-js";
 import supabase from "./index";
 
 import { UserData } from "../../interfaces/user.interface";
-import { MovieDetails } from "../../interfaces/movie.interface";
+import { MovieDetails } from "../../interfaces/show.interface";
 
 export async function fetchUser(userId: string): Promise<UserData> {
   const { data, error } = await supabase

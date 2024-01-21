@@ -14,11 +14,11 @@ import SafeAreaComponent from "../../../components/safe-area.component";
 
 import { theme } from "../../../constants";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { HomeStackParamsList } from "../../../interfaces/navigator.interface";
+import { RootStackParamsList } from "../../../interfaces/navigator.interface";
 import { BASE_IMAGE_URL, decimalToPercentage } from "../../../utils/tmdb.utils";
 import { getFullYear, minToHours } from "../../../utils/time.utils";
 import { fetchShowDetails } from "../../../services/tmdb/shows.service";
-import { MovieDetails } from "../../../interfaces/movie.interface";
+import { MovieDetails } from "../../../interfaces/show.interface";
 import CastAvatar from "./components/cast-avatar.component";
 import {
   removeFromWatchedMovies,
@@ -34,11 +34,11 @@ import Progress from "./components/progress";
 import RadioButton from "../../../components/radio-button";
 
 type ShowScreenProps = {} & NativeStackScreenProps<
-  HomeStackParamsList,
+  RootStackParamsList,
   "showDetails"
 >;
 
-const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
+const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(({ user }) => user);
 
@@ -58,6 +58,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
       setIsWatchedMovie(
         !!user?.watchedMovies.find((movie) => movie.id === details.id),
       );
+      console.log(details);
     } catch (error) {
       console.error(error);
     }
@@ -97,9 +98,16 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
     setLoading(false);
   }
 
+  function goToEpisodesScreen(seasonNumber: number) {
+    if (movieDetails)
+      navigation.navigate("episodes", {
+        seriesId: movieDetails.id,
+        seasonNumber,
+      });
+  }
+
   useEffect(() => {
     getMovieDetails();
-    console.log("details", movieDetails);
   }, []);
 
   return (
@@ -171,9 +179,11 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
                     {movieDetails.genres[0].name}
                   </Text>
 
-                  <Text style={styles.subtitle}>
-                    ⏳ {minToHours(movieDetails.runtime)}
-                  </Text>
+                  {showType === "movie" && (
+                    <Text style={styles.subtitle}>
+                      ⏳ {minToHours(movieDetails.runtime)}
+                    </Text>
+                  )}
                 </View>
               </View>
 
@@ -190,11 +200,20 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
                         styles.progressContainer,
                         pressed && styles.pressed,
                       ]}
+                      onPress={goToEpisodesScreen.bind(
+                        this,
+                        season.season_number,
+                      )}
                     >
-                      <RadioButton selected={true} />
+                      <RadioButton selected={isWatchedMovie} />
 
                       <View style={styles.progressInfoContainer}>
-                        <Text style={styles.subtitle}>{season.name}</Text>
+                        <Text
+                          style={[styles.subtitle, { flex: 1 }]}
+                          numberOfLines={2}
+                        >
+                          {season.name}
+                        </Text>
 
                         <Progress
                           currentValue={3}
@@ -240,20 +259,18 @@ const styles = StyleSheet.create({
   progressContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 20,
+    gap: 10,
     paddingVertical: theme.SPACING.xlg,
     borderBottomWidth: 1,
     borderBottomColor: theme.COLORS.lightDark,
   },
-  pressed: {
-    opacity: 0.5,
-  },
+  pressed: { opacity: 0.5 },
   progressInfoContainer: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: 20,
+    gap: 10,
   },
   container: {
     flex: 1,
