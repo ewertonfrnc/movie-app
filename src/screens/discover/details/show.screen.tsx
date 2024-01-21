@@ -14,13 +14,10 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { HomeStackParamsList } from "../../../interfaces/navigator.interface";
 import { BASE_IMAGE_URL, decimalToPercentage } from "../../../utils/tmdb.utils";
 import { getFullYear, minToHours } from "../../../utils/time.utils";
-import {
-  fetchShowCredits,
-  fetchShowDetails,
-} from "../../../services/tmdb/shows.service";
-import { Cast, MovieDetails } from "../../../interfaces/movie.interface";
+import { fetchShowDetails } from "../../../services/tmdb/shows.service";
+import { MovieDetails } from "../../../interfaces/movie.interface";
 import Button from "../../../components/button.component";
-import CastAvatar from "../../../components/cast-avatar.component";
+import CastAvatar from "./components/cast-avatar.component";
 import {
   removeFromWatchedMovies,
   updatedWatchedMovies,
@@ -44,20 +41,20 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
 
   const [loading, setLoading] = useState(false);
   const [movieDetails, setMovieDetails] = useState<MovieDetails>();
-  const [cast, setCast] = useState<Cast[]>([]);
+  // const [cast, setCast] = useState<Cast[]>([]);
   const [isWatchedMovie, setIsWatchedMovie] = useState(false);
 
   const getMovieDetails = async () => {
     setLoading(true);
 
     try {
-      const [details, cast] = await Promise.all([
+      const [details] = await Promise.all([
         fetchShowDetails(showId, showType),
-        fetchShowCredits(showId, showType),
+        // fetchShowCredits(showId, showType),
       ]);
 
       setMovieDetails(details);
-      setCast(cast);
+      // setCast(cast);
       setIsWatchedMovie(
         !!user?.watchedMovies.find((movie) => movie.id === details.id),
       );
@@ -154,6 +151,8 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
                 </View>
               </View>
 
+              <View style={styles.divider} />
+
               <View style={styles.sectionContainer}>
                 <Button
                   label={
@@ -178,7 +177,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
               </View>
 
               <FlatList
-                data={cast}
+                data={movieDetails.credits.cast}
                 renderItem={({ item }) => <CastAvatar castMember={item} />}
                 horizontal
               />
@@ -199,6 +198,14 @@ const styles = StyleSheet.create({
   imageBackground: {
     flex: 1,
     height: 300,
+  },
+  divider: {
+    height: 3,
+    borderRadius: theme.SIZES.lg,
+    marginHorizontal: theme.SPACING.xlg,
+    marginBottom: theme.SPACING.xlg,
+    backgroundColor: theme.COLORS.silver,
+    opacity: 0.3,
   },
   informationContainer: {
     marginTop: theme.SPACING.lg,

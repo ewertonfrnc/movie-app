@@ -3,6 +3,7 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 // Home types
 export type RootStackParamsList = {
   home: undefined;
+  tvshows: undefined;
   settings: undefined;
 };
 
@@ -16,7 +17,8 @@ export type TabBarIconProps = {
 
 // Overview types
 export type HomeStackParamsList = {
-  trending: undefined;
+  movies: undefined;
+  tvshows: undefined;
   showDetails: {
     showId: number;
     showType: string;

@@ -24,7 +24,7 @@ const userSlice = createSlice({
         state.user = { ...state.user, watchedMovies: action.payload };
     },
     setUserError: (state, action: PayloadAction<Error>) => {
-      state.error = action.payload;
+      state.error = { ...action.payload };
     },
   },
 });

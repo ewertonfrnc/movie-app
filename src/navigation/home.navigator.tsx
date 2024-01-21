@@ -4,15 +4,13 @@ import {
 } from "@react-navigation/stack";
 import { HomeStackParamsList } from "../interfaces/navigator.interface";
 
-import Trending from "../screens/shows/trending.screen";
-import ShowScreen from "../screens/shows/details";
-import { useEffect } from "react";
+import Movies from "../screens/discover/movies.screen";
+import ShowScreen from "../screens/discover/details";
+import TvShowsScreen from "../screens/discover/tv-shows.screen";
 
 const HomeStack = createStackNavigator<HomeStackParamsList>();
 
 const HomeNavigator = () => {
-  useEffect(() => {}, []);
-
   return (
     <HomeStack.Navigator
       screenOptions={{
@@ -20,7 +18,8 @@ const HomeNavigator = () => {
         ...TransitionPresets.SlideFromRightIOS,
       }}
     >
-      <HomeStack.Screen name="trending" component={Trending} />
+      <HomeStack.Screen name="movies" component={Movies} />
+      <HomeStack.Screen name="tvshows" component={TvShowsScreen} />
       <HomeStack.Screen name="showDetails" component={ShowScreen} />
     </HomeStack.Navigator>
   );
