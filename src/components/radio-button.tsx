@@ -4,15 +4,17 @@ import { FC } from "react";
 
 type RadioButtonProps = {
   selected: boolean;
+  onPress: () => void;
 };
 
-const RadioButton: FC<RadioButtonProps> = ({ selected }) => {
+const RadioButton: FC<RadioButtonProps> = ({ selected, onPress }) => {
   return (
     <Pressable
       style={({ pressed }) => [
         styles.outerContainer,
         pressed && styles.pressed,
       ]}
+      onPress={onPress}
     >
       {selected && (
         <View style={styles.innerContainer}>

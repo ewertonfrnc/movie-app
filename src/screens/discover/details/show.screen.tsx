@@ -17,15 +17,23 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamsList } from "../../../interfaces/navigator.interface";
 import { BASE_IMAGE_URL, decimalToPercentage } from "../../../utils/tmdb.utils";
 import { getFullYear, minToHours } from "../../../utils/time.utils";
-import { fetchShowDetails } from "../../../services/tmdb/shows.service";
-import { MovieDetails } from "../../../interfaces/show.interface";
+import {
+  fetchShowDetails,
+  fetchShowSeasonDetails,
+} from "../../../services/tmdb/shows.service";
+import {
+  MovieDetails,
+  SeasonDetails,
+} from "../../../interfaces/show.interface";
 import CastAvatar from "./components/cast-avatar.component";
 import {
   removeFromWatchedMovies,
   updatedWatchedMovies,
+  updateFinishedSeasons,
 } from "../../../services/supabase/user.service";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import {
+  setUser,
   setUserError,
   updateWatchedMovies,
 } from "../../../redux/user/user.slice";
@@ -58,7 +66,6 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
       setIsWatchedMovie(
         !!user?.watchedMovies.find((movie) => movie.id === details.id),
       );
-      console.log(details);
     } catch (error) {
       console.error(error);
     }
@@ -106,8 +113,42 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
       });
   }
 
+  async function watchSeasonHandler(season: SeasonDetails) {
+    const watchedSeason = movieDetails?.seasons.find((s) => s.id === season.id);
+    if (watchedSeason) watchedSeason.finished_watching = true;
+
+    try {
+      setLoading(true);
+
+      let seasonDetails = await fetchShowSeasonDetails(
+        movieDetails!.id,
+        season.season_number,
+      );
+
+      const finishedEpisodes = seasonDetails?.episodes.map((episode) => ({
+        ...episode,
+        isWatched: true,
+      }));
+
+      const finishedSeason = { ...seasonDetails, episodes: finishedEpisodes };
+
+      if (user) {
+        const updatedUser = await updateFinishedSeasons(
+          user,
+          finishedSeason as SeasonDetails,
+        );
+        dispatch(setUser(updatedUser));
+      }
+    } catch (error) {
+      dispatch(setUserError(error as Error));
+    }
+
+    setLoading(false);
+  }
+
   useEffect(() => {
     getMovieDetails();
+    console.log("user", user);
   }, []);
 
   return (
@@ -193,39 +234,51 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
                 <View style={styles.sectionContainer}>
                   <Text style={styles.title}>Temporadas</Text>
 
-                  {movieDetails?.seasons.map((season) => (
-                    <Pressable
-                      key={season.id}
-                      style={({ pressed }) => [
-                        styles.progressContainer,
-                        pressed && styles.pressed,
-                      ]}
-                      onPress={goToEpisodesScreen.bind(
-                        this,
-                        season.season_number,
-                      )}
-                    >
-                      <RadioButton selected={isWatchedMovie} />
+                  {movieDetails?.seasons.map((season) => {
+                    const currSeason = user?.seriesFinishedSeasons.find(
+                      (s) => s.id === season.id,
+                    );
+                    if (currSeason) console.log(currSeason.episodes.length);
 
-                      <View style={styles.progressInfoContainer}>
-                        <Text
-                          style={[styles.subtitle, { flex: 1 }]}
-                          numberOfLines={2}
-                        >
-                          {season.name}
-                        </Text>
-
-                        <Progress
-                          currentValue={3}
-                          totalValue={season.episode_count}
+                    return (
+                      <Pressable
+                        key={season.id}
+                        style={({ pressed }) => [
+                          styles.progressContainer,
+                          pressed && styles.pressed,
+                        ]}
+                        onPress={goToEpisodesScreen.bind(
+                          this,
+                          season.season_number,
+                        )}
+                      >
+                        <RadioButton
+                          selected={!!currSeason}
+                          onPress={watchSeasonHandler.bind(this, season)}
                         />
 
-                        <Text
-                          style={styles.subtitle}
-                        >{`0 / ${season.episode_count}  >`}</Text>
-                      </View>
-                    </Pressable>
-                  ))}
+                        <View style={styles.progressInfoContainer}>
+                          <Text
+                            style={[styles.subtitle, { flex: 1 }]}
+                            numberOfLines={2}
+                          >
+                            {season.name}
+                          </Text>
+
+                          <Progress
+                            currentValue={
+                              (currSeason && currSeason.episodes.length) || 0
+                            }
+                            totalValue={season.episode_count}
+                          />
+
+                          <Text
+                            style={styles.subtitle}
+                          >{`0 / ${season.episode_count}  >`}</Text>
+                        </View>
+                      </Pressable>
+                    );
+                  })}
                 </View>
               )}
 

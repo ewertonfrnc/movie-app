@@ -1,4 +1,5 @@
 import { api } from "../index";
+import { SeasonDetails } from "../../interfaces/show.interface";
 
 // Movies
 export async function fetchTrendingMovies() {
@@ -44,7 +45,7 @@ export async function fetchShowDetails(showId: number, mediaType: string) {
 export async function fetchShowSeasonDetails(
   seriesId: number,
   seasonNumber: number,
-) {
+): Promise<SeasonDetails | undefined> {
   try {
     const { data } = await api.get(`/tv/${seriesId}/season/${seasonNumber}`, {
       params: { language: "pt-BR" },

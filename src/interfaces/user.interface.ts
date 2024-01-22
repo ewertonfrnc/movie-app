@@ -1,10 +1,4 @@
-import { MovieDetails } from "./show.interface";
-
-export type UserState = {
-  loading: boolean;
-  user: UserData | null;
-  error: Error | null;
-};
+import { MovieDetails, SeasonDetails } from "./show.interface";
 
 export type UserData = {
   id: string;
@@ -12,4 +6,6 @@ export type UserData = {
   displayName: string;
   email: string;
   watchedMovies: MovieDetails[];
+  seriesFinishedSeasons: SeasonDetails[];
+  seriesWatchlist: MovieDetails[];
 };

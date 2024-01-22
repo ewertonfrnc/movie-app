@@ -8,7 +8,7 @@ type ProgressProps = {
   totalValue: number;
 };
 
-const Progress: FC<ProgressProps> = ({ currentValue, totalValue }) => {
+const Progress: FC<ProgressProps> = ({ currentValue = 0, totalValue }) => {
   return (
     <View style={styles.container}>
       <View

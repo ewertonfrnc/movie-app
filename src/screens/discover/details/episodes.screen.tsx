@@ -101,7 +101,7 @@ const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
                       <Text style={styles.text}>
                         ⭐ {episode.vote_average.toFixed(1)}
                       </Text>
-                      <RadioButton selected={false} />
+                      <RadioButton selected={false} onPress={() => {}} />
                     </View>
                   </View>
                 </Pressable>

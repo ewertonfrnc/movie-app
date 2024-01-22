@@ -2,7 +2,7 @@ import { User } from "@supabase/supabase-js";
 import supabase from "./index";
 
 import { UserData } from "../../interfaces/user.interface";
-import { MovieDetails } from "../../interfaces/show.interface";
+import { MovieDetails, SeasonDetails } from "../../interfaces/show.interface";
 
 export async function fetchUser(userId: string): Promise<UserData> {
   const { data, error } = await supabase
@@ -57,6 +57,25 @@ export async function removeFromWatchedMovies(
   const { data, error } = await supabase
     .from("users")
     .update({ ...user, watchedMovies: shows })
+    .eq("id", user.id)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function updateFinishedSeasons(
+  user: UserData,
+  finishedSeason: SeasonDetails,
+): Promise<UserData> {
+  const { data, error } = await supabase
+    .from("users")
+    .update({
+      ...user,
+      seriesFinishedSeasons: [finishedSeason, ...user.seriesFinishedSeasons],
+    })
     .eq("id", user.id)
     .select()
     .single();

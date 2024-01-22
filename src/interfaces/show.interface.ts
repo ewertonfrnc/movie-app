@@ -63,10 +63,10 @@ export type MovieDetails = {
   first_air_date: string;
   media_type: string;
   isWatched: boolean;
-  seasons: SeasonOverview[];
+  seasons: SeasonDetails[];
 };
 
-type SeasonOverview = {
+export type SeasonOverview = {
   air_date: string;
   episode_count: number;
   id: number;
@@ -75,6 +75,7 @@ type SeasonOverview = {
   poster_path: string;
   season_number: number;
   vote_average: number;
+  finished_watching: boolean;
 };
 
 export type Cast = {
@@ -93,7 +94,8 @@ export type Cast = {
 };
 
 export type SeasonDetails = {
-  _id: string;
+  finished_watching: boolean;
+  episode_count: number;
   air_date: string;
   name: string;
   overview: string;
@@ -118,4 +120,5 @@ export type Episode = {
   still_path: string;
   vote_average: number;
   vote_count: number;
+  isWatched: boolean;
 };
