@@ -22,8 +22,6 @@ const Progress: FC<ProgressProps> = ({ currentValue = 1, totalValue }) => {
     animation.start();
   }, [currentValue]);
 
-  console.log({ value, width });
-
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.innerContainer, { width: value }]} />

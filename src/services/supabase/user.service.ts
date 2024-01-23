@@ -101,6 +101,19 @@ export async function removeFromFinishedSeasons(
   return data;
 }
 
+export async function addEpisodeToSeasons(user: UserData): Promise<UserData> {
+  const { data, error } = await supabase
+    .from("users")
+    .update(user)
+    .eq("id", user.id)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
 export async function fetchRecentWatchedMovies(
   userId: string,
 ): Promise<MovieDetails[]> {

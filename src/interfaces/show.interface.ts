@@ -67,6 +67,7 @@ export type MovieDetails = {
 };
 
 export type SeasonDetails = {
+  showId: number;
   finished_watching: boolean;
   episode_count: number;
   air_date: string;

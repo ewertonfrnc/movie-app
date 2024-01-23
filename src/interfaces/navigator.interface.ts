@@ -1,4 +1,6 @@
 // Home types
+import { SeasonDetails } from "./show.interface";
+
 export type RootStackParamsList = {
   home: undefined;
   settings: undefined;
@@ -8,7 +10,7 @@ export type RootStackParamsList = {
   };
   episodes: {
     seriesId: number;
-    seasonNumber: number;
+    season: SeasonDetails;
   };
 };
 

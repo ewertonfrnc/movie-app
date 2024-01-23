@@ -12,11 +12,10 @@ import { theme } from "../../../constants";
 import { fetchShowSeasonDetails } from "../../../services/tmdb/shows.service";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamsList } from "../../../interfaces/navigator.interface";
-import { SeasonDetails } from "../../../interfaces/show.interface";
-import { formatDate } from "../../../utils/time.utils";
-import RadioButton from "../../../components/radio-button";
+import { Episode, SeasonDetails } from "../../../interfaces/show.interface";
 import { Ionicons } from "@expo/vector-icons";
-import { useAppSelector } from "../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import EpisodeBtn from "./components/Episode-btn";
 
 type EpisodesScreenProps = {} & NativeStackScreenProps<
   RootStackParamsList,
@@ -24,7 +23,9 @@ type EpisodesScreenProps = {} & NativeStackScreenProps<
 >;
 
 const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
-  const { seriesId, seasonNumber } = route.params;
+  const { seriesId, season } = route.params;
+
+  const dispatch = useAppDispatch();
   const user = useAppSelector(({ user }) => user.user);
 
   const [loading, setLoading] = useState(false);
@@ -34,15 +35,11 @@ const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
   async function getEpisodeList() {
     setLoading(true);
     try {
-      const seasonInfo = await fetchShowSeasonDetails(seriesId, seasonNumber);
-      setSeasonDetails(seasonInfo);
-
-      const isFinished = user?.seriesFinishedSeasons.find(
-        (s) => s.id === seasonInfo?.id,
+      const episodes = await fetchShowSeasonDetails(
+        seriesId,
+        season.season_number,
       );
-      setIsFinishedSeason(!!isFinished);
-
-      console.log("isFinished", isFinished);
+      setSeasonDetails(episodes);
     } catch (error) {
       console.warn(error);
     }
@@ -50,9 +47,69 @@ const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
     setLoading(false);
   }
 
+  async function watchEpisodeHandler(episode: Episode) {
+    // const { id, season_number, show_id, episode_number } = episode;
+    //
+    // const watchedEpisode = {
+    //   episodeId: id,
+    //   seasonNumber: season_number,
+    //   episodeNumber: episode_number,
+    //   showId: show_id,
+    //   finished_watching: true,
+    // };
+    //
+    // try {
+    //   setLoading(true);
+    //
+    //   const showSeasonOnUserData = user?.seriesFinishedSeasons.find(
+    //     (s) => s.id === season.id,
+    //   );
+    //
+    //   if (showSeasonOnUserData) {
+    //     const updatedSeasonInfo = {
+    //       ...seasonDetails,
+    //       finished_watching: false,
+    //       showId: show_id,
+    //       episodes: [watchedEpisode, ...showSeasonOnUserData.episodes],
+    //     };
+    //
+    //     const userWithUpdatedEpisodes = {
+    //       ...user,
+    //       seriesFinishedSeasons: [updatedSeasonInfo],
+    //     };
+    //
+    //     const updatedUser = await addEpisodeToSeasons(userWithUpdatedEpisodes);
+    //     dispatch(setUser(updatedUser));
+    //   } else {
+    //     const updatedSeasonInfo = {
+    //       ...seasonDetails,
+    //       finished_watching: false,
+    //       showId: show_id,
+    //       episodes: [watchedEpisode],
+    //     };
+    //
+    //     const userWithUpdatedEpisodes = {
+    //       ...user,
+    //       seriesFinishedSeasons: [
+    //         updatedSeasonInfo,
+    //         ...user.seriesFinishedSeasons,
+    //       ],
+    //     };
+    //
+    //     const updatedUser = await addEpisodeToSeasons(userWithUpdatedEpisodes);
+    //     dispatch(setUser(updatedUser));
+    //   }
+    // } catch (error) {
+    //   dispatch(setUserError(error as Error));
+    // }
+    //
+    console.log("watchEpisodeHandler", user?.seriesFinishedSeasons, episode);
+    // setLoading(false);
+  }
+
   useEffect(() => {
     getEpisodeList();
-  }, []);
+  }, [user]);
 
   return (
     <SafeAreaComponent>
@@ -85,40 +142,15 @@ const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
             </View>
 
             <View>
-              {seasonDetails?.episodes.map((episode) => (
-                <Pressable
-                  key={episode.id}
-                  style={({ pressed }) => [
-                    styles.episodeContainer,
-                    pressed && styles.pressed,
-                  ]}
-                >
-                  <View style={{ flexDirection: "row" }}>
-                    <Text style={styles.text}>
-                      {`Episódio ${episode.episode_number} • ${formatDate(
-                        episode.air_date,
-                      )} • ${episode.runtime}m`}
-                    </Text>
-                  </View>
-
-                  <View style={styles.episodeOverview}>
-                    <Text style={styles.episodeName} numberOfLines={2}>
-                      {episode.name}
-                    </Text>
-
-                    <View style={styles.episodeInfo}>
-                      <Text style={styles.text}>
-                        ⭐ {episode.vote_average.toFixed(1)}
-                      </Text>
-
-                      <RadioButton
-                        selected={isFinishedSeason}
-                        onPress={() => {}}
-                      />
-                    </View>
-                  </View>
-                </Pressable>
-              ))}
+              {seasonDetails?.episodes.map((episode) => {
+                return (
+                  <EpisodeBtn
+                    key={episode.id}
+                    episode={episode}
+                    onPress={watchEpisodeHandler.bind(this, episode)}
+                  />
+                );
+              })}
             </View>
           </>
         )}
