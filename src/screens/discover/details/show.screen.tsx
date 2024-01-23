@@ -17,7 +17,10 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamsList } from "../../../interfaces/navigator.interface";
 import { BASE_IMAGE_URL, decimalToPercentage } from "../../../utils/tmdb.utils";
 import { getFullYear, minToHours } from "../../../utils/time.utils";
-import { fetchShowDetails } from "../../../services/tmdb/shows.service";
+import {
+  fetchShowDetails,
+  fetchShowSeasonDetails,
+} from "../../../services/tmdb/shows.service";
 import {
   MovieDetails,
   SeasonDetails,
@@ -119,7 +122,23 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
       setLoading(true);
 
       if (user && watchedSeason) {
-        const updatedUser = await addToFinishedSeasons(user, watchedSeason);
+        console.log("watchedSeason", watchedSeason);
+
+        const { episodes } = await fetchShowSeasonDetails(
+          movieDetails.id,
+          watchedSeason.season_number,
+        );
+
+        const episodeInfo = episodes.map((episode) => ({
+          episodeId: episode.id,
+          finished_watching: true,
+        }));
+        console.log("seasonDetails", episodes);
+
+        const updatedUser = await addToFinishedSeasons(user, {
+          ...watchedSeason,
+          episodes: episodeInfo,
+        });
         dispatch(setUser(updatedUser));
       }
     } catch (error) {
@@ -132,7 +151,6 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
   async function removeSeasonHandler(season: SeasonDetails) {
     try {
       setLoading(true);
-      console.log("user", user);
 
       const updatedFinishedSeasons = user?.seriesFinishedSeasons.filter(
         (finishedSeason) => finishedSeason.id !== season.id,
@@ -142,8 +160,6 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
         updatedFinishedSeasons,
       );
       dispatch(setUser(updatedUser));
-
-      console.log("updatedUser", user);
     } catch (error) {
       dispatch(setUserError(error as Error));
     }
@@ -153,7 +169,6 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
 
   useEffect(() => {
     getMovieDetails();
-    console.log("user", user);
   }, []);
 
   return (

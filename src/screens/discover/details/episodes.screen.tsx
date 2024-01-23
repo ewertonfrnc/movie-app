@@ -16,6 +16,7 @@ import { SeasonDetails } from "../../../interfaces/show.interface";
 import { formatDate } from "../../../utils/time.utils";
 import RadioButton from "../../../components/radio-button";
 import { Ionicons } from "@expo/vector-icons";
+import { useAppSelector } from "../../../hooks/redux";
 
 type EpisodesScreenProps = {} & NativeStackScreenProps<
   RootStackParamsList,
@@ -24,16 +25,24 @@ type EpisodesScreenProps = {} & NativeStackScreenProps<
 
 const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
   const { seriesId, seasonNumber } = route.params;
+  const user = useAppSelector(({ user }) => user.user);
 
   const [loading, setLoading] = useState(false);
   const [seasonDetails, setSeasonDetails] = useState<SeasonDetails>();
+  const [isFinishedSeason, setIsFinishedSeason] = useState(false);
 
   async function getEpisodeList() {
     setLoading(true);
     try {
       const seasonInfo = await fetchShowSeasonDetails(seriesId, seasonNumber);
       setSeasonDetails(seasonInfo);
-      console.log(seasonInfo);
+
+      const isFinished = user?.seriesFinishedSeasons.find(
+        (s) => s.id === seasonInfo?.id,
+      );
+      setIsFinishedSeason(!!isFinished);
+
+      console.log("isFinished", isFinished);
     } catch (error) {
       console.warn(error);
     }
@@ -101,7 +110,11 @@ const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
                       <Text style={styles.text}>
                         ⭐ {episode.vote_average.toFixed(1)}
                       </Text>
-                      <RadioButton selected={false} onPress={() => {}} />
+
+                      <RadioButton
+                        selected={isFinishedSeason}
+                        onPress={() => {}}
+                      />
                     </View>
                   </View>
                 </Pressable>
@@ -128,6 +141,8 @@ const styles = StyleSheet.create({
   },
   episodeContainer: {
     paddingVertical: theme.SPACING.xlg,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.COLORS.lightDark,
   },
   backButton: {
     flexDirection: "row",
