@@ -17,19 +17,17 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamsList } from "../../../interfaces/navigator.interface";
 import { BASE_IMAGE_URL, decimalToPercentage } from "../../../utils/tmdb.utils";
 import { getFullYear, minToHours } from "../../../utils/time.utils";
-import {
-  fetchShowDetails,
-  fetchShowSeasonDetails,
-} from "../../../services/tmdb/shows.service";
+import { fetchShowDetails } from "../../../services/tmdb/shows.service";
 import {
   MovieDetails,
   SeasonDetails,
 } from "../../../interfaces/show.interface";
 import CastAvatar from "./components/cast-avatar.component";
 import {
+  addToFinishedSeasons,
+  removeFromFinishedSeasons,
   removeFromWatchedMovies,
   updatedWatchedMovies,
-  updateFinishedSeasons,
 } from "../../../services/supabase/user.service";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import {
@@ -38,8 +36,8 @@ import {
   updateWatchedMovies,
 } from "../../../redux/user/user.slice";
 import Button from "../../../components/button.component";
-import Progress from "./components/progress";
 import RadioButton from "../../../components/radio-button";
+import Progress from "./components/progress";
 
 type ShowScreenProps = {} & NativeStackScreenProps<
   RootStackParamsList,
@@ -120,25 +118,32 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
     try {
       setLoading(true);
 
-      let seasonDetails = await fetchShowSeasonDetails(
-        movieDetails!.id,
-        season.season_number,
-      );
-
-      const finishedEpisodes = seasonDetails?.episodes.map((episode) => ({
-        ...episode,
-        isWatched: true,
-      }));
-
-      const finishedSeason = { ...seasonDetails, episodes: finishedEpisodes };
-
-      if (user) {
-        const updatedUser = await updateFinishedSeasons(
-          user,
-          finishedSeason as SeasonDetails,
-        );
+      if (user && watchedSeason) {
+        const updatedUser = await addToFinishedSeasons(user, watchedSeason);
         dispatch(setUser(updatedUser));
       }
+    } catch (error) {
+      dispatch(setUserError(error as Error));
+    }
+
+    setLoading(false);
+  }
+
+  async function removeSeasonHandler(season: SeasonDetails) {
+    try {
+      setLoading(true);
+      console.log("user", user);
+
+      const updatedFinishedSeasons = user?.seriesFinishedSeasons.filter(
+        (finishedSeason) => finishedSeason.id !== season.id,
+      );
+      const updatedUser = await removeFromFinishedSeasons(
+        user,
+        updatedFinishedSeasons,
+      );
+      dispatch(setUser(updatedUser));
+
+      console.log("updatedUser", user);
     } catch (error) {
       dispatch(setUserError(error as Error));
     }
@@ -238,7 +243,8 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
                     const currSeason = user?.seriesFinishedSeasons.find(
                       (s) => s.id === season.id,
                     );
-                    if (currSeason) console.log(currSeason.episodes.length);
+
+                    if (currSeason) console.log("currSeason", currSeason);
 
                     return (
                       <Pressable
@@ -252,30 +258,38 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
                           season.season_number,
                         )}
                       >
-                        <RadioButton
-                          selected={!!currSeason}
-                          onPress={watchSeasonHandler.bind(this, season)}
-                        />
-
-                        <View style={styles.progressInfoContainer}>
-                          <Text
-                            style={[styles.subtitle, { flex: 1 }]}
-                            numberOfLines={2}
-                          >
-                            {season.name}
-                          </Text>
-
-                          <Progress
-                            currentValue={
-                              (currSeason && currSeason.episodes.length) || 0
+                        <>
+                          <RadioButton
+                            selected={!!currSeason}
+                            onPress={
+                              currSeason?.finished_watching
+                                ? removeSeasonHandler.bind(this, season)
+                                : watchSeasonHandler.bind(this, season)
                             }
-                            totalValue={season.episode_count}
                           />
 
-                          <Text
-                            style={styles.subtitle}
-                          >{`0 / ${season.episode_count}  >`}</Text>
-                        </View>
+                          <View style={styles.progressInfoContainer}>
+                            <Text
+                              style={[styles.subtitle, { flex: 1 }]}
+                              numberOfLines={2}
+                            >
+                              {season.name}
+                            </Text>
+
+                            <Progress
+                              currentValue={
+                                currSeason?.finished_watching
+                                  ? currSeason?.episode_count
+                                  : 0
+                              }
+                              totalValue={season.episode_count}
+                            />
+
+                            <Text style={styles.subtitle}>
+                              {`${currSeason?.episode_count || 0} / ${season.episode_count}  >`}
+                            </Text>
+                          </View>
+                        </>
                       </Pressable>
                     );
                   })}
@@ -317,7 +331,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: theme.COLORS.lightDark,
   },
-  pressed: { opacity: 0.5 },
+  pressed: {
+    opacity: 0.5,
+  },
   progressInfoContainer: {
     flex: 1,
     flexDirection: "row",

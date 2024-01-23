@@ -66,7 +66,7 @@ export async function removeFromWatchedMovies(
   return data;
 }
 
-export async function updateFinishedSeasons(
+export async function addToFinishedSeasons(
   user: UserData,
   finishedSeason: SeasonDetails,
 ): Promise<UserData> {
@@ -76,6 +76,22 @@ export async function updateFinishedSeasons(
       ...user,
       seriesFinishedSeasons: [finishedSeason, ...user.seriesFinishedSeasons],
     })
+    .eq("id", user.id)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function removeFromFinishedSeasons(
+  user: UserData,
+  finishedSeason: SeasonDetails[],
+): Promise<UserData> {
+  const { data, error } = await supabase
+    .from("users")
+    .update({ ...user, seriesFinishedSeasons: finishedSeason })
     .eq("id", user.id)
     .select()
     .single();

@@ -1,15 +1,18 @@
-import { api } from "../index";
-import { SeasonDetails } from "../../interfaces/show.interface";
+import { api } from '../index';
+import { SeasonDetails } from '../../interfaces/show.interface';
 
 // Movies
 export async function fetchTrendingMovies() {
   try {
-    const { data } = await api.get("/trending/movie/day", {
-      params: { language: "pt-BR" },
+    const { data } = await api.get('/trending/movie/day', {
+      params: { language: 'pt-BR' },
     });
 
+    console.log('data', data);
+    
     return data.results;
   } catch (error) {
+    console.log('error', error);
     console.error(error);
   }
 }
@@ -17,8 +20,8 @@ export async function fetchTrendingMovies() {
 // Tv Shows
 export async function fetchTrendingTvShows() {
   try {
-    const { data } = await api.get("/trending/tv/day", {
-      params: { language: "pt-BR" },
+    const { data } = await api.get('/trending/tv/day', {
+      params: { language: 'pt-BR' },
     });
 
     return data.results;
@@ -31,9 +34,9 @@ export async function fetchShowDetails(showId: number, mediaType: string) {
   try {
     const { data } = await api.get(
       `/${
-        mediaType === "tv" ? "tv" : "movie"
+        mediaType === 'tv' ? 'tv' : 'movie'
       }/${showId}?append_to_response=videos,images,credits`,
-      { params: { language: "pt-BR" } },
+      { params: { language: 'pt-BR' } }
     );
 
     return data;
@@ -44,11 +47,11 @@ export async function fetchShowDetails(showId: number, mediaType: string) {
 
 export async function fetchShowSeasonDetails(
   seriesId: number,
-  seasonNumber: number,
+  seasonNumber: number
 ): Promise<SeasonDetails | undefined> {
   try {
     const { data } = await api.get(`/tv/${seriesId}/season/${seasonNumber}`, {
-      params: { language: "pt-BR" },
+      params: { language: 'pt-BR' },
     });
 
     return data;

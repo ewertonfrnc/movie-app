@@ -66,33 +66,6 @@ export type MovieDetails = {
   seasons: SeasonDetails[];
 };
 
-export type SeasonOverview = {
-  air_date: string;
-  episode_count: number;
-  id: number;
-  name: string;
-  overview: string;
-  poster_path: string;
-  season_number: number;
-  vote_average: number;
-  finished_watching: boolean;
-};
-
-export type Cast = {
-  adult: boolean;
-  gender: number;
-  id: number;
-  known_for_department: string;
-  name: string;
-  character: string;
-  original_name: string;
-  popularity: number;
-  profile_path: string | null;
-  credit_id: string;
-  department: string;
-  job: string;
-};
-
 export type SeasonDetails = {
   finished_watching: boolean;
   episode_count: number;
@@ -121,4 +94,19 @@ export type Episode = {
   vote_average: number;
   vote_count: number;
   isWatched: boolean;
+};
+
+export type Cast = {
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  character: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string | null;
+  credit_id: string;
+  department: string;
+  job: string;
 };
