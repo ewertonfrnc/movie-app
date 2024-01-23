@@ -258,38 +258,36 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
                           season.season_number,
                         )}
                       >
-                        <>
-                          <RadioButton
-                            selected={!!currSeason}
-                            onPress={
+                        <RadioButton
+                          selected={!!currSeason}
+                          onPress={
+                            currSeason?.finished_watching
+                              ? removeSeasonHandler.bind(this, season)
+                              : watchSeasonHandler.bind(this, season)
+                          }
+                        />
+
+                        <View style={styles.progressInfoContainer}>
+                          <Text
+                            style={[styles.subtitle, { flex: 1 }]}
+                            numberOfLines={2}
+                          >
+                            {season.name}
+                          </Text>
+
+                          <Progress
+                            currentValue={
                               currSeason?.finished_watching
-                                ? removeSeasonHandler.bind(this, season)
-                                : watchSeasonHandler.bind(this, season)
+                                ? currSeason?.episode_count
+                                : 0
                             }
+                            totalValue={season.episode_count}
                           />
 
-                          <View style={styles.progressInfoContainer}>
-                            <Text
-                              style={[styles.subtitle, { flex: 1 }]}
-                              numberOfLines={2}
-                            >
-                              {season.name}
-                            </Text>
-
-                            <Progress
-                              currentValue={
-                                currSeason?.finished_watching
-                                  ? currSeason?.episode_count
-                                  : 0
-                              }
-                              totalValue={season.episode_count}
-                            />
-
-                            <Text style={styles.subtitle}>
-                              {`${currSeason?.episode_count || 0} / ${season.episode_count}  >`}
-                            </Text>
-                          </View>
-                        </>
+                          <Text style={styles.subtitle}>
+                            {`${currSeason?.episode_count || 0} / ${season.episode_count}  >`}
+                          </Text>
+                        </View>
                       </Pressable>
                     );
                   })}
