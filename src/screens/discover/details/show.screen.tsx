@@ -64,6 +64,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
   const [movieDetails, setMovieDetails] = useState<MovieDetails>();
   const [isWatchedMovie, setIsWatchedMovie] = useState(false);
   const [dbMovieInfo, setDbMovieInfo] = useState<MovieDetails>();
+
   const getMovieDetails = async () => {
     setLoading(true);
 

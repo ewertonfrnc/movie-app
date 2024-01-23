@@ -1,40 +1,44 @@
-import { FC, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Switch, View } from "react-native";
+import { FC, useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
-import { theme } from "../../constants";
+import { theme } from '../../constants';
 
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { MovieDetails } from '../../interfaces/show.interface';
+import {
+  HomeStackParamsList,
+  RootStackParamsList,
+} from '../../interfaces/navigator.interface';
 
-import { MovieDetails } from "../../interfaces/show.interface";
-import { HomeStackParamsList } from "../../interfaces/navigator.interface";
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { readStorageItem } from '../../utils/async-storage.utils';
 
-import { readStorageItem } from "../../utils/async-storage.utils";
-
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { setUser, setUserError } from "../../redux/user/user.slice";
+import { useAppDispatch } from '../../hooks/redux';
+import { setUser, setUserError } from '../../redux/user/user.slice';
 
 import {
   fetchTrendingMovies,
   fetchTrendingTvShows,
-} from "../../services/tmdb/shows.service";
-import { fetchUser } from "../../services/supabase/user.service";
+} from '../../services/tmdb/shows.service';
+import { fetchUser } from '../../services/supabase/user.service';
 
-import HeroImage from "./components/hero.component";
-import TvShowsComponent from "./components/tv-shows.component";
-import MoviesScreen from "./components/movies.component";
-import SafeAreaComponent from "../../components/safe-area.component";
+import HeroImage from './components/hero.component';
+import TvShowsComponent from './components/tv-shows.component';
+import MoviesScreen from './components/movies.component';
+import SafeAreaComponent from '../../components/safe-area.component';
 
-type MoviesProps = {} & NativeStackScreenProps<HomeStackParamsList, "movies">;
+type MoviesProps = {} & BottomTabScreenProps<
+  HomeStackParamsList & RootStackParamsList,
+  'movies'
+>;
 
 const HomeScreen: FC<MoviesProps> = ({ navigation }) => {
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector(({ user }) => user);
 
   const [loading, setLoading] = useState(false);
   const [trendingMovies, setTrendingMovies] = useState<MovieDetails[]>([]);
   const [trendingTvShows, setTrendingTvShows] = useState<MovieDetails[]>([]);
 
-  const [recentMovie, setRecentMovie] = useState("");
+  const [recentMovie, setRecentMovie] = useState('');
   const [isTvShows, setIsTvShows] = useState(false);
 
   async function getShows() {
@@ -51,14 +55,14 @@ const HomeScreen: FC<MoviesProps> = ({ navigation }) => {
 
       setRecentMovie(trendingMovies[0].backdrop_path);
     } catch (error) {
-      console.log("An error occurred while fetching movies", error);
+      console.log('An error occurred while fetching movies', error);
     }
 
     setLoading(false);
   }
 
   const onPressHandler = (params: { showId: number; showType: string }) => {
-    navigation.navigate("showDetails", {
+    navigation.navigate('showDetails', {
       showId: params.showId,
       showType: params.showType,
     });
@@ -69,7 +73,7 @@ const HomeScreen: FC<MoviesProps> = ({ navigation }) => {
   };
 
   async function loadUserData() {
-    const userIdFromStorage = await readStorageItem("user-id");
+    const userIdFromStorage = await readStorageItem('user-id');
 
     try {
       setLoading(true);
