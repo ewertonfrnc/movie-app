@@ -1,11 +1,11 @@
 import {
   createStackNavigator,
   TransitionPresets,
-} from "@react-navigation/stack";
+} from '@react-navigation/stack';
 
-import LoginScreen from "../screens/auth/login";
-import RegisterScreen from "../screens/auth/register";
-import { AccountStackParamsList } from "../interfaces/navigator.interface";
+import LoginScreen from '../features/account/screens/login.screen';
+import RegisterScreen from '../features/account/screens/register.screen';
+import { AccountStackParamsList } from '../interfaces/navigator.interface';
 
 const Stack = createStackNavigator<AccountStackParamsList>();
 

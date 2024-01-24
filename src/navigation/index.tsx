@@ -1,14 +1,14 @@
-import { useEffect } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 
-import AppNavigator from "./app.navigator";
-import AccountNavigator from "./account.navigator";
+import AppNavigator from './app.navigator';
+import AccountNavigator from './account.navigator';
 
-import { useAppDispatch, useAppSelector } from "../hooks/redux";
-import { onAppStart, setAuthLogOut } from "../redux/auth/auth.slice";
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import { onAppStart, setAuthLogOut } from '../redux/auth/auth.slice';
 
-import supabase from "../services/supabase";
-import { readStorageItem, storeToStorage } from "../utils/async-storage.utils";
+import supabase from '../services/supabase';
+import { readStorageItem, storeToStorage } from '../utils/async-storage.utils';
 
 const Navigation = () => {
   const dispatch = useAppDispatch();
@@ -16,7 +16,7 @@ const Navigation = () => {
 
   useEffect(() => {
     async function checkForUserTokenOnDevice() {
-      const userId = await readStorageItem("user-id");
+      const userId = await readStorageItem('user-id');
       dispatch(onAppStart(userId));
     }
 
@@ -27,22 +27,22 @@ const Navigation = () => {
     async (event, session) => {
       console.log(event);
 
-      if (event === "INITIAL_SESSION") {
+      if (event === 'INITIAL_SESSION') {
         // handle initial session
-      } else if (event === "SIGNED_IN") {
+      } else if (event === 'SIGNED_IN') {
         // handle sign in event
         if (session?.user) {
           onAppStart(session?.user.id);
-          await storeToStorage("user-id", session?.user.id);
+          await storeToStorage('user-id', session?.user.id);
         }
-      } else if (event === "SIGNED_OUT") {
+      } else if (event === 'SIGNED_OUT') {
         // handle sign out event
         dispatch(setAuthLogOut());
-      } else if (event === "PASSWORD_RECOVERY") {
+      } else if (event === 'PASSWORD_RECOVERY') {
         // handle password recovery event
-      } else if (event === "TOKEN_REFRESHED") {
+      } else if (event === 'TOKEN_REFRESHED') {
         // handle token refreshed event
-      } else if (event === "USER_UPDATED") {
+      } else if (event === 'USER_UPDATED') {
         // handle user updated event
       }
     },
@@ -52,7 +52,7 @@ const Navigation = () => {
 
   return (
     <NavigationContainer>
-      {isAuthenticated ? <AppNavigator /> : <AccountNavigator />}
+      {true ? <AppNavigator /> : <AccountNavigator />}
     </NavigationContainer>
   );
 };

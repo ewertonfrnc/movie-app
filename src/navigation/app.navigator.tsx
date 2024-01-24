@@ -1,13 +1,13 @@
 import {
   createStackNavigator,
   TransitionPresets,
-} from "@react-navigation/stack";
+} from '@react-navigation/stack';
 
-import HomeNavigator from "./home.navigator";
-import ShowScreen from "../screens/discover/details/show-detail";
-import EpisodesScreen from "../screens/discover/details/episodes.screen";
+import HomeNavigator from './home.navigator';
+import ShowScreen from '../features/shows/screens/show.screen';
+import EpisodesScreen from '../features/shows/screens/episodes.screen';
 
-import { RootStackParamsList } from "../interfaces/navigator.interface";
+import { RootStackParamsList } from '../interfaces/navigator.interface';
 
 const Stack = createStackNavigator<RootStackParamsList>();
 

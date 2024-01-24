@@ -2,16 +2,16 @@ import React, { FC } from 'react';
 import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamsList } from '../../../../interfaces/navigator.interface';
-import { SeasonDetails } from '../../../../interfaces/show.interface';
+import { RootStackParamsList } from '../../../interfaces/navigator.interface';
+import { SeasonDetails } from '../../../interfaces/show.interface';
 
-import SafeAreaComponent from '../../../../components/utility/safe-area.component';
+import SafeAreaComponent from '../../../components/utility/safe-area.component';
 import CastAvatar from '../components/cast-avatar.component';
 import ShowHeader from '../components/header.component';
 import { ShowDescription } from '../components/show-description.component';
 import SectionContainer from '../components/section.component';
-import TextComponent from '../../../../components/typography/text.component';
-import { theme } from '../../../../constants';
+import TextComponent from '../../../components/typography/text.component';
+import { theme } from '../../../constants';
 
 type ShowScreenProps = {} & NativeStackScreenProps<
   RootStackParamsList,

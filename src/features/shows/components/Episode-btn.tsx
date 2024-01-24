@@ -1,10 +1,10 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { formatDate } from "../../../../utils/time.utils";
-import RadioButton from "../../../../components/radio-button";
-import { Episode } from "../../../../interfaces/show.interface";
-import { theme } from "../../../../constants";
-import { useAppSelector } from "../../../../hooks/redux";
-import { useEffect } from "react";
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { formatDate } from '../../../utils/time.utils';
+import RadioButton from '../../../components/radio-button';
+import { Episode } from '../../../interfaces/show.interface';
+import { theme } from '../../../constants';
+import { useAppSelector } from '../../../hooks/redux';
+import { useEffect } from 'react';
 
 type EpisodeBtnProps = {
   episode: Episode;
@@ -15,7 +15,7 @@ export default function EpisodeBtn({ episode, onPress }: EpisodeBtnProps) {
   const user = useAppSelector(({ user }) => user.user);
 
   useEffect(() => {
-    console.log("user", user);
+    console.log('user', user);
   }, []);
 
   return (
@@ -26,7 +26,7 @@ export default function EpisodeBtn({ episode, onPress }: EpisodeBtnProps) {
         pressed && styles.pressed,
       ]}
     >
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: 'row' }}>
         <Text style={styles.text}>
           {`Episódio ${episode.episode_number} • ${formatDate(
             episode.air_date,
@@ -56,19 +56,19 @@ const styles = StyleSheet.create({
     borderBottomColor: theme.COLORS.lightDark,
   },
   episodeOverview: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     gap: 20,
   },
   episodeInfo: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: theme.SPACING.xlg,
   },
   episodeName: {
     flex: 1,
     fontSize: theme.SIZES.md,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: theme.COLORS.white,
   },
   text: { color: theme.COLORS.whiteSmoke },

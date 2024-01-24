@@ -15,7 +15,7 @@ import { RootStackParamsList } from '../../../interfaces/navigator.interface';
 import { Episode, SeasonDetails } from '../../../interfaces/show.interface';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import EpisodeBtn from './components/Episode-btn';
+import EpisodeBtn from '../components/Episode-btn';
 
 type EpisodesScreenProps = {} & NativeStackScreenProps<
   RootStackParamsList,

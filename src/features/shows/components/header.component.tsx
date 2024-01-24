@@ -1,10 +1,10 @@
 import { Image, ImageBackground, StyleSheet, View } from 'react-native';
 
-import Button from '../../../../components/button.component';
+import Button from '../../../components/button.component';
 
-import { BASE_IMAGE_URL } from '../../../../utils/tmdb.utils';
-import { theme } from '../../../../constants';
-import TextComponent from '../../../../components/typography/text.component';
+import { BASE_IMAGE_URL } from '../../../utils/tmdb.utils';
+import { theme } from '../../../constants';
+import TextComponent from '../../../components/typography/text.component';
 
 type ShowHeaderProps = {
   title: string;

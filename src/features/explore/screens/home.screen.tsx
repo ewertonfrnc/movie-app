@@ -1,31 +1,31 @@
 import { FC, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
-import { theme } from '../../constants';
+import { theme } from '../../../constants';
 
-import { MovieDetails } from '../../interfaces/show.interface';
+import { MovieDetails } from '../../../interfaces/show.interface';
 import {
   HomeStackParamsList,
   RootStackParamsList,
-} from '../../interfaces/navigator.interface';
+} from '../../../interfaces/navigator.interface';
 
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { readStorageItem } from '../../utils/async-storage.utils';
+import { readStorageItem } from '../../../utils/async-storage.utils';
 
-import { useAppDispatch } from '../../hooks/redux';
-import { setUser, setUserError } from '../../redux/user/user.slice';
+import { useAppDispatch } from '../../../hooks/redux';
+import { setUser, setUserError } from '../../../redux/user/user.slice';
 
 import {
   fetchShowDetails,
   fetchTrendingMovies,
   fetchTrendingTvShows,
-} from '../../services/tmdb/shows.service';
-import { fetchUser } from '../../services/supabase/user.service';
+} from '../../../services/tmdb/shows.service';
+import { fetchUser } from '../../../services/supabase/user.service';
 
-import HeroImage from './components/hero.component';
-import TvShowsComponent from './components/tv-shows.component';
-import MoviesScreen from './components/movies.component';
-import SafeAreaComponent from '../../components/utility/safe-area.component';
+import HeroImage from '../components/hero.component';
+import TvShowsComponent from '../components/tv-shows.component';
+import MoviesScreen from '../components/movies.component';
+import SafeAreaComponent from '../../../components/utility/safe-area.component';
 
 type MoviesProps = {} & BottomTabScreenProps<
   HomeStackParamsList & RootStackParamsList,

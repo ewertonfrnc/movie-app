@@ -1,8 +1,8 @@
 import { StyleSheet, View } from 'react-native';
-import { decimalToPercentage } from '../../../../utils/tmdb.utils';
-import { getFullYear, minToHours } from '../../../../utils/time.utils';
-import { theme } from '../../../../constants';
-import TextComponent from '../../../../components/typography/text.component';
+import { decimalToPercentage } from '../../../utils/tmdb.utils';
+import { getFullYear, minToHours } from '../../../utils/time.utils';
+import { theme } from '../../../constants';
+import TextComponent from '../../../components/typography/text.component';
 
 type ShowDescriptionProps = {
   runtime: number;

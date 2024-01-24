@@ -1,7 +1,7 @@
-import { FC, useEffect, useRef } from "react";
-import { Animated, StyleSheet, useWindowDimensions, View } from "react-native";
+import { FC, useEffect, useRef } from 'react';
+import { Animated, StyleSheet, useWindowDimensions, View } from 'react-native';
 
-import { theme } from "../../../../constants";
+import { theme } from '../../../constants';
 
 type ProgressProps = {
   currentValue: number;
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     height: 10,
     backgroundColor: theme.COLORS.lightDark,
     borderRadius: theme.SIZES.xlg,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   innerContainer: {
     height: 10,

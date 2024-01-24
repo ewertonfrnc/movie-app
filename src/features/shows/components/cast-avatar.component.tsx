@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
 
-import { theme } from '../../../../constants';
+import { theme } from '../../../constants';
 
-import { Cast } from '../../../../interfaces/show.interface';
-import { BASE_IMAGE_URL } from '../../../../utils/tmdb.utils';
+import { Cast } from '../../../interfaces/show.interface';
+import { BASE_IMAGE_URL } from '../../../utils/tmdb.utils';
 import { LinearGradient } from 'expo-linear-gradient';
-import TextComponent from '../../../../components/typography/text.component';
+import TextComponent from '../../../components/typography/text.component';
 
 type CastAvatarProps = {
   castMember: Cast;
