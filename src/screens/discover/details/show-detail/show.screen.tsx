@@ -1,8 +1,6 @@
 import { FC } from "react";
 import {
   FlatList,
-  Image,
-  ImageBackground,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -11,20 +9,18 @@ import {
 } from "react-native";
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamsList } from "../../../interfaces/navigator.interface";
+import { RootStackParamsList } from "../../../../interfaces/navigator.interface";
 
-import { theme } from "../../../constants";
+import { theme } from "../../../../constants";
+import { useAppSelector } from "../../../../hooks/redux";
+import { SeasonDetails } from "../../../../interfaces/show.interface";
 
-import { getFullYear, minToHours } from "../../../utils/time.utils";
-import { BASE_IMAGE_URL, decimalToPercentage } from "../../../utils/tmdb.utils";
-import { useAppSelector } from "../../../hooks/redux";
-import { SeasonDetails } from "../../../interfaces/show.interface";
-
-import SafeAreaComponent from "../../../components/safe-area.component";
-import CastAvatar from "./components/cast-avatar.component";
-import Button from "../../../components/button.component";
-import RadioButton from "../../../components/radio-button";
-import Progress from "./components/progress";
+import SafeAreaComponent from "../../../../components/safe-area.component";
+import CastAvatar from "../components/cast-avatar.component";
+import RadioButton from "../../../../components/radio-button";
+import Progress from "../components/progress";
+import ShowHeader from "../components/header.component";
+import { ShowDescription } from "../components/show-description.component";
 
 type ShowScreenProps = {} & NativeStackScreenProps<
   RootStackParamsList,
@@ -47,74 +43,28 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
     <SafeAreaComponent>
       <View style={styles.container}>
         <ScrollView>
-          <ImageBackground
-            style={styles.imageBackground}
-            resizeMode="cover"
-            source={{
-              uri: `${BASE_IMAGE_URL}${movieDetails.backdrop_path}`,
-            }}
+          <ShowHeader
+            title={movieDetails.title || movieDetails.name}
+            tagline={movieDetails.tagline}
+            backdrop_path={movieDetails.backdrop_path}
+            poster_path={movieDetails.poster_path}
           />
 
+          <View style={styles.divider} />
+
+          <ShowDescription
+            releaseDate={
+              movieDetails.release_date || movieDetails.first_air_date
+            }
+            runtime={movieDetails.runtime}
+            mediaType={movieDetails.media_type}
+            voteAverage={movieDetails.vote_average}
+            genre={movieDetails.genres[0].name}
+          />
+
+          <View style={styles.divider} />
+
           <View style={styles.informationContainer}>
-            <Image
-              style={styles.posterImage}
-              source={{
-                uri: `${BASE_IMAGE_URL}${movieDetails.poster_path}`,
-              }}
-            />
-
-            <View style={styles.watchBtnContainer}>
-              <Button
-                label={true ? "➖ Remover da lista" : "➕ Adicionar à lista"}
-                loading={false}
-                onPress={() => {}}
-              />
-            </View>
-
-            <View style={styles.sectionContainer}>
-              <Text style={styles.title}>
-                {movieDetails.title || movieDetails.name}
-              </Text>
-              <Text style={styles.subtitle}>{movieDetails.tagline}</Text>
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.sectionContainer}>
-              <View style={styles.stats}>
-                <Text
-                  style={[
-                    styles.rank,
-                    movieDetails.vote_average < 5
-                      ? styles.badRank
-                      : movieDetails.vote_average < 7
-                        ? styles.goodRank
-                        : styles.awesomeRank,
-                  ]}
-                >
-                  ⭐ {decimalToPercentage(movieDetails.vote_average)}
-                </Text>
-
-                <Text style={styles.subtitle}>
-                  {getFullYear(
-                    movieDetails.release_date || movieDetails.first_air_date,
-                  )}
-                </Text>
-
-                <Text style={styles.subtitle}>
-                  {movieDetails.genres[0].name}
-                </Text>
-
-                {movieDetails.media_type === "movie" && (
-                  <Text style={styles.subtitle}>
-                    ⏳ {minToHours(movieDetails.runtime)}
-                  </Text>
-                )}
-              </View>
-            </View>
-
-            <View style={styles.divider} />
-
             {movieDetails.media_type === "tv" && (
               <View style={styles.sectionContainer}>
                 <Text style={styles.title}>Temporadas</Text>
@@ -213,10 +163,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  imageBackground: {
-    flex: 1,
-    height: 300,
-  },
+
   divider: {
     height: 1,
     borderRadius: theme.SIZES.lg,
@@ -242,38 +189,5 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: theme.SIZES.md,
     color: theme.COLORS.silver,
-  },
-  stats: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    gap: theme.SPACING.lg,
-  },
-  rank: {
-    fontWeight: "bold",
-    fontSize: theme.SIZES.md,
-  },
-  badRank: {
-    color: theme.COLORS.ranks.bad,
-  },
-  goodRank: {
-    color: theme.COLORS.ranks.regular,
-  },
-  awesomeRank: {
-    color: theme.COLORS.ranks.good,
-  },
-  posterImage: {
-    width: 75,
-    height: 100,
-    borderRadius: 4,
-
-    position: "absolute",
-    top: -50,
-    left: 20,
-  },
-  watchBtnContainer: {
-    width: "65%",
-    position: "absolute",
-    top: 10,
-    right: 20,
   },
 });
