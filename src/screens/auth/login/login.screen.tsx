@@ -1,22 +1,22 @@
-import { FC, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { StackScreenProps } from "@react-navigation/stack";
+import { FC, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack';
 
-import { theme } from "../../../constants";
+import { theme } from '../../../constants';
 
-import SafeAreaComponent from "../../../components/safe-area.component";
-import Input from "../../../components/Input.component";
-import Button from "../../../components/button.component";
+import SafeAreaComponent from '../../../components/utility/safe-area.component';
+import Input from '../../../components/Input.component';
+import Button from '../../../components/button.component';
 
-import { AccountStackParamsList } from "../../../interfaces/navigator.interface";
-import { logInWithEmailPassword } from "../../../services/supabase/auth.service";
+import { AccountStackParamsList } from '../../../interfaces/navigator.interface';
+import { logInWithEmailPassword } from '../../../services/supabase/auth.service';
 
-import { setAuthError, setAuthUser } from "../../../redux/auth/auth.slice";
-import { useAppDispatch } from "../../../hooks/redux";
+import { setAuthError, setAuthUser } from '../../../redux/auth/auth.slice';
+import { useAppDispatch } from '../../../hooks/redux';
 
-import { storeToStorage } from "../../../utils/async-storage.utils";
+import { storeToStorage } from '../../../utils/async-storage.utils';
 
-type LoginScreenProps = {} & StackScreenProps<AccountStackParamsList, "login">;
+type LoginScreenProps = {} & StackScreenProps<AccountStackParamsList, 'login'>;
 
 const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
   // const {
@@ -27,8 +27,8 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
 
   const [loading, setLoading] = useState(false);
   const [inputValues, setInputValues] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
 
   const inputChangeHandler = (
@@ -50,7 +50,7 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
 
       if (user) {
         dispatch(setAuthUser(user));
-        await storeToStorage("user-id", user.id);
+        await storeToStorage('user-id', user.id);
       }
     } catch (error) {
       dispatch(setAuthError(error as Error));
@@ -70,24 +70,24 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
 
           <View style={styles.form}>
             <Input
-              label={"Email"}
+              label={'Email'}
               textInputConfig={{
-                onChangeText: inputChangeHandler.bind(this, "email"),
-                placeholder: "Insira seu email",
-                keyboardType: "email-address",
-                autoCapitalize: "none",
+                onChangeText: inputChangeHandler.bind(this, 'email'),
+                placeholder: 'Insira seu email',
+                keyboardType: 'email-address',
+                autoCapitalize: 'none',
                 autoCorrect: false,
                 value: inputValues.email,
               }}
             />
 
             <Input
-              label={"Senha"}
+              label={'Senha'}
               textInputConfig={{
-                onChangeText: inputChangeHandler.bind(this, "password"),
-                placeholder: "Insira sua senha",
-                keyboardType: "default",
-                autoCapitalize: "none",
+                onChangeText: inputChangeHandler.bind(this, 'password'),
+                placeholder: 'Insira sua senha',
+                keyboardType: 'default',
+                autoCapitalize: 'none',
                 autoCorrect: false,
                 value: inputValues.password,
                 secureTextEntry: true,
@@ -101,7 +101,7 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
             <Text style={styles.text}>Ainda não tem conta?</Text>
             <Text
               style={styles.link}
-              onPress={() => navigation.navigate("register")}
+              onPress={() => navigation.navigate('register')}
             >
               Criar conta
             </Text>
@@ -117,35 +117,35 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   loginContainer: {
-    width: "80%",
-    alignItems: "center",
-    justifyContent: "center",
+    width: '80%',
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: theme.SPACING.xxlg,
   },
   form: {
-    width: "100%",
+    width: '100%',
     marginBottom: theme.SPACING.xlg,
   },
   text: {
     color: theme.COLORS.silver,
-    textAlign: "left",
+    textAlign: 'left',
   },
   title: {
     fontSize: theme.SIZES.xlg,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: theme.COLORS.whiteSmoke,
   },
   titleContainer: {
-    width: "100%",
+    width: '100%',
     marginBottom: theme.SPACING.xxlg,
   },
   createAccSection: {
     marginTop: theme.SPACING.xxxlg,
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: theme.SPACING.md,
   },
   link: {

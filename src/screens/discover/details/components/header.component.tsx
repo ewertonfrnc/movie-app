@@ -1,14 +1,24 @@
-import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
-import { BASE_IMAGE_URL } from "../../../../utils/tmdb.utils";
-import Button from "../../../../components/button.component";
-import { theme } from "../../../../constants";
+import { Image, ImageBackground, StyleSheet, View } from 'react-native';
+
+import Button from '../../../../components/button.component';
+
+import { BASE_IMAGE_URL } from '../../../../utils/tmdb.utils';
+import { theme } from '../../../../constants';
+import TextComponent from '../../../../components/typography/text.component';
+
+type ShowHeaderProps = {
+  title: string;
+  tagline: string;
+  backdrop_path: string;
+  poster_path: string;
+};
 
 export default function ShowHeader({
   title,
   tagline,
   backdrop_path,
   poster_path,
-}) {
+}: ShowHeaderProps) {
   return (
     <View style={styles.container}>
       <View>
@@ -29,7 +39,7 @@ export default function ShowHeader({
 
         <View style={styles.watchBtnContainer}>
           <Button
-            label={true ? "➖ Remover da lista" : "➕ Adicionar à lista"}
+            label={true ? '➖ Remover da lista' : '➕ Adicionar à lista'}
             loading={false}
             onPress={() => {}}
           />
@@ -37,8 +47,8 @@ export default function ShowHeader({
       </View>
 
       <View style={styles.sectionContainer}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.subtitle}>{tagline}</Text>
+        <TextComponent type={'title'}>{title}</TextComponent>
+        <TextComponent type={'body'}>{tagline}</TextComponent>
       </View>
     </View>
   );
@@ -54,28 +64,18 @@ const styles = StyleSheet.create({
     width: 75,
     height: 100,
     borderRadius: 4,
-
-    position: "absolute",
+    position: 'absolute',
     bottom: -50,
     left: 20,
   },
   watchBtnContainer: {
-    width: "65%",
-    position: "absolute",
+    width: '65%',
+    position: 'absolute',
     bottom: -50,
     right: 20,
   },
   sectionContainer: {
     paddingHorizontal: theme.SPACING.xlg,
     marginTop: theme.SPACING.xxxlg,
-  },
-  title: {
-    fontWeight: "bold",
-    fontSize: theme.SIZES.lg,
-    color: theme.COLORS.whiteSmoke,
-  },
-  subtitle: {
-    fontSize: theme.SIZES.md,
-    color: theme.COLORS.silver,
   },
 });

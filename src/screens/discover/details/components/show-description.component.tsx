@@ -1,52 +1,55 @@
-import { StyleSheet, Text, View } from "react-native";
-import { decimalToPercentage } from "../../../../utils/tmdb.utils";
-import { getFullYear, minToHours } from "../../../../utils/time.utils";
-import { theme } from "../../../../constants";
+import { StyleSheet, View } from 'react-native';
+import { decimalToPercentage } from '../../../../utils/tmdb.utils';
+import { getFullYear, minToHours } from '../../../../utils/time.utils';
+import { theme } from '../../../../constants';
+import TextComponent from '../../../../components/typography/text.component';
 
+type ShowDescriptionProps = {
+  runtime: number;
+  voteAverage: number;
+  releaseDate: string;
+  genre: string;
+  mediaType: string;
+};
 export function ShowDescription({
   voteAverage,
   releaseDate,
   genre,
   runtime,
   mediaType,
-}) {
+}: ShowDescriptionProps) {
+  console.log(mediaType);
+  const rankStyles =
+    voteAverage < 5 ? 'badRank' : voteAverage < 7 ? 'goodRank' : 'awesomeRank';
+
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.stats}>
-        <Text
-          style={[
-            styles.rank,
-            voteAverage < 5
-              ? styles.badRank
-              : voteAverage < 7
-                ? styles.goodRank
-                : styles.awesomeRank,
-          ]}
-        >
+        <TextComponent type={'body'} rank={rankStyles}>
           ⭐ {decimalToPercentage(voteAverage)}
-        </Text>
+        </TextComponent>
 
-        <Text style={styles.subtitle}>{getFullYear(releaseDate)}</Text>
+        <TextComponent type={'body'}>{getFullYear(releaseDate)}</TextComponent>
 
-        <Text style={styles.subtitle}>{genre}</Text>
+        <TextComponent type={'body'}>{genre}</TextComponent>
 
-        {mediaType === "movie" && (
-          <Text style={styles.subtitle}>⏳ {minToHours(runtime)}</Text>
-        )}
+        <TextComponent type={'body'}>⏳ {minToHours(runtime)}</TextComponent>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    marginTop: theme.SPACING.xlg,
+  },
   stats: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     gap: theme.SPACING.lg,
   },
   rank: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: theme.SIZES.md,
   },
   badRank: {
@@ -59,7 +62,7 @@ const styles = StyleSheet.create({
     color: theme.COLORS.ranks.good,
   },
   title: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: theme.SIZES.lg,
     color: theme.COLORS.whiteSmoke,
   },

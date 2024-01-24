@@ -1,9 +1,9 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { theme } from "../constants";
+import { theme } from '../constants';
 
 type Tab = {
   label: string;
@@ -14,16 +14,16 @@ type Tab = {
 
 const TABS: Tab[] = [
   {
-    label: "Filmes",
-    type: "material",
-    activeIcon: "star-four-points",
-    inActiveIcon: "star-four-points-outline",
+    label: 'Explorar',
+    type: 'material',
+    activeIcon: 'star-four-points',
+    inActiveIcon: 'star-four-points-outline',
   },
   {
-    label: "Conta",
-    type: "ionicons",
-    activeIcon: "person-circle",
-    inActiveIcon: "person-circle-outline",
+    label: 'Conta',
+    type: 'ionicons',
+    activeIcon: 'person-circle',
+    inActiveIcon: 'person-circle-outline',
   },
 ];
 
@@ -42,7 +42,7 @@ export default function BottomTabBar({
 
         const onPress = () => {
           const event = navigation.emit({
-            type: "tabPress",
+            type: 'tabPress',
             target: route.key,
             canPreventDefault: true,
           });
@@ -59,9 +59,9 @@ export default function BottomTabBar({
             accessibilityState={isFocused ? { selected: true } : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
             onPress={onPress}
-            style={{ flex: 1, alignItems: "center" }}
+            style={{ flex: 1, alignItems: 'center' }}
           >
-            {TABS[index].type === "ionicons" ? (
+            {TABS[index].type === 'ionicons' ? (
               <Ionicons
                 // @ts-ignore
                 name={
@@ -98,11 +98,11 @@ export default function BottomTabBar({
 const styles = StyleSheet.create({
   navigatorContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     height: 60,
     borderRadius: theme.SIZES.md,
-    position: "absolute",
+    position: 'absolute',
     bottom: theme.SIZES.md,
     left: theme.SIZES.md,
     right: theme.SIZES.md,

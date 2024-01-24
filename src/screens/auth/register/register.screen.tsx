@@ -1,24 +1,24 @@
-import { FC, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { StackScreenProps } from "@react-navigation/stack";
+import { FC, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack';
 
-import Input from "../../../components/Input.component";
-import Button from "../../../components/button.component";
-import SafeAreaComponent from "../../../components/safe-area.component";
+import Input from '../../../components/Input.component';
+import Button from '../../../components/button.component';
+import SafeAreaComponent from '../../../components/utility/safe-area.component';
 
-import { theme } from "../../../constants";
+import { theme } from '../../../constants';
 
-import { signUp } from "../../../services/supabase/auth.service";
-import { insertUserOnUserTable } from "../../../services/supabase/user.service";
-import { AccountStackParamsList } from "../../../interfaces/navigator.interface";
+import { signUp } from '../../../services/supabase/auth.service';
+import { insertUserOnUserTable } from '../../../services/supabase/user.service';
+import { AccountStackParamsList } from '../../../interfaces/navigator.interface';
 
-import { useAppDispatch } from "../../../hooks/redux";
-import { setAuthError, setAuthUser } from "../../../redux/auth/auth.slice";
-import { storeToStorage } from "../../../utils/async-storage.utils";
+import { useAppDispatch } from '../../../hooks/redux';
+import { setAuthError, setAuthUser } from '../../../redux/auth/auth.slice';
+import { storeToStorage } from '../../../utils/async-storage.utils';
 
 type RegisterScreenProps = {} & StackScreenProps<
   AccountStackParamsList,
-  "register"
+  'register'
 >;
 
 const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
@@ -30,10 +30,10 @@ const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
 
   const [loading, setLoading] = useState(false);
   const [inputs, setInputs] = useState({
-    displayName: { value: "", isValid: true },
-    email: { value: "", isValid: true },
-    password: { value: "", isValid: true },
-    confirmPassword: { value: "", isValid: true },
+    displayName: { value: '', isValid: true },
+    email: { value: '', isValid: true },
+    password: { value: '', isValid: true },
+    confirmPassword: { value: '', isValid: true },
   });
 
   const inputChangeHandler = (
@@ -96,7 +96,7 @@ const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
         dispatch(setAuthUser(user));
 
         await insertUserOnUserTable(user);
-        await storeToStorage("user-id", user.id);
+        await storeToStorage('user-id', user.id);
       }
     } catch (error) {
       dispatch(setAuthError(error as Error));
@@ -122,38 +122,38 @@ const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
 
           <View style={styles.form}>
             <Input
-              label={"Nome completo"}
+              label={'Nome completo'}
               invalid={!inputs.displayName.isValid}
               textInputConfig={{
-                onChangeText: inputChangeHandler.bind(this, "displayName"),
-                placeholder: "Insira seu nome",
-                autoCapitalize: "words",
+                onChangeText: inputChangeHandler.bind(this, 'displayName'),
+                placeholder: 'Insira seu nome',
+                autoCapitalize: 'words',
                 autoCorrect: false,
                 value: inputs.displayName.value,
               }}
             />
 
             <Input
-              label={"Email"}
+              label={'Email'}
               invalid={!inputs.email.isValid}
               textInputConfig={{
-                onChangeText: inputChangeHandler.bind(this, "email"),
-                placeholder: "Insira seu email",
-                keyboardType: "email-address",
-                autoCapitalize: "none",
+                onChangeText: inputChangeHandler.bind(this, 'email'),
+                placeholder: 'Insira seu email',
+                keyboardType: 'email-address',
+                autoCapitalize: 'none',
                 autoCorrect: false,
                 value: inputs.email.value,
               }}
             />
 
             <Input
-              label={"Senha"}
+              label={'Senha'}
               invalid={!inputs.password.isValid}
               textInputConfig={{
-                onChangeText: inputChangeHandler.bind(this, "password"),
-                placeholder: "Insira sua senha",
-                keyboardType: "default",
-                autoCapitalize: "none",
+                onChangeText: inputChangeHandler.bind(this, 'password'),
+                placeholder: 'Insira sua senha',
+                keyboardType: 'default',
+                autoCapitalize: 'none',
                 autoCorrect: false,
                 value: inputs.password.value,
                 secureTextEntry: true,
@@ -161,13 +161,13 @@ const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
             />
 
             <Input
-              label={"Confirmar senha"}
+              label={'Confirmar senha'}
               invalid={!inputs.confirmPassword.isValid}
               textInputConfig={{
-                onChangeText: inputChangeHandler.bind(this, "confirmPassword"),
-                placeholder: "Confirme sua senha",
-                keyboardType: "default",
-                autoCapitalize: "none",
+                onChangeText: inputChangeHandler.bind(this, 'confirmPassword'),
+                placeholder: 'Confirme sua senha',
+                keyboardType: 'default',
+                autoCapitalize: 'none',
                 autoCorrect: false,
                 value: inputs.confirmPassword.value,
                 secureTextEntry: true,
@@ -193,33 +193,33 @@ export default RegisterScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   registerContainer: {
-    width: "80%",
-    alignItems: "center",
-    justifyContent: "center",
+    width: '80%',
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: theme.SPACING.xxlg,
   },
   form: {
-    width: "100%",
+    width: '100%',
     marginBottom: theme.SPACING.xlg,
   },
   text: {
     color: theme.COLORS.silver,
-    textAlign: "left",
+    textAlign: 'left',
   },
   title: {
     fontSize: theme.SIZES.xlg,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: theme.COLORS.whiteSmoke,
   },
   errorText: {
     color: theme.COLORS.red,
   },
   titleContainer: {
-    width: "100%",
+    width: '100%',
     marginBottom: theme.SPACING.xxlg,
   },
 });

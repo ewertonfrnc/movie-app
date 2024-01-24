@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -6,20 +6,20 @@ import {
   StyleSheet,
   Text,
   View,
-} from "react-native";
-import SafeAreaComponent from "../../../components/safe-area.component";
-import { theme } from "../../../constants";
-import { fetchShowSeasonDetails } from "../../../services/tmdb/shows.service";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamsList } from "../../../interfaces/navigator.interface";
-import { Episode, SeasonDetails } from "../../../interfaces/show.interface";
-import { Ionicons } from "@expo/vector-icons";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import EpisodeBtn from "./components/Episode-btn";
+} from 'react-native';
+import SafeAreaComponent from '../../../components/utility/safe-area.component';
+import { theme } from '../../../constants';
+import { fetchShowSeasonDetails } from '../../../services/tmdb/shows.service';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamsList } from '../../../interfaces/navigator.interface';
+import { Episode, SeasonDetails } from '../../../interfaces/show.interface';
+import { Ionicons } from '@expo/vector-icons';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import EpisodeBtn from './components/Episode-btn';
 
 type EpisodesScreenProps = {} & NativeStackScreenProps<
   RootStackParamsList,
-  "episodes"
+  'episodes'
 >;
 
 const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
@@ -103,7 +103,7 @@ const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
     //   dispatch(setUserError(error as Error));
     // }
     //
-    console.log("watchEpisodeHandler", user?.seriesFinishedSeasons, episode);
+    console.log('watchEpisodeHandler', user?.seriesFinishedSeasons, episode);
     // setLoading(false);
   }
 
@@ -115,7 +115,7 @@ const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
     <SafeAreaComponent>
       <ScrollView style={styles.container}>
         {loading ? (
-          <ActivityIndicator size={"large"} color={theme.COLORS.darkRed} />
+          <ActivityIndicator size={'large'} color={theme.COLORS.darkRed} />
         ) : (
           <>
             <View style={styles.header}>
@@ -177,14 +177,14 @@ const styles = StyleSheet.create({
     borderBottomColor: theme.COLORS.lightDark,
   },
   backButton: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: theme.SPACING.xlg,
   },
   episodeName: {
     flex: 1,
     fontSize: theme.SIZES.md,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: theme.COLORS.white,
   },
   text: { color: theme.COLORS.whiteSmoke },
@@ -196,16 +196,16 @@ const styles = StyleSheet.create({
     flex: 1,
     color: theme.COLORS.whiteSmoke,
     fontSize: theme.SIZES.xlg,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   episodeInfo: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: theme.SPACING.xlg,
   },
   episodeOverview: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     gap: 20,
   },
   pressed: { opacity: 0.5 },
