@@ -52,7 +52,7 @@ const Navigation = () => {
 
   return (
     <NavigationContainer>
-      {true ? <AppNavigator /> : <AccountNavigator />}
+      {isAuthenticated ? <AppNavigator /> : <AccountNavigator />}
     </NavigationContainer>
   );
 };

@@ -13,7 +13,7 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { readStorageItem } from '../../../utils/async-storage.utils';
 
 import { useAppDispatch } from '../../../hooks/redux';
-import { setUser, setUserError } from '../../../redux/user/user.slice';
+import { setUser } from '../../../redux/user/user.slice';
 
 import {
   fetchShowDetails,
@@ -81,8 +81,10 @@ const HomeScreen: FC<MoviesProps> = ({ navigation }) => {
 
       const userData = await fetchUser(userIdFromStorage);
       dispatch(setUser(userData));
+
+      console.log('userData', userIdFromStorage, userData);
     } catch (error) {
-      dispatch(setUserError(error as Error));
+      // dispatch(setUserError(error as Error));
     }
 
     setLoading(false);

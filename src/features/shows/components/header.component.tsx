@@ -11,6 +11,9 @@ type ShowHeaderProps = {
   tagline: string;
   backdrop_path: string;
   poster_path: string;
+  isWatched: boolean;
+  onPress: () => void;
+  loading: boolean;
 };
 
 export default function ShowHeader({
@@ -18,6 +21,9 @@ export default function ShowHeader({
   tagline,
   backdrop_path,
   poster_path,
+  isWatched,
+  onPress,
+  loading,
 }: ShowHeaderProps) {
   return (
     <View style={styles.container}>
@@ -39,9 +45,9 @@ export default function ShowHeader({
 
         <View style={styles.watchBtnContainer}>
           <Button
-            label={true ? '➖ Remover da lista' : '➕ Adicionar à lista'}
-            loading={false}
-            onPress={() => {}}
+            label={isWatched ? '➖ Remover da lista' : '➕ Adicionar à lista'}
+            loading={loading}
+            onPress={onPress}
           />
         </View>
       </View>
