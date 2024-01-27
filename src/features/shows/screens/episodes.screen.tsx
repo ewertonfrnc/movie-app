@@ -103,7 +103,6 @@ const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
     //   dispatch(setUserError(error as Error));
     // }
     //
-    console.log('watchEpisodeHandler', user?.seriesFinishedSeasons, episode);
     // setLoading(false);
   }
 

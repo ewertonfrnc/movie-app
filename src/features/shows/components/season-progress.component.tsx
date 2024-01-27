@@ -4,7 +4,7 @@ import React from 'react';
 export default function SeasonProgress() {
   return (
     <View>
-      {/* {movieDetails?.seasons.map((season) => {
+      {/* {TMDBMovie?.seasons.map((season) => {
         const currSeason = user?.seriesFinishedSeasons.find(
           (s) => s.id === season.id
         );

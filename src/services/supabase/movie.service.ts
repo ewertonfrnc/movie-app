@@ -1,11 +1,15 @@
 import supabase from './index';
-import { MovieDetails } from '../../interfaces/show.interface';
+import {
+  MovieWatchedByList,
+  WatchedMovie,
+} from '../../interfaces/show.interface';
 
-export async function insertMovie(movie: MovieDetails) {
+export async function insertMovie(movie: WatchedMovie) {
   const { data, error } = await supabase
     .from('movie')
     .insert([{ ...movie }])
-    .select();
+    .select()
+    .single();
 
   if (error) {
     throw new Error(error.message);
@@ -15,24 +19,22 @@ export async function insertMovie(movie: MovieDetails) {
 }
 
 export async function getMovieById(movieId: number) {
-  const { data, error } = await supabase
-    .from('movie')
-    .select('*')
-    .eq('id', movieId);
-
-  if (error) {
-    throw new Error(error.message);
+  try {
+    return await supabase.from('movie').select('*').eq('id', movieId);
+  } catch (error) {
+    return error;
   }
-
-  return data;
 }
 
 // WATCHED MOVIES
-export async function insertWatchedMovie(watchedMovie) {
+export async function insertWatchedMovie(
+  watchedMovie: MovieWatchedByList,
+): Promise<MovieWatchedByList> {
   const { data, error } = await supabase
     .from('watched_movie')
     .insert([{ ...watchedMovie }])
-    .select();
+    .select()
+    .single();
 
   if (error) {
     throw new Error(error.message);
@@ -44,12 +46,13 @@ export async function insertWatchedMovie(watchedMovie) {
 export async function updateWatchedMovie(
   movieId: number,
   watchedByList: string[],
-) {
+): Promise<MovieWatchedByList> {
   const { data, error } = await supabase
     .from('watched_movie')
     .update({ watchedBy: watchedByList })
     .eq('id', movieId)
-    .select();
+    .select()
+    .single();
 
   if (error) {
     throw new Error(error.message);
@@ -58,7 +61,9 @@ export async function updateWatchedMovie(
   return data;
 }
 
-export async function getWatchedMovieById(movieId: number) {
+export async function getWatchedMovieById(
+  movieId: number,
+): Promise<MovieWatchedByList> {
   const { data, error } = await supabase
     .from('watched_movie')
     .select('*')

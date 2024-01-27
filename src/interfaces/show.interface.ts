@@ -11,7 +11,7 @@ export type VideoTrailer = {
   id: string;
 };
 
-export type MovieDetails = {
+export type TMDBMovie = {
   credits: { cast: Cast[] };
   adult: boolean;
   backdrop_path: string;
@@ -110,4 +110,24 @@ export type Cast = {
   credit_id: string;
   department: string;
   job: string;
+};
+
+export type WatchedMovie = {
+  id: number;
+  title: string;
+  tagline: string;
+  backdropPath: string;
+  posterPath: string;
+  releaseDate: string;
+  mediaType: string;
+  runtime: number;
+  voteAverage: number;
+  genre: string;
+  overview: string;
+};
+
+export type MovieWatchedByList = {
+  id: number;
+  title: string;
+  watchedBy: string[];
 };

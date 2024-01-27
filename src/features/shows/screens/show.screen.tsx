@@ -3,7 +3,7 @@ import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamsList } from '../../../interfaces/navigator.interface';
-import { SeasonDetails } from '../../../interfaces/show.interface';
+import { WatchedMovie } from '../../../interfaces/show.interface';
 
 import SafeAreaComponent from '../../../components/utility/safe-area.component';
 import CastAvatar from '../components/cast-avatar.component';
@@ -18,74 +18,94 @@ import {
   insertWatchedMovie,
   updateWatchedMovie,
 } from '../../../services/supabase/movie.service';
-import { useAppSelector } from '../../../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import {
+  setIsWatchedMovie,
+  setWatchedMovie,
+} from '../../../redux/movies/movie.slice';
 
 type ShowScreenProps = {} & NativeStackScreenProps<
   RootStackParamsList,
   'showDetails'
 >;
 
-const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
-  const movieDetails = route.params;
+const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
+  const dispatch = useAppDispatch();
 
-  const user = useAppSelector(({ user }) => user.userData);
+  const TMDBMovie = route.params;
+
+  const user = useAppSelector((state) => state.user.userData);
+  const { movie, isWatchedByCurrentUser } = useAppSelector(
+    ({ movies }) => movies,
+  );
 
   const [loading, setLoading] = useState(false);
-  const [isWatchedMovie, setIsWatchedMovie] = useState(false);
-  const [watchedByList, setWatchedByList] = useState([]);
-  const [isMovieOnDB, setIsMovieOnDB] = useState(false);
 
   async function checkIfWatchedMovie() {
     setLoading(true);
 
     try {
-      const watchedMovie = await getWatchedMovieById(movieDetails.id);
+      const watchedMovie = await getWatchedMovieById(TMDBMovie.id);
+      dispatch(setWatchedMovie(watchedMovie));
 
-      setIsMovieOnDB(!!watchedMovie);
-      setWatchedByList(watchedMovie.watchedBy);
-      setIsWatchedMovie(
-        !!watchedMovie && watchedMovie.watchedBy.includes(user.id),
-      );
+      if (user) {
+        dispatch(setIsWatchedMovie(watchedMovie.watchedBy.includes(user.id)));
+      }
     } catch (error) {
-      console.log(error.message);
+      dispatch(setIsWatchedMovie(false));
+      dispatch(setWatchedMovie(null));
+      console.log(error);
     }
 
     setLoading(false);
   }
 
-  async function addToWatchedMovies() {
-    const movieObj = {
-      id: movieDetails.id,
-      title: movieDetails.title,
-      tagline: movieDetails.tagline,
-      backdropPath: movieDetails.backdrop_path,
-      posterPath: movieDetails.poster_path,
-      releaseDate: movieDetails.release_date,
-      mediaType: movieDetails.media_type,
-      runtime: movieDetails.runtime,
-      voteAverage: movieDetails.vote_average,
-      genre: movieDetails.genres[0].name,
-      overview: movieDetails.overview,
+  async function handleMovieHandler() {
+    const movieObj: WatchedMovie = {
+      id: TMDBMovie.id,
+      title: TMDBMovie.title,
+      tagline: TMDBMovie.tagline,
+      backdropPath: TMDBMovie.backdrop_path,
+      posterPath: TMDBMovie.poster_path,
+      releaseDate: TMDBMovie.release_date,
+      mediaType: TMDBMovie.media_type,
+      runtime: TMDBMovie.runtime,
+      voteAverage: TMDBMovie.vote_average,
+      genre: TMDBMovie.genres[0].name,
+      overview: TMDBMovie.overview,
     };
 
     setLoading(true);
+
     try {
-      if (!isMovieOnDB && !isWatchedMovie) {
-        await Promise.all([
-          insertMovie(movieObj),
-          await insertWatchedMovie({
-            id: movieObj.id,
-            title: movieObj.title,
-            watchedBy: [user.id],
-          }),
-        ]);
+      if (user && !movie) {
+        await insertMovie(movieObj);
+
+        const movieWatchedBy = await insertWatchedMovie({
+          id: movieObj.id,
+          title: movieObj.title,
+          watchedBy: [user.id],
+        });
+
+        dispatch(setWatchedMovie(movieWatchedBy));
+        dispatch(setIsWatchedMovie(movieWatchedBy.watchedBy.includes(user.id)));
       }
 
-      if (isMovieOnDB && !isWatchedMovie) {
-        await updateWatchedMovie(movieObj.id, [user.id, ...watchedByList]);
+      if (user && movie) {
+        const newWatchByList = isWatchedByCurrentUser
+          ? movie.watchedBy.filter((id) => id !== user.id)
+          : [user.id, ...movie.watchedBy];
+
+        const movieWatchedBy = await updateWatchedMovie(
+          movie.id,
+          newWatchByList,
+        );
+
+        dispatch(setWatchedMovie(movieWatchedBy));
+        dispatch(setIsWatchedMovie(movieWatchedBy.watchedBy.includes(user.id)));
       }
     } catch (error) {
-      console.log(error.message);
+      console.log('error', error);
     }
 
     setLoading(false);
@@ -95,44 +115,44 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
     checkIfWatchedMovie();
   }, []);
 
-  function goToEpisodesScreen(season: SeasonDetails) {
-    navigation.navigate('episodes', {
-      seriesId: movieDetails.id,
-      season,
-    });
-  }
+  // function goToEpisodesScreen(season: SeasonDetails) {
+  //   navigation.navigate('episodes', {
+  //     seriesId: TMDBMovie.id,
+  //     season,
+  //   });
+  // }
 
   return (
     <SafeAreaComponent>
       <ScrollView>
         <ShowHeader
           loading={loading}
-          isWatched={isWatchedMovie}
-          title={movieDetails.title || movieDetails.name}
-          tagline={movieDetails.tagline}
-          backdrop_path={movieDetails.backdrop_path}
-          poster_path={movieDetails.poster_path}
-          onPress={addToWatchedMovies}
+          isWatched={isWatchedByCurrentUser}
+          title={TMDBMovie.title || TMDBMovie.name}
+          tagline={TMDBMovie.tagline}
+          backdrop_path={TMDBMovie.backdrop_path}
+          poster_path={TMDBMovie.poster_path}
+          onPress={handleMovieHandler}
         />
 
         <ShowDescription
-          releaseDate={movieDetails.release_date || movieDetails.first_air_date}
-          runtime={movieDetails.runtime}
-          mediaType={movieDetails.media_type}
-          voteAverage={movieDetails.vote_average}
-          genre={movieDetails.genres[0].name}
+          releaseDate={TMDBMovie.release_date || TMDBMovie.first_air_date}
+          runtime={TMDBMovie.runtime}
+          mediaType={TMDBMovie.media_type}
+          voteAverage={TMDBMovie.vote_average}
+          genre={TMDBMovie.genres[0].name}
         />
 
         <SectionContainer title="Sinopse">
           <View>
-            <TextComponent type={'body'}>{movieDetails.overview}</TextComponent>
+            <TextComponent type={'body'}>{TMDBMovie.overview}</TextComponent>
           </View>
         </SectionContainer>
 
         <SectionContainer title="Elenco principal">
           <View style={styles.avatarContainer}>
             <FlatList
-              data={movieDetails.credits.cast}
+              data={TMDBMovie.credits.cast}
               renderItem={({ item }) => <CastAvatar castMember={item} />}
               horizontal
             />

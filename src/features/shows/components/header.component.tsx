@@ -1,3 +1,4 @@
+import React from 'react';
 import { Image, ImageBackground, StyleSheet, View } from 'react-native';
 
 import Button from '../../../components/button.component';

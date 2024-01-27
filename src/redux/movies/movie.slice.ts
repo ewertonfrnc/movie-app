@@ -1,29 +1,46 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { MovieDetails } from "../../interfaces/show.interface";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  MovieWatchedByList,
+  WatchedMovie,
+} from '../../interfaces/show.interface';
 
 type InitialState = {
-  loading: boolean
-  watchlistedMovies: MovieDetails[];
-  watchedMovies: MovieDetails[];
+  loading: boolean;
+  movie: MovieWatchedByList | null;
+  isMovieOnDB: boolean;
+  isWatchedByCurrentUser: boolean;
+  watchedByList: string[] | [];
   error: Error | null;
 };
 
 const initialState: InitialState = {
   loading: false,
-  watchlistedMovies: [],
-  watchedMovies: [],
+  movie: null,
+  isMovieOnDB: false,
+  isWatchedByCurrentUser: false,
+  watchedByList: [],
   error: null,
 };
 
 const movieSlice = createSlice({
-  name: "movies",
+  name: 'movies',
   initialState,
   reducers: {
-    fetchCurrentMovie: (state, action: PayloadAction<MovieDetails[]>) => {
-      state.watchedMovies = action.payload;
+    setWatchedMovie: (
+      state,
+      action: PayloadAction<WatchedMovie | MovieWatchedByList | null>,
+    ) => {
+      state.movie = action.payload;
+      state.isMovieOnDB = !!action.payload;
     },
-    setWatchedMovies: (state, action: PayloadAction<MovieDetails[]>) => {
-      state.watchedMovies = action.payload;
+    setMovieWatchedByList: (
+      state,
+      action: PayloadAction<MovieWatchedByList>,
+    ) => {
+      state.watchedByList = action.payload.watchedBy;
+    },
+    setIsWatchedMovie: (state, action: PayloadAction<boolean>) => {
+      state.isWatchedByCurrentUser = action.payload;
     },
     setMovieError: (state, action: PayloadAction<Error>) => {
       state.error = action.payload;
@@ -31,5 +48,10 @@ const movieSlice = createSlice({
   },
 });
 
-export const { setWatchedMovies, setMovieError } = movieSlice.actions;
+export const {
+  setWatchedMovie,
+  setIsWatchedMovie,
+  setMovieWatchedByList,
+  setMovieError,
+} = movieSlice.actions;
 export default movieSlice.reducer;

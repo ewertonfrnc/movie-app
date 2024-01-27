@@ -1,19 +1,19 @@
-import { FC } from "react";
+import { FC } from 'react';
 import {
   ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
   View,
-} from "react-native";
+} from 'react-native';
 
-import { MovieDetails } from "../../../interfaces/show.interface";
-import { theme } from "../../../constants";
-import ImageCard from "../../../components/image-card.component";
+import { TMDBMovie } from '../../../interfaces/show.interface';
+import { theme } from '../../../constants';
+import ImageCard from '../../../components/image-card.component';
 
 type TvShowsScreenProps = {
   loading: boolean;
-  trendingShow: MovieDetails[];
+  trendingShow: TMDBMovie[];
   onPress: (params: { showId: number; showType: string }) => void;
 };
 
@@ -31,7 +31,7 @@ const TvShowsComponent: FC<TvShowsScreenProps> = ({
       </View>
 
       {loading ? (
-        <ActivityIndicator size={"large"} color={theme.COLORS.darkRed} />
+        <ActivityIndicator size={'large'} color={theme.COLORS.darkRed} />
       ) : (
         <FlatList
           data={trendingShow}
@@ -50,16 +50,16 @@ const styles = StyleSheet.create({
     height: 400,
   },
   sectionHeading: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: theme.SPACING.xlg,
     paddingTop: theme.SPACING.lg,
     marginBottom: theme.SPACING.lg,
     marginTop: theme.SPACING.xxlg,
   },
   title: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: theme.SIZES.lg,
     color: theme.COLORS.text.primary,
   },

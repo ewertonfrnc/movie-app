@@ -9,11 +9,11 @@ import {
 
 import { theme } from '../../../constants';
 import ImageCard from '../../../components/image-card.component';
-import { MovieDetails } from '../../../interfaces/show.interface';
+import { TMDBMovie } from '../../../interfaces/show.interface';
 
 type MoviesProps = {
   loading: boolean;
-  trendingShow: MovieDetails[];
+  trendingShow: TMDBMovie[];
   onPress: (params: { showId: number; showType: string }) => void;
 };
 

@@ -14,9 +14,7 @@ type EpisodeBtnProps = {
 export default function EpisodeBtn({ episode, onPress }: EpisodeBtnProps) {
   const user = useAppSelector(({ user }) => user.user);
 
-  useEffect(() => {
-    console.log('user', user);
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <Pressable

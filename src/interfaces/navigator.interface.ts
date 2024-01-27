@@ -1,10 +1,10 @@
 // Home types
-import { MovieDetails, SeasonDetails } from "./show.interface";
+import { TMDBMovie, SeasonDetails } from './show.interface';
 
 export type RootStackParamsList = {
   home: undefined;
   settings: undefined;
-  showDetails: MovieDetails;
+  showDetails: TMDBMovie;
   episodes: {
     seriesId: number;
     season: SeasonDetails;

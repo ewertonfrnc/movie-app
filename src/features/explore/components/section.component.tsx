@@ -1,22 +1,22 @@
-import { FC } from "react";
+import { FC } from 'react';
 import {
   ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
   View,
-} from "react-native";
+} from 'react-native';
 
-import { theme } from "../../../constants";
-import { MovieDetails } from "../../../interfaces/show.interface";
+import { theme } from '../../../constants';
+import { TMDBMovie } from '../../../interfaces/show.interface';
 
-import ImageCard from "../../../components/image-card.component";
-import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
+import ImageCard from '../../../components/image-card.component';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 
 type SectionHighlightProps = {
   loading: boolean;
-  shows: MovieDetails[];
+  shows: TMDBMovie[];
 };
 
 const SectionHighlight: FC<SectionHighlightProps> = ({ loading, shows }) => {
@@ -40,7 +40,7 @@ const SectionHighlight: FC<SectionHighlightProps> = ({ loading, shows }) => {
       </View>
 
       {loading ? (
-        <ActivityIndicator size={"large"} color={theme.COLORS.darkRed} />
+        <ActivityIndicator size={'large'} color={theme.COLORS.darkRed} />
       ) : (
         <FlatList
           data={shows}
@@ -65,15 +65,15 @@ const styles = StyleSheet.create({
     height: 330,
   },
   sectionHeading: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: theme.SPACING.xlg,
     paddingTop: theme.SPACING.xlg,
     marginBottom: theme.SPACING.lg,
   },
   title: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: theme.SIZES.lg,
     color: theme.COLORS.white,
   },

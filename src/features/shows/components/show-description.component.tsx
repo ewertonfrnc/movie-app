@@ -18,7 +18,6 @@ export function ShowDescription({
   runtime,
   mediaType,
 }: ShowDescriptionProps) {
-  console.log(mediaType);
   const rankStyles =
     voteAverage < 5 ? 'badRank' : voteAverage < 7 ? 'goodRank' : 'awesomeRank';
 

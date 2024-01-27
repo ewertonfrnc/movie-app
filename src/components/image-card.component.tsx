@@ -1,12 +1,12 @@
-import React, { FC } from "react";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import React, { FC } from 'react';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 
-import { theme } from "../constants";
-import { MovieDetails } from "../interfaces/show.interface";
-import { BASE_IMAGE_URL } from "../utils/tmdb.utils";
+import { theme } from '../constants';
+import { TMDBMovie } from '../interfaces/show.interface';
+import { BASE_IMAGE_URL } from '../utils/tmdb.utils';
 
 type ImageCardProps = {
-  show: MovieDetails;
+  show: TMDBMovie;
   onPress: (params: { showId: number; showType: string }) => void;
 };
 

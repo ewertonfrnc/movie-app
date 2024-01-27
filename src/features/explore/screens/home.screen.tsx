@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 import { theme } from '../../../constants';
 
-import { MovieDetails } from '../../../interfaces/show.interface';
+import { TMDBMovie } from '../../../interfaces/show.interface';
 import {
   HomeStackParamsList,
   RootStackParamsList,
@@ -36,8 +36,8 @@ const HomeScreen: FC<MoviesProps> = ({ navigation }) => {
   const dispatch = useAppDispatch();
 
   const [loading, setLoading] = useState(false);
-  const [trendingMovies, setTrendingMovies] = useState<MovieDetails[]>([]);
-  const [trendingTvShows, setTrendingTvShows] = useState<MovieDetails[]>([]);
+  const [trendingMovies, setTrendingMovies] = useState<TMDBMovie[]>([]);
+  const [trendingTvShows, setTrendingTvShows] = useState<TMDBMovie[]>([]);
 
   const [recentMovie, setRecentMovie] = useState('');
   const [isTvShows, setIsTvShows] = useState(false);
@@ -63,9 +63,9 @@ const HomeScreen: FC<MoviesProps> = ({ navigation }) => {
   }
 
   async function onPressHandler(params: { showId: number; showType: string }) {
-    const movieDetails = await fetchShowDetails(params.showId, params.showType);
-    if (movieDetails) {
-      navigation.navigate('showDetails', movieDetails);
+    const TMDBMovie = await fetchShowDetails(params.showId, params.showType);
+    if (TMDBMovie) {
+      navigation.navigate('showDetails', TMDBMovie);
     }
   }
 
@@ -81,8 +81,6 @@ const HomeScreen: FC<MoviesProps> = ({ navigation }) => {
 
       const userData = await fetchUser(userIdFromStorage);
       dispatch(setUser(userData));
-
-      console.log('userData', userIdFromStorage, userData);
     } catch (error) {
       // dispatch(setUserError(error as Error));
     }
