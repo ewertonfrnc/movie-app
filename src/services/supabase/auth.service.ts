@@ -1,4 +1,4 @@
-import supabase from "../supabase";
+import supabase from '../supabase';
 
 export const signUp = async (
   displayName: string,
@@ -11,7 +11,9 @@ export const signUp = async (
     options: { data: { displayName } },
   });
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    throw new Error(error.message);
+  }
 
   return data;
 };
@@ -25,12 +27,16 @@ export const logInWithEmailPassword = async (
     password,
   });
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    throw new Error(error.message);
+  }
 
   return data;
 };
 
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
-  if (error) throw new Error(error.message);
+  if (error) {
+    throw new Error(error.message);
+  }
 }

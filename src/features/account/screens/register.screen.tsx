@@ -21,7 +21,7 @@ type RegisterScreenProps = {} & StackScreenProps<
   'register'
 >;
 
-const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
+const RegisterScreen: FC<RegisterScreenProps> = () => {
   // const {
   //   state: { loading },
   //   authDispatch,

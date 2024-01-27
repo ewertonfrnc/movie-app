@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { User } from "@supabase/supabase-js";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { User } from '@supabase/supabase-js';
 
 type InitialState = {
   loading: boolean;
@@ -11,14 +11,14 @@ type InitialState = {
 
 const initialState: InitialState = {
   loading: false,
-  userId: "",
+  userId: '',
   user: null,
   isAuthenticated: false,
   error: null,
 };
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     onAppStart: (state, action: PayloadAction<string>) => {
@@ -33,7 +33,7 @@ const authSlice = createSlice({
       state.error = action.payload;
     },
     setAuthLogOut: (state) => {
-      state.userId = "";
+      state.userId = '';
       state.user = null;
       state.isAuthenticated = false;
       state.error = null;

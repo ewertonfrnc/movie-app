@@ -1,8 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-  MovieWatchedByList,
-  WatchedMovie,
-} from '../../interfaces/show.interface';
+import { MovieWatchedByList } from '../../interfaces/show.interface';
 
 type InitialState = {
   loading: boolean;
@@ -28,7 +25,7 @@ const movieSlice = createSlice({
   reducers: {
     setWatchedMovie: (
       state,
-      action: PayloadAction<WatchedMovie | MovieWatchedByList | null>,
+      action: PayloadAction<MovieWatchedByList | null>,
     ) => {
       state.movie = action.payload;
       state.isMovieOnDB = !!action.payload;

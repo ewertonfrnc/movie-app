@@ -2,7 +2,7 @@ import { User } from '@supabase/supabase-js';
 import supabase from './index';
 
 import { UserData } from '../../interfaces/user.interface';
-import { TMDBMovie, SeasonDetails } from '../../interfaces/show.interface';
+import { SeasonDetails, TMDBMovie } from '../../interfaces/show.interface';
 
 export async function fetchUser(userId: string): Promise<UserData> {
   const { data, error } = await supabase
@@ -22,9 +22,7 @@ export async function insertUserOnUserTable(userData: User | null) {
   const filterUserValues = {
     id: userData?.id,
     email: userData?.email,
-    createdAt: userData?.created_at,
     displayName: userData?.user_metadata.displayName,
-    watchedMovies: [],
   };
 
   const { data, error } = await supabase
