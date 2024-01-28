@@ -56,3 +56,21 @@ export async function fetchShowSeasonDetails(
     console.error(error);
   }
 }
+
+// SEARCH
+export async function searchShows(searchValue: string) {
+  console.log('searchValue', searchValue);
+  try {
+    const { data } = await api.get('/search/multi', {
+      params: {
+        query: searchValue,
+        include_adult: true,
+        language: 'pt-BR',
+      },
+    });
+
+    return data.results;
+  } catch (error) {
+    console.error(error);
+  }
+}

@@ -8,9 +8,10 @@ import { BASE_IMAGE_URL } from '../utils/tmdb.utils';
 type ImageCardProps = {
   show: TMDBMovie;
   onPress: (params: { showId: number; showType: string }) => void;
+  type: 'normal' | 'small';
 };
 
-const ImageCard: FC<ImageCardProps> = ({ show, onPress }) => {
+const ImageCard: FC<ImageCardProps> = ({ show, onPress, type = 'normal' }) => {
   const { id, media_type } = show;
 
   return (
@@ -20,7 +21,7 @@ const ImageCard: FC<ImageCardProps> = ({ show, onPress }) => {
         onPress={onPress.bind(this, { showId: id, showType: media_type })}
       >
         <Image
-          style={styles.image}
+          style={type === 'normal' ? styles.image : styles.smallImage}
           source={{
             uri: `${BASE_IMAGE_URL}${show.poster_path}`,
           }}
@@ -43,5 +44,9 @@ const styles = StyleSheet.create({
   },
   onPressed: {
     opacity: 0.5,
+  },
+  smallImage: {
+    width: 100,
+    height: 150,
   },
 });

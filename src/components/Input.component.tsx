@@ -1,16 +1,16 @@
-import { FC } from "react";
+import React, { FC } from 'react';
 import {
   StyleSheet,
   Text,
   TextInput,
   TextInputProps,
   View,
-} from "react-native";
+} from 'react-native';
 
-import { theme } from "../constants";
+import { theme } from '../constants';
 
 type InputProps = {
-  label: string;
+  label?: string;
   invalid?: boolean;
   textInputConfig: TextInputProps;
 };
@@ -34,7 +34,7 @@ export default Input;
 
 const styles = StyleSheet.create({
   inputContainer: {
-    width: "100%",
+    width: '100%',
     marginVertical: theme.SPACING.xlg,
   },
   label: {
@@ -43,11 +43,7 @@ const styles = StyleSheet.create({
     marginBottom: theme.SPACING.md,
   },
   input: {
-    backgroundColor: "transparent",
-
-    borderStyle: "solid",
-    borderBottomWidth: 1,
-    borderBottomColor: theme.COLORS.silver,
+    backgroundColor: theme.COLORS.lightDark,
 
     padding: theme.SPACING.lg,
     fontSize: theme.SIZES.md,

@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   createStackNavigator,
   TransitionPresets,
@@ -6,6 +7,7 @@ import {
 import HomeNavigator from './home.navigator';
 import ShowScreen from '../features/shows/screens/show.screen';
 import EpisodesScreen from '../features/shows/screens/episodes.screen';
+import SearchScreen from '../features/search/screens/search.screen';
 
 import { RootStackParamsList } from '../interfaces/navigator.interface';
 
@@ -20,6 +22,7 @@ export default function AppNavigator() {
       }}
     >
       <Stack.Screen name="home" component={HomeNavigator} />
+      <Stack.Screen name="search" component={SearchScreen} />
       <Stack.Screen name="showDetails" component={ShowScreen} />
       <Stack.Screen name="episodes" component={EpisodesScreen} />
     </Stack.Navigator>

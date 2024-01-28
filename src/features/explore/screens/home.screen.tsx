@@ -1,5 +1,5 @@
-import { FC, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Switch, View } from 'react-native';
+import React, { FC, useEffect, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 import { theme } from '../../../constants';
 
@@ -8,6 +8,8 @@ import {
   HomeStackParamsList,
   RootStackParamsList,
 } from '../../../interfaces/navigator.interface';
+
+import { Ionicons } from '@expo/vector-icons';
 
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { readStorageItem } from '../../../utils/async-storage.utils';
@@ -88,6 +90,10 @@ const HomeScreen: FC<MoviesProps> = ({ navigation }) => {
     setLoading(false);
   }
 
+  function searchHandler() {
+    navigation.navigate('search');
+  }
+
   useEffect(() => {
     loadUserData();
     getShows();
@@ -95,7 +101,21 @@ const HomeScreen: FC<MoviesProps> = ({ navigation }) => {
 
   return (
     <SafeAreaComponent>
-      <ScrollView>
+      <ScrollView style={styles.container}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.searchContainer,
+            pressed && styles.onPressed,
+          ]}
+          onPress={searchHandler}
+        >
+          <Ionicons
+            name="search"
+            size={theme.SIZES.xlg}
+            color={theme.COLORS.silver}
+          />
+        </Pressable>
+
         <HeroImage backdropPath={recentMovie} />
 
         <Switch
@@ -130,4 +150,20 @@ const HomeScreen: FC<MoviesProps> = ({ navigation }) => {
 
 export default HomeScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {},
+  searchContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 44,
+    height: 44,
+    backgroundColor: theme.COLORS.lightDark,
+    padding: theme.SPACING.lg,
+    borderRadius: theme.SIZES.xxlg,
+    zIndex: 9999,
+    position: 'absolute',
+    top: 30,
+    right: 30,
+  },
+  onPressed: { opacity: 0.5 },
+});
