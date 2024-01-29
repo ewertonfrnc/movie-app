@@ -1,3 +1,4 @@
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { decimalToPercentage } from '../../../utils/tmdb.utils';
 import { getFullYear, minToHours } from '../../../utils/time.utils';
@@ -32,7 +33,9 @@ export function ShowDescription({
 
         <TextComponent type={'body'}>{genre}</TextComponent>
 
-        <TextComponent type={'body'}>⏳ {minToHours(runtime)}</TextComponent>
+        {mediaType === 'movie' && (
+          <TextComponent type={'body'}>⏳ {minToHours(runtime)}</TextComponent>
+        )}
       </View>
     </View>
   );
@@ -40,12 +43,12 @@ export function ShowDescription({
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: theme.SPACING.xlg,
+    marginVertical: theme.SPACING.xlg,
   },
   stats: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    gap: theme.SPACING.lg,
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
   rank: {
     fontWeight: 'bold',

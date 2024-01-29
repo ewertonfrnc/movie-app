@@ -3,7 +3,10 @@ import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamsList } from '../../../interfaces/navigator.interface';
-import { WatchedMovie } from '../../../interfaces/show.interface';
+import {
+  SeasonDetails,
+  WatchedMovie,
+} from '../../../interfaces/show.interface';
 
 import SafeAreaComponent from '../../../components/utility/safe-area.component';
 import CastAvatar from '../components/cast-avatar.component';
@@ -23,13 +26,14 @@ import {
   setIsWatchedMovie,
   setWatchedMovie,
 } from '../../../redux/movies/movie.slice';
+import SeasonProgress from '../components/season-progress.component';
 
 type ShowScreenProps = {} & NativeStackScreenProps<
   RootStackParamsList,
   'showDetails'
 >;
 
-const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
+const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
 
   const TMDBMovie = route.params;
@@ -113,14 +117,15 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
 
   useEffect(() => {
     checkIfWatchedMovie();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // function goToEpisodesScreen(season: SeasonDetails) {
-  //   navigation.navigate('episodes', {
-  //     seriesId: TMDBMovie.id,
-  //     season,
-  //   });
-  // }
+  function goToEpisodesScreen(season: SeasonDetails) {
+    navigation.navigate('episodes', {
+      seriesId: TMDBMovie.id,
+      season,
+    });
+  }
 
   return (
     <SafeAreaComponent>
@@ -142,6 +147,14 @@ const ShowScreen: FC<ShowScreenProps> = ({ route }) => {
           voteAverage={TMDBMovie.vote_average}
           genre={TMDBMovie.genres[0].name}
         />
+
+        {TMDBMovie.seasons && user && (
+          <SeasonProgress
+            user={user}
+            seasons={TMDBMovie.seasons}
+            onPress={goToEpisodesScreen}
+          />
+        )}
 
         <SectionContainer title="Sinopse">
           <View>

@@ -1,4 +1,4 @@
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, TextProps } from 'react-native';
 import React, { ReactNode } from 'react';
 import { theme } from '../../constants';
 
@@ -6,14 +6,27 @@ type TextComponentProps = {
   children: ReactNode;
   rank?: 'badRank' | 'goodRank' | 'awesomeRank';
   type: 'title' | 'body' | 'button' | 'caption';
+  textProps?: TextProps;
 };
 
 export default function TextComponent({
   type,
   rank = '',
   children,
+  textProps,
 }: TextComponentProps) {
-  return <Text style={[styles[type], styles[rank]]}>{children}</Text>;
+  return (
+    <Text
+      style={[
+        styles[type],
+        styles[rank],
+        { flex: textProps?.numberOfLines && 1 },
+      ]}
+      {...textProps}
+    >
+      {children}
+    </Text>
+  );
 }
 
 const styles = StyleSheet.create({

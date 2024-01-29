@@ -1,46 +1,70 @@
-import { View, Text } from 'react-native';
 import React from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-export default function SeasonProgress() {
+import Progress from './progress';
+import TextComponent from '../../../components/typography/text.component';
+import RadioButton from '../../../components/radio-button';
+
+import { SeasonDetails } from '../../../interfaces/show.interface';
+import { UserData } from '../../../interfaces/user.interface';
+import { theme } from '../../../constants';
+
+type SeasonProgressProps = {
+  user: UserData;
+  seasons: SeasonDetails[];
+  onPress: (season: SeasonDetails) => void;
+};
+
+export default function SeasonProgress({
+  seasons,
+  onPress,
+}: SeasonProgressProps) {
   return (
     <View>
-      {/* {TMDBMovie?.seasons.map((season) => {
-        const currSeason = user?.seriesFinishedSeasons.find(
-          (s) => s.id === season.id
-        );
-
+      {seasons.map((season) => {
         return (
           <Pressable
             key={season.id}
             style={({ pressed }) => [
-              styles.progressContainer,
+              styles.seasonContainer,
               pressed && styles.pressed,
             ]}
-            onPress={goToEpisodesScreen.bind(this, season)}
+            onPress={() => onPress(season)}
           >
             <RadioButton selected={false} onPress={() => {}} />
 
-            <View style={styles.progressInfoContainer}>
-              <Text style={[styles.subtitle, { flex: 1 }]} numberOfLines={2}>
+            <View style={styles.progressContainer}>
+              <TextComponent type="body" textProps={{ numberOfLines: 2 }}>
                 {season.name}
-              </Text>
+              </TextComponent>
 
-              <Progress
-                currentValue={
-                  currSeason?.finished_watching ? currSeason?.episode_count : 0
-                }
-                totalValue={season.episode_count}
-              />
+              <Progress currentValue={3} totalValue={season.episode_count} />
 
-              <Text style={styles.subtitle}>
-                {`${currSeason?.episode_count || 0} / ${
-                  season.episode_count
-                }  >`}
-              </Text>
+              <TextComponent type="body">
+                {`3 / ${season.episode_count}`}
+              </TextComponent>
             </View>
           </Pressable>
         );
-      })} */}
+      })}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  seasonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+    padding: theme.SPACING.xlg,
+  },
+  progressContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 20,
+  },
+  pressed: { opacity: 0.5 },
+});

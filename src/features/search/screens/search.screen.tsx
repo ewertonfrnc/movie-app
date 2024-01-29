@@ -66,7 +66,6 @@ export default function SearchScreen({ navigation }: SearchScreenProps) {
               onPress={() => goToShowScreen(item.id, item.media_type)}
             />
           )}
-          horizontal={false}
           numColumns={3}
         />
       </View>
