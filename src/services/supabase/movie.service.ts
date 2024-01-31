@@ -1,12 +1,9 @@
 import supabase from './index';
-import {
-  MovieWatchedByList,
-  WatchedMovie,
-} from '../../interfaces/show.interface';
+import { Show, WatchedMovie } from '../../interfaces/show.interface';
 
-export async function insertMovie(movie: WatchedMovie) {
+export async function insertMovie(movie: Show) {
   const { data, error } = await supabase
-    .from('movie')
+    .from('show')
     .insert([{ ...movie }])
     .select()
     .single();
@@ -18,18 +15,8 @@ export async function insertMovie(movie: WatchedMovie) {
   return data;
 }
 
-export async function getMovieById(movieId: number) {
-  try {
-    return await supabase.from('movie').select('*').eq('id', movieId);
-  } catch (error) {
-    return error;
-  }
-}
-
 // WATCHED MOVIES
-export async function insertWatchedMovie(
-  watchedMovie: MovieWatchedByList,
-): Promise<MovieWatchedByList> {
+export async function insertWatchedMovie(watchedMovie: WatchedMovie) {
   const { data, error } = await supabase
     .from('watched_movie')
     .insert([{ ...watchedMovie }])
@@ -43,15 +30,11 @@ export async function insertWatchedMovie(
   return data;
 }
 
-export async function updateWatchedMovie(
-  movieId: number,
-  watchedByList: string[],
-): Promise<MovieWatchedByList> {
+export async function getShowOnDB(movieId: number): Promise<Show> {
   const { data, error } = await supabase
-    .from('watched_movie')
-    .update({ watchedBy: watchedByList })
-    .eq('id', movieId)
+    .from('show')
     .select()
+    .eq('movieId', movieId)
     .single();
 
   if (error) {
@@ -63,12 +46,11 @@ export async function updateWatchedMovie(
 
 export async function getWatchedMovieById(
   movieId: number,
-): Promise<MovieWatchedByList> {
+): Promise<WatchedMovie[]> {
   const { data, error } = await supabase
     .from('watched_movie')
-    .select('*')
-    .eq('id', movieId)
-    .single();
+    .select()
+    .eq('movieId', movieId);
 
   if (error) {
     throw new Error(error.message);
@@ -77,16 +59,14 @@ export async function getWatchedMovieById(
   return data;
 }
 
-export async function updateMovieRow(userId: string[], movieId: number) {
-  const { data, error } = await supabase
-    .from('movie')
-    .update({ watched_by: userId })
-    .eq('id', movieId)
-    .select();
+export async function deleteWatchedMovieById(movieId: number, userId: string) {
+  const { error } = await supabase
+    .from('watched_movie')
+    .delete()
+    .eq('movieId', movieId)
+    .eq('userId', userId);
 
   if (error) {
     throw new Error(error.message);
   }
-
-  return data;
 }

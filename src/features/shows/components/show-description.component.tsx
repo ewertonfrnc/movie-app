@@ -33,7 +33,7 @@ export function ShowDescription({
 
         <TextComponent type={'body'}>{genre}</TextComponent>
 
-        {mediaType === 'movie' && (
+        {!mediaType && (
           <TextComponent type={'body'}>⏳ {minToHours(runtime)}</TextComponent>
         )}
       </View>

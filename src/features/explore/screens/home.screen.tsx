@@ -65,9 +65,11 @@ const HomeScreen: FC<MoviesProps> = ({ navigation }) => {
   }
 
   async function onPressHandler(params: { showId: number; showType: string }) {
-    const TMDBMovie = await fetchShowDetails(params.showId, params.showType);
-    if (TMDBMovie) {
-      navigation.navigate('showDetails', TMDBMovie);
+    const showDetails = await fetchShowDetails(params.showId, params.showType);
+
+    if (showDetails) {
+      console.log(showDetails);
+      navigation.navigate('showDetails', showDetails);
     }
   }
 

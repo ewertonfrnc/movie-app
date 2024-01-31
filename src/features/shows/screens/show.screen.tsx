@@ -3,10 +3,7 @@ import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamsList } from '../../../interfaces/navigator.interface';
-import {
-  SeasonDetails,
-  WatchedMovie,
-} from '../../../interfaces/show.interface';
+import { SeasonDetails, Show } from '../../../interfaces/show.interface';
 
 import SafeAreaComponent from '../../../components/utility/safe-area.component';
 import CastAvatar from '../components/cast-avatar.component';
@@ -16,10 +13,11 @@ import SectionContainer from '../components/section.component';
 import TextComponent from '../../../components/typography/text.component';
 import { theme } from '../../../constants';
 import {
+  deleteWatchedMovieById,
+  getShowOnDB,
   getWatchedMovieById,
   insertMovie,
   insertWatchedMovie,
-  updateWatchedMovie,
 } from '../../../services/supabase/movie.service';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import {
@@ -27,6 +25,7 @@ import {
   setWatchedMovie,
 } from '../../../redux/movies/movie.slice';
 import SeasonProgress from '../components/season-progress.component';
+import { fetchShowSeasonDetails } from '../../../services/tmdb/shows.service';
 
 type ShowScreenProps = {} & NativeStackScreenProps<
   RootStackParamsList,
@@ -39,7 +38,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
   const TMDBMovie = route.params;
 
   const user = useAppSelector((state) => state.user.userData);
-  const { movie, isWatchedByCurrentUser } = useAppSelector(
+  const { movie, isMovieOnDB, isWatchedByCurrentUser } = useAppSelector(
     ({ movies }) => movies,
   );
 
@@ -49,12 +48,19 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
     setLoading(true);
 
     try {
-      const watchedMovie = await getWatchedMovieById(TMDBMovie.id);
-      dispatch(setWatchedMovie(watchedMovie));
+      const show = await getShowOnDB(TMDBMovie.id);
+      dispatch(setWatchedMovie(show));
 
-      if (user) {
-        dispatch(setIsWatchedMovie(watchedMovie.watchedBy.includes(user.id)));
-      }
+      const watchedMovies = await getWatchedMovieById(TMDBMovie.id);
+      console.log('watchedMovies', watchedMovies);
+
+      dispatch(
+        setIsWatchedMovie(
+          !!watchedMovies.find(
+            (watchedMovie) => watchedMovie?.userId === user?.id,
+          ),
+        ),
+      );
     } catch (error) {
       dispatch(setIsWatchedMovie(false));
       dispatch(setWatchedMovie(null));
@@ -65,14 +71,14 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
   }
 
   async function handleMovieHandler() {
-    const movieObj: WatchedMovie = {
-      id: TMDBMovie.id,
+    const movieObj: Show = {
+      movieId: TMDBMovie.id,
       title: TMDBMovie.title,
       tagline: TMDBMovie.tagline,
       backdropPath: TMDBMovie.backdrop_path,
       posterPath: TMDBMovie.poster_path,
       releaseDate: TMDBMovie.release_date,
-      mediaType: TMDBMovie.media_type,
+      mediaType: TMDBMovie.type ? 'tv' : 'movie',
       runtime: TMDBMovie.runtime,
       voteAverage: TMDBMovie.vote_average,
       genre: TMDBMovie.genres[0].name,
@@ -82,31 +88,26 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
     setLoading(true);
 
     try {
-      if (user && !movie) {
-        await insertMovie(movieObj);
+      if (user) {
+        if (!isMovieOnDB) {
+          await insertMovie(movieObj);
+        }
 
-        const movieWatchedBy = await insertWatchedMovie({
-          id: movieObj.id,
-          title: movieObj.title,
-          watchedBy: [user.id],
-        });
+        if (!isWatchedByCurrentUser) {
+          const movieWatchedBy = await insertWatchedMovie({
+            title: movieObj.title,
+            movieId: movieObj.movieId,
+            userId: user.id,
+          });
 
-        dispatch(setWatchedMovie(movieWatchedBy));
-        dispatch(setIsWatchedMovie(movieWatchedBy.watchedBy.includes(user.id)));
-      }
-
-      if (user && movie) {
-        const newWatchByList = isWatchedByCurrentUser
-          ? movie.watchedBy.filter((id) => id !== user.id)
-          : [user.id, ...movie.watchedBy];
-
-        const movieWatchedBy = await updateWatchedMovie(
-          movie.id,
-          newWatchByList,
-        );
-
-        dispatch(setWatchedMovie(movieWatchedBy));
-        dispatch(setIsWatchedMovie(movieWatchedBy.watchedBy.includes(user.id)));
+          dispatch(setWatchedMovie(movieWatchedBy));
+          dispatch(setIsWatchedMovie(movieWatchedBy.userId === user?.id));
+        } else {
+          if (movie) {
+            await deleteWatchedMovieById(movie.movieId, user.id);
+            dispatch(setIsWatchedMovie(false));
+          }
+        }
       }
     } catch (error) {
       console.log('error', error);
@@ -117,14 +118,19 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
 
   useEffect(() => {
     checkIfWatchedMovie();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function goToEpisodesScreen(season: SeasonDetails) {
-    navigation.navigate('episodes', {
-      seriesId: TMDBMovie.id,
-      season,
-    });
+  async function goToEpisodesScreen(season: SeasonDetails) {
+    const episodes = await fetchShowSeasonDetails(
+      TMDBMovie.id,
+      season.season_number,
+    );
+
+    if (episodes) {
+      navigation.navigate('episodes', { seasonEpisodes: episodes });
+    }
   }
 
   return (
@@ -143,7 +149,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
         <ShowDescription
           releaseDate={TMDBMovie.release_date || TMDBMovie.first_air_date}
           runtime={TMDBMovie.runtime}
-          mediaType={TMDBMovie.media_type}
+          mediaType={TMDBMovie.type}
           voteAverage={TMDBMovie.vote_average}
           genre={TMDBMovie.genres[0].name}
         />

@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { MovieWatchedByList } from '../../interfaces/show.interface';
+import { Show } from '../../interfaces/show.interface';
 
 type InitialState = {
   loading: boolean;
-  movie: MovieWatchedByList | null;
+  movie: Show | null;
   isMovieOnDB: boolean;
   isWatchedByCurrentUser: boolean;
   watchedByList: string[] | [];
@@ -23,18 +23,9 @@ const movieSlice = createSlice({
   name: 'movies',
   initialState,
   reducers: {
-    setWatchedMovie: (
-      state,
-      action: PayloadAction<MovieWatchedByList | null>,
-    ) => {
+    setWatchedMovie: (state, action: PayloadAction<Show | null>) => {
       state.movie = action.payload;
       state.isMovieOnDB = !!action.payload;
-    },
-    setMovieWatchedByList: (
-      state,
-      action: PayloadAction<MovieWatchedByList>,
-    ) => {
-      state.watchedByList = action.payload.watchedBy;
     },
     setIsWatchedMovie: (state, action: PayloadAction<boolean>) => {
       state.isWatchedByCurrentUser = action.payload;
@@ -45,10 +36,6 @@ const movieSlice = createSlice({
   },
 });
 
-export const {
-  setWatchedMovie,
-  setIsWatchedMovie,
-  setMovieWatchedByList,
-  setMovieError,
-} = movieSlice.actions;
+export const { setWatchedMovie, setIsWatchedMovie, setMovieError } =
+  movieSlice.actions;
 export default movieSlice.reducer;

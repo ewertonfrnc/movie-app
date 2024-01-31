@@ -10,6 +10,7 @@ import EpisodesScreen from '../features/shows/screens/episodes.screen';
 import SearchScreen from '../features/search/screens/search.screen';
 
 import { RootStackParamsList } from '../interfaces/navigator.interface';
+import EpisodeDetailScreen from '../features/shows/screens/episode-detail.screen';
 
 const Stack = createStackNavigator<RootStackParamsList>();
 
@@ -22,9 +23,16 @@ export default function AppNavigator() {
       }}
     >
       <Stack.Screen name="home" component={HomeNavigator} />
-      <Stack.Screen name="search" component={SearchScreen} />
+      <Stack.Screen
+        name="search"
+        component={SearchScreen}
+        options={{
+          ...TransitionPresets.ModalFadeTransition,
+        }}
+      />
       <Stack.Screen name="showDetails" component={ShowScreen} />
       <Stack.Screen name="episodes" component={EpisodesScreen} />
+      <Stack.Screen name="episodeDetails" component={EpisodeDetailScreen} />
     </Stack.Navigator>
   );
 }

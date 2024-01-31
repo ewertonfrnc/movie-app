@@ -1,21 +1,12 @@
-import { FC, useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import React, { FC } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import SafeAreaComponent from '../../../components/utility/safe-area.component';
 import { theme } from '../../../constants';
-import { fetchShowSeasonDetails } from '../../../services/tmdb/shows.service';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamsList } from '../../../interfaces/navigator.interface';
-import { Episode, SeasonDetails } from '../../../interfaces/show.interface';
 import { Ionicons } from '@expo/vector-icons';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import EpisodeBtn from '../components/Episode-btn';
+import { Episode } from '../../../interfaces/show.interface';
 
 type EpisodesScreenProps = {} & NativeStackScreenProps<
   RootStackParamsList,
@@ -23,136 +14,51 @@ type EpisodesScreenProps = {} & NativeStackScreenProps<
 >;
 
 const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
-  const { seriesId, season } = route.params;
-
-  const dispatch = useAppDispatch();
-  const user = useAppSelector(({ user }) => user.user);
-
-  const [loading, setLoading] = useState(false);
-  const [seasonDetails, setSeasonDetails] = useState<SeasonDetails>();
-  const [isFinishedSeason, setIsFinishedSeason] = useState(false);
-
-  async function getEpisodeList() {
-    setLoading(true);
-    try {
-      const episodes = await fetchShowSeasonDetails(
-        seriesId,
-        season.season_number,
-      );
-      setSeasonDetails(episodes);
-    } catch (error) {
-      console.warn(error);
-    }
-
-    setLoading(false);
-  }
+  const { seasonEpisodes } = route.params;
 
   async function watchEpisodeHandler(episode: Episode) {
-    // const { id, season_number, show_id, episode_number } = episode;
-    //
-    // const watchedEpisode = {
-    //   episodeId: id,
-    //   seasonNumber: season_number,
-    //   episodeNumber: episode_number,
-    //   showId: show_id,
-    //   finished_watching: true,
-    // };
-    //
-    // try {
-    //   setLoading(true);
-    //
-    //   const showSeasonOnUserData = user?.seriesFinishedSeasons.find(
-    //     (s) => s.id === season.id,
-    //   );
-    //
-    //   if (showSeasonOnUserData) {
-    //     const updatedSeasonInfo = {
-    //       ...seasonDetails,
-    //       finished_watching: false,
-    //       showId: show_id,
-    //       episodes: [watchedEpisode, ...showSeasonOnUserData.episodes],
-    //     };
-    //
-    //     const userWithUpdatedEpisodes = {
-    //       ...user,
-    //       seriesFinishedSeasons: [updatedSeasonInfo],
-    //     };
-    //
-    //     const updatedUser = await addEpisodeToSeasons(userWithUpdatedEpisodes);
-    //     dispatch(setUser(updatedUser));
-    //   } else {
-    //     const updatedSeasonInfo = {
-    //       ...seasonDetails,
-    //       finished_watching: false,
-    //       showId: show_id,
-    //       episodes: [watchedEpisode],
-    //     };
-    //
-    //     const userWithUpdatedEpisodes = {
-    //       ...user,
-    //       seriesFinishedSeasons: [
-    //         updatedSeasonInfo,
-    //         ...user.seriesFinishedSeasons,
-    //       ],
-    //     };
-    //
-    //     const updatedUser = await addEpisodeToSeasons(userWithUpdatedEpisodes);
-    //     dispatch(setUser(updatedUser));
-    //   }
-    // } catch (error) {
-    //   dispatch(setUserError(error as Error));
-    // }
-    //
-    // setLoading(false);
+    navigation.navigate('episodeDetails', { episode });
   }
-
-  useEffect(() => {
-    getEpisodeList();
-  }, [user]);
 
   return (
     <SafeAreaComponent>
       <ScrollView style={styles.container}>
-        {loading ? (
-          <ActivityIndicator size={'large'} color={theme.COLORS.darkRed} />
-        ) : (
-          <>
-            <View style={styles.header}>
-              <Pressable
-                style={({ pressed }) => [
-                  styles.backButton,
-                  pressed && styles.pressed,
-                ]}
-                onPress={navigation.goBack}
-              >
-                <Ionicons
-                  name="arrow-back"
-                  size={24}
-                  color={theme.COLORS.white}
+        <>
+          <View style={styles.header}>
+            <Pressable
+              style={({ pressed }) => [
+                styles.backButton,
+                pressed && styles.pressed,
+              ]}
+              onPress={navigation.goBack}
+            >
+              <Ionicons
+                name="arrow-back"
+                size={24}
+                color={theme.COLORS.white}
+              />
+              <Text style={styles.title} numberOfLines={2}>
+                {seasonEpisodes?.name}
+              </Text>
+            </Pressable>
+
+            {seasonEpisodes?.overview && (
+              <Text style={styles.overview}>{seasonEpisodes?.overview}</Text>
+            )}
+          </View>
+
+          <View>
+            {seasonEpisodes?.episodes.map((episode) => {
+              return (
+                <EpisodeBtn
+                  key={episode.id}
+                  episode={episode}
+                  onPress={watchEpisodeHandler.bind(this, episode)}
                 />
-                <Text style={styles.title} numberOfLines={2}>
-                  {seasonDetails?.name}
-                </Text>
-              </Pressable>
-
-              {seasonDetails?.overview && (
-                <Text style={styles.overview}>{seasonDetails?.overview}</Text>
-              )}
-            </View>
-
-            <View>
-              {seasonDetails?.episodes.map((episode) => {
-                return (
-                  <EpisodeBtn
-                    key={episode.id}
-                    episode={episode}
-                    onPress={watchEpisodeHandler.bind(this, episode)}
-                  />
-                );
-              })}
-            </View>
-          </>
-        )}
+              );
+            })}
+          </View>
+        </>
       </ScrollView>
     </SafeAreaComponent>
   );

@@ -61,6 +61,7 @@ export type TMDBMovie = {
   videos: { results: VideoTrailer[] };
   name: string;
   first_air_date: string;
+  type: string;
   media_type: string;
   isWatched: boolean;
   seasons: SeasonDetails[];
@@ -112,8 +113,8 @@ export type Cast = {
   job: string;
 };
 
-export type WatchedMovie = {
-  id: number;
+export type Show = {
+  movieId: number;
   title: string;
   tagline: string;
   backdropPath: string;
@@ -126,8 +127,8 @@ export type WatchedMovie = {
   overview: string;
 };
 
-export type MovieWatchedByList = {
-  id: number;
+export type WatchedMovie = {
   title: string;
-  watchedBy: string[];
+  userId: string;
+  movieId: number;
 };

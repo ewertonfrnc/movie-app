@@ -3,19 +3,13 @@ import { formatDate } from '../../../utils/time.utils';
 import RadioButton from '../../../components/radio-button';
 import { Episode } from '../../../interfaces/show.interface';
 import { theme } from '../../../constants';
-import { useAppSelector } from '../../../hooks/redux';
-import { useEffect } from 'react';
 
 type EpisodeBtnProps = {
   episode: Episode;
-  onPress: (episode: Episode) => void;
+  onPress: () => void;
 };
 
 export default function EpisodeBtn({ episode, onPress }: EpisodeBtnProps) {
-  const user = useAppSelector(({ user }) => user.user);
-
-  useEffect(() => {}, []);
-
   return (
     <Pressable
       key={episode.id}
@@ -23,6 +17,7 @@ export default function EpisodeBtn({ episode, onPress }: EpisodeBtnProps) {
         styles.episodeContainer,
         pressed && styles.pressed,
       ]}
+      onPress={onPress}
     >
       <View style={{ flexDirection: 'row' }}>
         <Text style={styles.text}>

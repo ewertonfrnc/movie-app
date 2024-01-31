@@ -8,7 +8,7 @@ import { BASE_IMAGE_URL } from '../utils/tmdb.utils';
 type ImageCardProps = {
   show: TMDBMovie;
   onPress: (params: { showId: number; showType: string }) => void;
-  type: 'normal' | 'small';
+  type?: 'normal' | 'small';
 };
 
 const ImageCard: FC<ImageCardProps> = ({ show, onPress, type = 'normal' }) => {
@@ -48,5 +48,6 @@ const styles = StyleSheet.create({
   smallImage: {
     width: 100,
     height: 150,
+    borderRadius: theme.SPACING.md,
   },
 });

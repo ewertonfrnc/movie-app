@@ -57,6 +57,25 @@ export async function fetchShowSeasonDetails(
   }
 }
 
+export async function fetchEpisodeDetails(
+  seriesId: number,
+  seasonNumber: number,
+  episodeNumber: number,
+): Promise<SeasonDetails | undefined> {
+  try {
+    const { data } = await api.get(
+      `/tv/${seriesId}/season/${seasonNumber}/episode/${episodeNumber}`,
+      {
+        params: { language: 'pt-BR' },
+      },
+    );
+
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 // SEARCH
 export async function searchShows(searchValue: string) {
   console.log('searchValue', searchValue);
