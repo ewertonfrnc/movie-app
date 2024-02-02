@@ -6,10 +6,15 @@ import { theme } from '../../../constants';
 
 type EpisodeBtnProps = {
   episode: Episode;
+  selected: boolean;
   onPress: () => void;
 };
 
-export default function EpisodeBtn({ episode, onPress }: EpisodeBtnProps) {
+export default function EpisodeBtn({
+  episode,
+  selected,
+  onPress,
+}: EpisodeBtnProps) {
   return (
     <Pressable
       key={episode.id}
@@ -35,7 +40,7 @@ export default function EpisodeBtn({ episode, onPress }: EpisodeBtnProps) {
         <View style={styles.episodeInfo}>
           <Text style={styles.text}>⭐ {episode.vote_average.toFixed(1)}</Text>
 
-          <RadioButton selected={false} onPress={() => {}} />
+          <RadioButton selected={selected} onPress={() => {}} />
         </View>
       </View>
     </Pressable>

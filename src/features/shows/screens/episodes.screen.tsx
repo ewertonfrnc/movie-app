@@ -7,6 +7,7 @@ import { RootStackParamsList } from '../../../interfaces/navigator.interface';
 import { Ionicons } from '@expo/vector-icons';
 import EpisodeBtn from '../components/Episode-btn';
 import { Episode } from '../../../interfaces/show.interface';
+import { useAppSelector } from '../../../hooks/redux';
 
 type EpisodesScreenProps = {} & NativeStackScreenProps<
   RootStackParamsList,
@@ -14,10 +15,21 @@ type EpisodesScreenProps = {} & NativeStackScreenProps<
 >;
 
 const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
-  const { seasonEpisodes } = route.params;
+  const user = useAppSelector((state) => state.user.userData);
+  const { seasonEpisodes, watchedEpisodes } = route.params;
 
   async function watchEpisodeHandler(episode: Episode) {
     navigation.navigate('episodeDetails', { episode });
+  }
+
+  function checkWatchedEpisodes(episode: Episode) {
+    console.log('checkWatchedEpisodes', episode.userId === user?.id);
+
+    return !!watchedEpisodes.find(
+      (watchedEpisode) =>
+        watchedEpisode.episodeId === episode.id &&
+        watchedEpisode.userId === user?.id,
+    );
   }
 
   return (
@@ -53,6 +65,7 @@ const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
                 <EpisodeBtn
                   key={episode.id}
                   episode={episode}
+                  selected={checkWatchedEpisodes(episode)}
                   onPress={watchEpisodeHandler.bind(this, episode)}
                 />
               );

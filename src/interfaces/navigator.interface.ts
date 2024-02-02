@@ -6,8 +6,17 @@ export type RootStackParamsList = {
   search: undefined;
   settings: undefined;
   showDetails: TMDBMovie;
-  episodes: { seasonEpisodes: SeasonDetails };
-  episodeDetails: { episode: Episode };
+  episodes: {
+    seasonEpisodes: SeasonDetails;
+    watchedEpisodes: Array<{
+      episodeId: number;
+      seasonNumber: number;
+      userId: string;
+    }>;
+  };
+  episodeDetails: {
+    episode: Episode;
+  };
 };
 
 // Overview types

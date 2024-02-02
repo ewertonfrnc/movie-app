@@ -129,7 +129,10 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
     );
 
     if (episodes) {
-      navigation.navigate('episodes', { seasonEpisodes: episodes });
+      navigation.navigate('episodes', {
+        seasonEpisodes: episodes,
+        watchedEpisodes,
+      });
     }
   }
 
