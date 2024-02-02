@@ -68,7 +68,6 @@ const HomeScreen: FC<MoviesProps> = ({ navigation }) => {
     const showDetails = await fetchShowDetails(params.showId, params.showType);
 
     if (showDetails) {
-      console.log(showDetails);
       navigation.navigate('showDetails', showDetails);
     }
   }

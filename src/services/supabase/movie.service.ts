@@ -1,5 +1,5 @@
 import supabase from './index';
-import { Show, WatchedMovie } from '../../interfaces/show.interface';
+import { Episode, Show, WatchedMovie } from '../../interfaces/show.interface';
 
 export async function insertMovie(movie: Show) {
   const { data, error } = await supabase
@@ -18,7 +18,7 @@ export async function insertMovie(movie: Show) {
 // WATCHED MOVIES
 export async function insertWatchedMovie(watchedMovie: WatchedMovie) {
   const { data, error } = await supabase
-    .from('watched_movie')
+    .from('watched_shows')
     .insert([{ ...watchedMovie }])
     .select()
     .single();
@@ -48,7 +48,7 @@ export async function getWatchedMovieById(
   movieId: number,
 ): Promise<WatchedMovie[]> {
   const { data, error } = await supabase
-    .from('watched_movie')
+    .from('watched_shows')
     .select()
     .eq('movieId', movieId);
 
@@ -61,7 +61,7 @@ export async function getWatchedMovieById(
 
 export async function deleteWatchedMovieById(movieId: number, userId: string) {
   const { error } = await supabase
-    .from('watched_movie')
+    .from('watched_shows')
     .delete()
     .eq('movieId', movieId)
     .eq('userId', userId);
@@ -69,4 +69,49 @@ export async function deleteWatchedMovieById(movieId: number, userId: string) {
   if (error) {
     throw new Error(error.message);
   }
+}
+
+// watched episodes
+export async function updateSeasonEpisodes(episodes: Episode[]) {
+  const { data, error } = await supabase
+    .from('watched_episodes')
+    .insert([...episodes])
+    .select();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+export async function deleteSeasonEpisodes(
+  showId: number,
+  seasonNumber: number,
+) {
+  const { error } = await supabase
+    .from('watched_episodes')
+    .delete()
+    .eq('showId', showId)
+    .eq('seasonNumber', seasonNumber);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function checkForWatchedEpisodes(
+  showId: number,
+): Promise<WatchedMovie[]> {
+  const { data, error } = await supabase
+    .from('watched_episodes')
+    .select()
+    .eq('showId', showId)
+    .select('userId,seasonNumber,episodeId');
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
 }

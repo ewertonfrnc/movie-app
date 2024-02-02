@@ -13,11 +13,14 @@ import SectionContainer from '../components/section.component';
 import TextComponent from '../../../components/typography/text.component';
 import { theme } from '../../../constants';
 import {
+  checkForWatchedEpisodes,
+  deleteSeasonEpisodes,
   deleteWatchedMovieById,
   getShowOnDB,
   getWatchedMovieById,
   insertMovie,
   insertWatchedMovie,
+  updateSeasonEpisodes,
 } from '../../../services/supabase/movie.service';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import {
@@ -43,6 +46,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
   );
 
   const [loading, setLoading] = useState(false);
+  const [watchedEpisodes, setWatchedEpisodes] = useState([]);
 
   async function checkIfWatchedMovie() {
     setLoading(true);
@@ -52,8 +56,10 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
       dispatch(setWatchedMovie(show));
 
       const watchedMovies = await getWatchedMovieById(TMDBMovie.id);
-      console.log('watchedMovies', watchedMovies);
+      const listOfWatchedEpisodes = await checkForWatchedEpisodes(TMDBMovie.id);
+      console.log('listOfWatchedEpisodes', listOfWatchedEpisodes);
 
+      setWatchedEpisodes(listOfWatchedEpisodes);
       dispatch(
         setIsWatchedMovie(
           !!watchedMovies.find(
@@ -73,7 +79,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
   async function handleMovieHandler() {
     const movieObj: Show = {
       movieId: TMDBMovie.id,
-      title: TMDBMovie.title,
+      title: TMDBMovie.title || TMDBMovie.name,
       tagline: TMDBMovie.tagline,
       backdropPath: TMDBMovie.backdrop_path,
       posterPath: TMDBMovie.poster_path,
@@ -116,12 +122,6 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
     setLoading(false);
   }
 
-  useEffect(() => {
-    checkIfWatchedMovie();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   async function goToEpisodesScreen(season: SeasonDetails) {
     const episodes = await fetchShowSeasonDetails(
       TMDBMovie.id,
@@ -132,6 +132,40 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
       navigation.navigate('episodes', { seasonEpisodes: episodes });
     }
   }
+
+  async function watchSeasonHandler(season: SeasonDetails) {
+    const seasonDetails = await fetchShowSeasonDetails(
+      TMDBMovie.id,
+      season.season_number,
+    );
+
+    if (seasonDetails) {
+      if (!isMovieOnDB) {
+        await handleMovieHandler();
+      }
+
+      if (!watchedEpisodes.find((episode) => episode.userId === user?.id)) {
+        const episodesWatched = seasonDetails.episodes.map((episode) => ({
+          showId: TMDBMovie.id,
+          userId: user?.id,
+          episodeId: episode.id,
+          seasonNumber: episode.season_number,
+        }));
+
+        const response = await updateSeasonEpisodes(episodesWatched);
+        setWatchedEpisodes(response);
+      } else {
+        await deleteSeasonEpisodes(TMDBMovie.id, season.season_number);
+        setWatchedEpisodes([]);
+      }
+    }
+  }
+
+  useEffect(() => {
+    checkIfWatchedMovie();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <SafeAreaComponent>
@@ -158,7 +192,9 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
           <SeasonProgress
             user={user}
             seasons={TMDBMovie.seasons}
-            onPress={goToEpisodesScreen}
+            watchedEpisodes={watchedEpisodes}
+            onEpisodePress={goToEpisodesScreen}
+            onSeasonWatch={watchSeasonHandler}
           />
         )}
 

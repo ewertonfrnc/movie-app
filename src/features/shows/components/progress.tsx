@@ -14,7 +14,7 @@ const Progress: FC<ProgressProps> = ({ currentValue, totalValue }) => {
   useEffect(() => {
     if (totalValue !== 0) {
       const animation = Animated.timing(value, {
-        toValue: (currentValue / totalValue) * 100,
+        toValue: (currentValue / totalValue) * 150,
         duration: 500,
         useNativeDriver: false,
       });

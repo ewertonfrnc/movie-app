@@ -8,17 +8,40 @@ import RadioButton from '../../../components/radio-button';
 import { SeasonDetails } from '../../../interfaces/show.interface';
 import { UserData } from '../../../interfaces/user.interface';
 import { theme } from '../../../constants';
+import { useAppSelector } from '../../../hooks/redux';
 
 type SeasonProgressProps = {
   user: UserData;
   seasons: SeasonDetails[];
-  onPress: (season: SeasonDetails) => void;
+  watchedEpisodes: Array<{ episodeId: number; seasonNumber: number }>;
+  onEpisodePress: (season: SeasonDetails) => void;
+  onSeasonWatch: (season: SeasonDetails) => void;
 };
 
 export default function SeasonProgress({
   seasons,
-  onPress,
+  watchedEpisodes,
+  onEpisodePress,
+  onSeasonWatch,
 }: SeasonProgressProps) {
+  const user = useAppSelector((state) => state.user.userData);
+
+  function checkFinishedSeasons(season: SeasonDetails) {
+    return !!(
+      countWatchedEpisodes(season) === season.episode_count &&
+      !!season.episode_count &&
+      watchedEpisodes.find((episode) => episode.userId === user?.id)
+    );
+  }
+
+  function countWatchedEpisodes(season: SeasonDetails): number {
+    return watchedEpisodes.filter(
+      (episode) =>
+        episode.seasonNumber === season.season_number &&
+        episode.userId === user?.id,
+    ).length;
+  }
+
   return (
     <View>
       {seasons.map((season) => {
@@ -29,19 +52,25 @@ export default function SeasonProgress({
               styles.seasonContainer,
               pressed && styles.pressed,
             ]}
-            onPress={() => onPress(season)}
+            onPress={() => onEpisodePress(season)}
           >
-            <RadioButton selected={false} onPress={() => {}} />
+            <RadioButton
+              selected={checkFinishedSeasons(season)}
+              onPress={() => onSeasonWatch(season)}
+            />
 
             <View style={styles.progressContainer}>
               <TextComponent type="body" textProps={{ numberOfLines: 2 }}>
                 {season.name}
               </TextComponent>
 
-              <Progress currentValue={3} totalValue={season.episode_count} />
+              <Progress
+                currentValue={countWatchedEpisodes(season)}
+                totalValue={season.episode_count}
+              />
 
               <TextComponent type="body">
-                {`3 / ${season.episode_count}`}
+                {`${countWatchedEpisodes(season)} / ${season.episode_count}`}
               </TextComponent>
             </View>
           </Pressable>

@@ -6,7 +6,6 @@ type InitialState = {
   movie: Show | null;
   isMovieOnDB: boolean;
   isWatchedByCurrentUser: boolean;
-  watchedByList: string[] | [];
   error: Error | null;
 };
 
@@ -15,7 +14,6 @@ const initialState: InitialState = {
   movie: null,
   isMovieOnDB: false,
   isWatchedByCurrentUser: false,
-  watchedByList: [],
   error: null,
 };
 
