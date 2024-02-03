@@ -132,3 +132,10 @@ export type WatchedMovie = {
   userId: string;
   movieId: number;
 };
+
+export type SUPAEpisode = {
+  showId: number;
+  seasonNumber: number;
+  episodeId: number;
+  userId: string;
+};

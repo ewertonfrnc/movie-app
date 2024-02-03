@@ -3,7 +3,11 @@ import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamsList } from '../../../interfaces/navigator.interface';
-import { SeasonDetails, Show } from '../../../interfaces/show.interface';
+import {
+  SeasonDetails,
+  Show,
+  SUPAEpisode,
+} from '../../../interfaces/show.interface';
 
 import SafeAreaComponent from '../../../components/utility/safe-area.component';
 import CastAvatar from '../components/cast-avatar.component';
@@ -46,27 +50,26 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
   );
 
   const [loading, setLoading] = useState(false);
-  const [watchedEpisodes, setWatchedEpisodes] = useState([]);
+  const [watchedEpisodes, setWatchedEpisodes] = useState<SUPAEpisode[]>([]);
 
   async function checkIfWatchedMovie() {
     setLoading(true);
 
     try {
-      const show = await getShowOnDB(TMDBMovie.id);
-      dispatch(setWatchedMovie(show));
+      const [showFromDB, watchedMovie, listOfWatchedEpisodes] =
+        await Promise.all([
+          getShowOnDB(TMDBMovie.id),
+          getWatchedMovieById(TMDBMovie.id),
+          checkForWatchedEpisodes(TMDBMovie.id),
+        ]);
 
-      const watchedMovies = await getWatchedMovieById(TMDBMovie.id);
-      const listOfWatchedEpisodes = await checkForWatchedEpisodes(TMDBMovie.id);
-      console.log('listOfWatchedEpisodes', listOfWatchedEpisodes);
-
-      setWatchedEpisodes(listOfWatchedEpisodes);
+      dispatch(setWatchedMovie(showFromDB));
       dispatch(
         setIsWatchedMovie(
-          !!watchedMovies.find(
-            (watchedMovie) => watchedMovie?.userId === user?.id,
-          ),
+          !!watchedMovie.find((movieInfo) => movieInfo?.userId === user?.id),
         ),
       );
+      setWatchedEpisodes(listOfWatchedEpisodes);
     } catch (error) {
       dispatch(setIsWatchedMovie(false));
       dispatch(setWatchedMovie(null));
@@ -76,7 +79,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
     setLoading(false);
   }
 
-  async function handleMovieHandler() {
+  async function watchShowHandler() {
     const movieObj: Show = {
       movieId: TMDBMovie.id,
       title: TMDBMovie.title || TMDBMovie.name,
@@ -143,23 +146,32 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
     );
 
     if (seasonDetails) {
-      if (!isMovieOnDB) {
-        await handleMovieHandler();
+      if (!isMovieOnDB || !isWatchedByCurrentUser) {
+        await watchShowHandler();
       }
 
-      if (!watchedEpisodes.find((episode) => episode.userId === user?.id)) {
-        const episodesWatched = seasonDetails.episodes.map((episode) => ({
-          showId: TMDBMovie.id,
-          userId: user?.id,
-          episodeId: episode.id,
-          seasonNumber: episode.season_number,
-        }));
+      const hasWatched = !!watchedEpisodes
+        .filter((episode) => episode.seasonNumber === season.season_number)
+        .find((episode) => episode.userId === user?.id);
 
-        const response = await updateSeasonEpisodes(episodesWatched);
-        setWatchedEpisodes(response);
+      if (user && !hasWatched) {
+        const episodesWatched: SUPAEpisode[] = seasonDetails.episodes.map(
+          (episode) => ({
+            showId: TMDBMovie.id,
+            userId: user.id,
+            episodeId: episode.id,
+            seasonNumber: episode.season_number,
+          }),
+        );
+
+        const newWatchedEpisodes = await updateSeasonEpisodes(episodesWatched);
+        setWatchedEpisodes([...watchedEpisodes, ...newWatchedEpisodes]);
       } else {
+        const updatedWatchedEpisodes = watchedEpisodes.filter(
+          (episode) => episode.seasonNumber !== season.season_number,
+        );
         await deleteSeasonEpisodes(TMDBMovie.id, season.season_number);
-        setWatchedEpisodes([]);
+        setWatchedEpisodes(updatedWatchedEpisodes);
       }
     }
   }
@@ -180,7 +192,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
           tagline={TMDBMovie.tagline}
           backdrop_path={TMDBMovie.backdrop_path}
           poster_path={TMDBMovie.poster_path}
-          onPress={handleMovieHandler}
+          onPress={watchShowHandler}
         />
 
         <ShowDescription

@@ -1,5 +1,9 @@
 import supabase from './index';
-import { Episode, Show, WatchedMovie } from '../../interfaces/show.interface';
+import {
+  Show,
+  SUPAEpisode,
+  WatchedMovie,
+} from '../../interfaces/show.interface';
 
 export async function insertMovie(movie: Show) {
   const { data, error } = await supabase
@@ -72,7 +76,7 @@ export async function deleteWatchedMovieById(movieId: number, userId: string) {
 }
 
 // watched episodes
-export async function updateSeasonEpisodes(episodes: Episode[]) {
+export async function updateSeasonEpisodes(episodes: SUPAEpisode[]) {
   const { data, error } = await supabase
     .from('watched_episodes')
     .insert([...episodes])
@@ -100,9 +104,7 @@ export async function deleteSeasonEpisodes(
   }
 }
 
-export async function checkForWatchedEpisodes(
-  showId: number,
-): Promise<WatchedMovie[]> {
+export async function checkForWatchedEpisodes(showId: number) {
   const { data, error } = await supabase
     .from('watched_episodes')
     .select()

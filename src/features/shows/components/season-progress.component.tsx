@@ -5,7 +5,7 @@ import Progress from './progress';
 import TextComponent from '../../../components/typography/text.component';
 import RadioButton from '../../../components/radio-button';
 
-import { SeasonDetails } from '../../../interfaces/show.interface';
+import { SeasonDetails, SUPAEpisode } from '../../../interfaces/show.interface';
 import { UserData } from '../../../interfaces/user.interface';
 import { theme } from '../../../constants';
 import { useAppSelector } from '../../../hooks/redux';
@@ -13,7 +13,7 @@ import { useAppSelector } from '../../../hooks/redux';
 type SeasonProgressProps = {
   user: UserData;
   seasons: SeasonDetails[];
-  watchedEpisodes: Array<{ episodeId: number; seasonNumber: number }>;
+  watchedEpisodes: SUPAEpisode[];
   onEpisodePress: (season: SeasonDetails) => void;
   onSeasonWatch: (season: SeasonDetails) => void;
 };
