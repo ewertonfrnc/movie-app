@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useRef } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { Animated, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { theme } from '../../../constants';
 
@@ -9,12 +9,14 @@ type ProgressProps = {
 };
 
 const Progress: FC<ProgressProps> = ({ currentValue, totalValue }) => {
+  const { width } = useWindowDimensions();
   const value = useRef(new Animated.Value(currentValue)).current;
 
   useEffect(() => {
+    console.log({ width });
     if (totalValue !== 0) {
       const animation = Animated.timing(value, {
-        toValue: (currentValue / totalValue) * 150,
+        toValue: (currentValue / totalValue) * (width < 400 ? 130 : 150),
         duration: 500,
         useNativeDriver: false,
       });

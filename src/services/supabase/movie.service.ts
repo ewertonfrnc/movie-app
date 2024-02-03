@@ -104,7 +104,21 @@ export async function deleteSeasonEpisodes(
   }
 }
 
-export async function checkForWatchedEpisodes(showId: number) {
+export async function deleteSeasonEpisode(showId: number, episodeId: number) {
+  const { error } = await supabase
+    .from('watched_episodes')
+    .delete()
+    .eq('showId', showId)
+    .eq('episodeId', episodeId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function checkForWatchedEpisodes(
+  showId: number,
+): Promise<SUPAEpisode[]> {
   const { data, error } = await supabase
     .from('watched_episodes')
     .select()

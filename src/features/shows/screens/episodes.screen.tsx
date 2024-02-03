@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import SafeAreaComponent from '../../../components/utility/safe-area.component';
 import { theme } from '../../../constants';
@@ -7,7 +7,7 @@ import { RootStackParamsList } from '../../../interfaces/navigator.interface';
 import { Ionicons } from '@expo/vector-icons';
 import EpisodeBtn from '../components/Episode-btn';
 import { Episode } from '../../../interfaces/show.interface';
-import { useAppSelector } from '../../../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 
 type EpisodesScreenProps = {} & NativeStackScreenProps<
   RootStackParamsList,
@@ -15,15 +15,21 @@ type EpisodesScreenProps = {} & NativeStackScreenProps<
 >;
 
 const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
-  const user = useAppSelector((state) => state.user.userData);
-  const { seasonEpisodes, watchedEpisodes } = route.params;
+  const dispatch = useAppDispatch();
+  const { seasonEpisodes } = route.params;
 
+  const user = useAppSelector((state) => state.user.userData);
+  const { movie, watchedEpisodes } = useAppSelector((state) => state.movies);
+
+  const [loading, setLoading] = useState(false);
+
+  console.log('watched', watchedEpisodes);
   async function watchEpisodeHandler(episode: Episode) {
     navigation.navigate('episodeDetails', { episode });
   }
 
   function checkWatchedEpisodes(episode: Episode) {
-    console.log('checkWatchedEpisodes', episode.userId === user?.id);
+    // console.log('checkWatchedEpisodes', episode);
 
     return !!watchedEpisodes.find(
       (watchedEpisode) =>
@@ -66,7 +72,7 @@ const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
                   key={episode.id}
                   episode={episode}
                   selected={checkWatchedEpisodes(episode)}
-                  onPress={watchEpisodeHandler.bind(this, episode)}
+                  onEpisodePress={watchEpisodeHandler.bind(this, episode)}
                 />
               );
             })}

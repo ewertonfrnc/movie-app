@@ -29,6 +29,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import {
   setIsWatchedMovie,
+  setWatchedEpisodes,
   setWatchedMovie,
 } from '../../../redux/movies/movie.slice';
 import SeasonProgress from '../components/season-progress.component';
@@ -45,12 +46,10 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
   const TMDBMovie = route.params;
 
   const user = useAppSelector((state) => state.user.userData);
-  const { movie, isMovieOnDB, isWatchedByCurrentUser } = useAppSelector(
-    ({ movies }) => movies,
-  );
+  const { movie, isMovieOnDB, isWatchedByCurrentUser, watchedEpisodes } =
+    useAppSelector(({ movies }) => movies);
 
   const [loading, setLoading] = useState(false);
-  const [watchedEpisodes, setWatchedEpisodes] = useState<SUPAEpisode[]>([]);
 
   async function checkIfWatchedMovie() {
     setLoading(true);
@@ -69,7 +68,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
           !!watchedMovie.find((movieInfo) => movieInfo?.userId === user?.id),
         ),
       );
-      setWatchedEpisodes(listOfWatchedEpisodes);
+      dispatch(setWatchedEpisodes(listOfWatchedEpisodes));
     } catch (error) {
       dispatch(setIsWatchedMovie(false));
       dispatch(setWatchedMovie(null));
@@ -165,13 +164,15 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
         );
 
         const newWatchedEpisodes = await updateSeasonEpisodes(episodesWatched);
-        setWatchedEpisodes([...watchedEpisodes, ...newWatchedEpisodes]);
+        dispatch(
+          setWatchedEpisodes([...watchedEpisodes, ...newWatchedEpisodes]),
+        );
       } else {
         const updatedWatchedEpisodes = watchedEpisodes.filter(
           (episode) => episode.seasonNumber !== season.season_number,
         );
         await deleteSeasonEpisodes(TMDBMovie.id, season.season_number);
-        setWatchedEpisodes(updatedWatchedEpisodes);
+        dispatch(setWatchedEpisodes(updatedWatchedEpisodes));
       }
     }
   }

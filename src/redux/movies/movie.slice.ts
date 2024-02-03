@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Show } from '../../interfaces/show.interface';
+import { Show, SUPAEpisode } from '../../interfaces/show.interface';
 
 type InitialState = {
   loading: boolean;
   movie: Show | null;
   isMovieOnDB: boolean;
   isWatchedByCurrentUser: boolean;
+  watchedEpisodes: SUPAEpisode[];
   error: Error | null;
 };
 
@@ -14,6 +15,7 @@ const initialState: InitialState = {
   movie: null,
   isMovieOnDB: false,
   isWatchedByCurrentUser: false,
+  watchedEpisodes: [],
   error: null,
 };
 
@@ -28,12 +30,19 @@ const movieSlice = createSlice({
     setIsWatchedMovie: (state, action: PayloadAction<boolean>) => {
       state.isWatchedByCurrentUser = action.payload;
     },
+    setWatchedEpisodes: (state, action: PayloadAction<SUPAEpisode[]>) => {
+      state.watchedEpisodes = action.payload;
+    },
     setMovieError: (state, action: PayloadAction<Error>) => {
       state.error = action.payload;
     },
   },
 });
 
-export const { setWatchedMovie, setIsWatchedMovie, setMovieError } =
-  movieSlice.actions;
+export const {
+  setWatchedMovie,
+  setIsWatchedMovie,
+  setWatchedEpisodes,
+  setMovieError,
+} = movieSlice.actions;
 export default movieSlice.reducer;

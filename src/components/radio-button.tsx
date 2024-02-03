@@ -1,6 +1,6 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { theme } from "../constants";
-import { FC } from "react";
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { theme } from '../constants';
+import { FC } from 'react';
 
 type RadioButtonProps = {
   selected: boolean;
@@ -29,20 +29,22 @@ export default RadioButton;
 
 const styles = StyleSheet.create({
   outerContainer: {
-    width: theme.SIZES.xlg,
-    height: theme.SIZES.xlg,
-    backgroundColor: "transparent",
+    width: theme.SIZES.xxlg,
+    height: theme.SIZES.xxlg,
+    backgroundColor: 'transparent',
     borderRadius: theme.SIZES.xlg,
     borderWidth: 2,
     borderColor: theme.COLORS.silver,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   innerContainer: {
-    width: theme.SIZES.lg,
-    height: theme.SIZES.lg,
+    width: theme.SIZES.xxlg,
+    height: theme.SIZES.xxlg,
     backgroundColor: theme.COLORS.darkRed,
     borderRadius: theme.SIZES.xlg,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   pressed: { opacity: 0.5 },
   text: { color: theme.COLORS.white },
