@@ -6,6 +6,7 @@ import Button from '../../../components/button.component';
 import { BASE_IMAGE_URL } from '../../../utils/tmdb.utils';
 import { theme } from '../../../constants';
 import TextComponent from '../../../components/typography/text.component';
+import { LinearGradient } from 'expo-linear-gradient';
 
 type ShowHeaderProps = {
   title: string;
@@ -37,6 +38,11 @@ export default function ShowHeader({
           }}
         />
 
+        <LinearGradient
+          colors={['transparent', theme.COLORS.dark]}
+          style={styles.gradient}
+        />
+
         <Image
           style={styles.posterImage}
           source={{
@@ -66,6 +72,12 @@ const styles = StyleSheet.create({
   imageBackground: {
     flex: 1,
     height: 300,
+  },
+  gradient: {
+    width: '100%',
+    height: 300,
+    position: 'absolute',
+    bottom: 0,
   },
   posterImage: {
     width: 75,

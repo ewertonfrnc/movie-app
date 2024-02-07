@@ -34,7 +34,7 @@ type MoviesProps = {} & BottomTabScreenProps<
   'movies'
 >;
 
-const HomeScreen: FC<MoviesProps> = ({ navigation }) => {
+const ExploreScreen: FC<MoviesProps> = ({ navigation }) => {
   const dispatch = useAppDispatch();
 
   const [loading, setLoading] = useState(false);
@@ -48,15 +48,15 @@ const HomeScreen: FC<MoviesProps> = ({ navigation }) => {
     setLoading(true);
 
     try {
-      const [trendingMovies, trendingTvShows] = await Promise.all([
+      const [trendingTMDBMovies, trendingTMDBTvShows] = await Promise.all([
         fetchTrendingMovies(),
         fetchTrendingTvShows(),
       ]);
 
-      setTrendingMovies(trendingMovies);
-      setTrendingTvShows(trendingTvShows);
+      setTrendingMovies(trendingTMDBMovies);
+      setTrendingTvShows(trendingTMDBTvShows);
 
-      setRecentMovie(trendingMovies[0].backdrop_path);
+      setRecentMovie(trendingTMDBTvShows[0].backdrop_path);
     } catch (error) {
       console.log('An error occurred while fetching movies', error);
     }
@@ -149,7 +149,7 @@ const HomeScreen: FC<MoviesProps> = ({ navigation }) => {
   );
 };
 
-export default HomeScreen;
+export default ExploreScreen;
 
 const styles = StyleSheet.create({
   container: {},

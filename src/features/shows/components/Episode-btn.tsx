@@ -36,8 +36,6 @@ export default function EpisodeBtn({
   const [loading, setLoading] = useState(false);
 
   async function episodeHandler() {
-    console.log('episodeHandler', episode);
-
     if (!user || !movie) return;
     setLoading(true);
 
@@ -49,8 +47,12 @@ export default function EpisodeBtn({
       const formattedEpisode = {
         showId: movie.movieId,
         userId: user.id,
+        showName: movie.title,
         episodeId: episode.id,
         seasonNumber: episode.season_number,
+        stillPath: episode.still_path,
+        episodeName: episode.name,
+        episodeNumber: episode.episode_number,
       };
 
       try {

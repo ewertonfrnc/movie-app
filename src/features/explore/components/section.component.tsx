@@ -12,7 +12,6 @@ import { TMDBMovie } from '../../../interfaces/show.interface';
 
 import ImageCard from '../../../components/image-card.component';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
 
 type SectionHighlightProps = {
   loading: boolean;
@@ -20,15 +19,6 @@ type SectionHighlightProps = {
 };
 
 const SectionHighlight: FC<SectionHighlightProps> = ({ loading, shows }) => {
-  const navigation = useNavigation();
-
-  // function onPressHandler(params: { showId: number; showType: string }) {
-  //   navigation.navigate("showDetails", {
-  //     showId: params.showId,
-  //     showType: params.showType,
-  //   });
-  // }
-
   return (
     <LinearGradient
       colors={[theme.COLORS.dark, theme.COLORS.darkRed]}

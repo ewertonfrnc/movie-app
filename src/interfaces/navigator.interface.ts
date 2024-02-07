@@ -21,6 +21,7 @@ export type RootStackParamsList = {
 
 // Overview types
 export type HomeStackParamsList = {
+  activity: undefined;
   movies: undefined;
   settings: undefined;
 };

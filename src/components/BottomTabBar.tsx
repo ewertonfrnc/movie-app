@@ -14,6 +14,12 @@ type Tab = {
 
 const TABS: Tab[] = [
   {
+    label: 'Progresso',
+    type: 'ionicons',
+    activeIcon: 'tv',
+    inActiveIcon: 'tv-outline',
+  },
+  {
     label: 'Explorar',
     type: 'material',
     activeIcon: 'star-four-points',

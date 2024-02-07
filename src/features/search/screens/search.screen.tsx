@@ -30,7 +30,6 @@ export default function SearchScreen({ navigation }: SearchScreenProps) {
   const handleInputChange = debounce(async () => {
     const showsFound = await searchShows(searchValue);
     setMovieResults(showsFound);
-    console.log(showsFound);
   }, 500);
 
   function onChangeHandler(enteredText: string) {

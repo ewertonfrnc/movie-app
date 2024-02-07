@@ -23,14 +23,11 @@ const EpisodesScreen: FC<EpisodesScreenProps> = ({ navigation, route }) => {
 
   const [loading, setLoading] = useState(false);
 
-  console.log('watched', watchedEpisodes);
   async function watchEpisodeHandler(episode: Episode) {
     navigation.navigate('episodeDetails', { episode });
   }
 
   function checkWatchedEpisodes(episode: Episode) {
-    // console.log('checkWatchedEpisodes', episode);
-
     return !!watchedEpisodes.find(
       (watchedEpisode) =>
         watchedEpisode.episodeId === episode.id &&
