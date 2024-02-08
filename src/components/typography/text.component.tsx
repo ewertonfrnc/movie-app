@@ -5,7 +5,7 @@ import { theme } from '../../constants';
 type TextComponentProps = {
   children: ReactNode;
   rank?: 'badRank' | 'goodRank' | 'awesomeRank';
-  type: 'title' | 'body' | 'button' | 'caption';
+  type: 'title' | 'subtitle' | 'body' | 'button' | 'caption';
   textProps?: TextProps;
 };
 
@@ -33,7 +33,12 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     color: theme.COLORS.whiteSmoke,
-    fontSize: theme.FONTS.size.title,
+    fontSize: theme.SIZES.lg,
+  },
+  subtitle: {
+    fontWeight: 'bold',
+    color: theme.COLORS.whiteSmoke,
+    fontSize: theme.SIZES.xmd,
   },
   body: {
     color: theme.COLORS.whiteSmoke,
