@@ -6,16 +6,26 @@ import TextComponent from './typography/text.component';
 
 type ButtonProps = {
   label?: string;
+  outlined?: boolean;
   loading?: boolean;
   disabled?: boolean;
   onPress: () => void;
 };
 
-const Button: FC<ButtonProps> = ({ label, loading, disabled, onPress }) => {
+const Button: FC<ButtonProps> = ({
+  label,
+  loading,
+  disabled,
+  outlined,
+  onPress,
+}) => {
   return (
     <View style={styles.buttonContainer}>
       <Pressable
-        style={({ pressed }) => [styles.button, pressed && styles.onPressed]}
+        style={({ pressed }) => [
+          !outlined ? styles.button : styles.btnOutlined,
+          pressed && styles.onPressed,
+        ]}
         onPress={onPress}
         disabled={disabled || loading}
       >
@@ -32,13 +42,20 @@ const Button: FC<ButtonProps> = ({ label, loading, disabled, onPress }) => {
 export default Button;
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    width: '100%',
-  },
+  buttonContainer: { flex: 1 },
   button: {
     backgroundColor: theme.COLORS.darkRed,
     padding: theme.SPACING.lg,
-    borderRadius: theme.SPACING.xxxlg,
+    borderRadius: theme.SPACING.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  btnOutlined: {
+    backgroundColor: 'transparent',
+    padding: theme.SPACING.lg,
+    borderRadius: theme.SPACING.lg,
+    borderWidth: 1,
+    borderColor: theme.COLORS.darkRed,
     alignItems: 'center',
     justifyContent: 'center',
   },
