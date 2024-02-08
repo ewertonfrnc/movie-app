@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
   FlatList,
-  Image,
   ImageBackground,
   ScrollView,
   StyleSheet,
@@ -13,18 +12,14 @@ import TextComponent from '../../../components/typography/text.component';
 
 import { theme } from '../../../constants';
 import { getRecentlyWatchedEpisodes } from '../../../services/supabase/movie.service';
-import moment from 'moment';
 import { useAppDispatch } from '../../../hooks/redux';
 import { fetchMovieGenres } from '../../../services/tmdb/shows.service';
 import { setMovieGenre } from '../../../redux/movies/movie.slice';
 import { SUPAEpisode } from '../../../interfaces/show.interface';
 import { BASE_IMAGE_URL } from '../../../utils/tmdb.utils';
 import { formatLongDateTime } from '../../../utils/time.utils';
-import Header from '../../../components/layout/header.component';
-import { useNavigation } from '@react-navigation/native';
 
 export default function HomeScreen() {
-  const navigation = useNavigation();
   const dispatch = useAppDispatch();
 
   const [recentlyActivity, setRecentlyActivity] = useState<SUPAEpisode[]>([]);
