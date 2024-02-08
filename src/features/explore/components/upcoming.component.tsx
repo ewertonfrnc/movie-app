@@ -13,22 +13,27 @@ import { TMDBMovie } from '../../../interfaces/show.interface';
 import TextComponent from '../../../components/typography/text.component';
 import { theme } from '../../../constants';
 import { useAppSelector } from '../../../hooks/redux';
-import { getFullYear } from '../../../utils/time.utils';
-import Button from '../../../components/button.component';
+import { countReleaseDays, getFullYear } from '../../../utils/time.utils';
 
 type HeroGalleryProps = {
   show: TMDBMovie;
+  onPress: (params: { showId: number; showType: string }) => void;
 };
 
-export default function HeroGallery({ show }: HeroGalleryProps) {
+export default function UpcomingCard({ show, onPress }: HeroGalleryProps) {
+  const { id, media_type } = show;
+
   const genres = useAppSelector(({ movies }) => movies.movieGenres);
   const currentMovieGenres = genres.filter((genre) =>
     show.genre_ids.includes(genre.id),
   );
 
+  const remainingDays = countReleaseDays(show.release_date);
+
   return (
     <Pressable
       style={({ pressed }) => [styles.container, pressed && styles.pressed]}
+      onPress={() => onPress({ showId: id, showType: media_type })}
     >
       <ImageBackground
         style={styles.imageContainer}
@@ -43,8 +48,20 @@ export default function HeroGallery({ show }: HeroGalleryProps) {
           />
 
           <View>
-            <TextComponent type="body">{show.title}</TextComponent>
+            {remainingDays > 0 && (
+              <View style={styles.etaContainer}>
+                <TextComponent
+                  type="body"
+                  textProps={{
+                    style: { color: theme.COLORS.darkRed },
+                  }}
+                >
+                  {remainingDays === 1 ? 'Amanhã' : `${remainingDays} dias`}
+                </TextComponent>
+              </View>
+            )}
 
+            <TextComponent type="body">{show.title}</TextComponent>
             <View style={styles.stats}>
               <TextComponent type="caption">
                 {getFullYear(show.release_date)}
@@ -68,7 +85,7 @@ export default function HeroGallery({ show }: HeroGalleryProps) {
 const styles = StyleSheet.create({
   container: {
     width: 350,
-    height: 200,
+    height: 100,
     marginHorizontal: theme.SPACING.xlg,
     marginTop: theme.SPACING.xlg,
   },
@@ -98,4 +115,11 @@ const styles = StyleSheet.create({
     gap: theme.SPACING.xlg,
   },
   pressed: { opacity: 0.5 },
+  etaContainer: {
+    width: 80,
+    backgroundColor: theme.COLORS.timberWolf,
+    alignItems: 'center',
+    padding: theme.SPACING.sm,
+    borderRadius: theme.SIZES.xsm,
+  },
 });

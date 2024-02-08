@@ -1,5 +1,11 @@
 import React, { FC, useEffect, useState } from 'react';
-import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  FlatList,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamsList } from '../../../interfaces/navigator.interface';
@@ -34,6 +40,7 @@ import {
 } from '../../../redux/movies/movie.slice';
 import SeasonProgress from '../components/season-progress.component';
 import { fetchShowSeasonDetails } from '../../../services/tmdb/shows.service';
+import { Ionicons } from '@expo/vector-icons';
 
 type ShowScreenProps = {} & NativeStackScreenProps<
   RootStackParamsList,
@@ -89,7 +96,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
       mediaType: TMDBMovie.type ? 'tv' : 'movie',
       runtime: TMDBMovie.runtime,
       voteAverage: TMDBMovie.vote_average,
-      genre: TMDBMovie.genres[0].name,
+      genre: TMDBMovie.genre[0].name,
       overview: TMDBMovie.overview,
     };
 
@@ -185,6 +192,20 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
 
   return (
     <SafeAreaComponent>
+      <Pressable
+        style={({ pressed }) => [
+          styles.searchContainer,
+          pressed && styles.pressed,
+        ]}
+        onPress={() => navigation.goBack()}
+      >
+        <Ionicons
+          name="chevron-back"
+          size={theme.SIZES.xlg}
+          color={theme.COLORS.red}
+        />
+      </Pressable>
+
       <ScrollView>
         <ShowHeader
           loading={loading}
@@ -215,9 +236,7 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
         )}
 
         <SectionContainer title="Sinopse">
-          <View>
-            <TextComponent type={'body'}>{TMDBMovie.overview}</TextComponent>
-          </View>
+          <TextComponent type={'body'}>{TMDBMovie.overview}</TextComponent>
         </SectionContainer>
 
         <SectionContainer title="Elenco principal">
@@ -241,4 +260,18 @@ const styles = StyleSheet.create({
     marginBottom: theme.SPACING.xxxlg,
     marginTop: theme.SPACING.lg,
   },
+  searchContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 44,
+    height: 44,
+    backgroundColor: theme.COLORS.lightDark,
+    padding: theme.SPACING.lg,
+    borderRadius: theme.SIZES.md,
+    zIndex: 9999,
+    position: 'absolute',
+    top: 50,
+    left: 20,
+  },
+  pressed: { opacity: 0.5 },
 });

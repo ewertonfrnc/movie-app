@@ -39,6 +39,18 @@ export async function fetchNowPlayingMovies() {
   }
 }
 
+export async function fetchUpcomingMovies() {
+  try {
+    const { data } = await api.get('/movie/upcoming', {
+      params: { language: 'pt-BR', region: 'br' },
+    });
+
+    return data.results;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 // Tv Shows
 export async function fetchTrendingTvShows() {
   try {

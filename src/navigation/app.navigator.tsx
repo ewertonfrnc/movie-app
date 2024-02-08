@@ -30,7 +30,13 @@ export default function AppNavigator() {
           ...TransitionPresets.ModalFadeTransition,
         }}
       />
-      <Stack.Screen name="showDetails" component={ShowScreen} />
+      <Stack.Screen
+        name="showDetails"
+        component={ShowScreen}
+        options={{
+          ...TransitionPresets.ModalFadeTransition,
+        }}
+      />
       <Stack.Screen name="episodes" component={EpisodesScreen} />
       <Stack.Screen name="episodeDetails" component={EpisodeDetailScreen} />
     </Stack.Navigator>

@@ -1,15 +1,16 @@
 import React, { FC } from 'react';
-import { FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { TMDBMovie } from '../../../interfaces/show.interface';
-import HeroGallery from './hero-gallery.component';
 import TextComponent from '../../../components/typography/text.component';
 import { theme } from '../../../constants';
+import NowPlayingCard from './now-playing-card.component';
 
-type HeroImageProps = {
+type NowPlayingProps = {
   nowPlayingMovies: TMDBMovie[];
+  onPress: (params: { showId: number; showType: string }) => void;
 };
 
-const HeroImage: FC<HeroImageProps> = ({ nowPlayingMovies }) => {
+const NowPlaying: FC<NowPlayingProps> = ({ nowPlayingMovies, onPress }) => {
   return (
     <View style={styles.container}>
       <View
@@ -22,14 +23,16 @@ const HeroImage: FC<HeroImageProps> = ({ nowPlayingMovies }) => {
 
       <FlatList
         data={nowPlayingMovies}
-        renderItem={({ item }) => <HeroGallery show={item} />}
+        renderItem={({ item }) => (
+          <NowPlayingCard show={item} onPress={onPress} />
+        )}
         horizontal
       />
     </View>
   );
 };
 
-export default HeroImage;
+export default NowPlaying;
 
 const styles = StyleSheet.create({
   container: {

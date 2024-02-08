@@ -5,7 +5,6 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Switch,
   View,
   useWindowDimensions,
 } from 'react-native';
@@ -29,20 +28,19 @@ import { setUser } from '../../../redux/user/user.slice';
 import {
   fetchNowPlayingMovies,
   fetchShowDetails,
-  fetchTrendingMovies,
   fetchTrendingShows,
-  fetchTrendingTvShows,
+  fetchUpcomingMovies,
 } from '../../../services/tmdb/shows.service';
 import { fetchUser } from '../../../services/supabase/user.service';
 
-import HeroImage from '../components/hero.component';
-import TvShowsComponent from '../components/tv-shows.component';
-import MoviesScreen from '../components/movies.component';
 import SafeAreaComponent from '../../../components/utility/safe-area.component';
 import TextComponent from '../../../components/typography/text.component';
 import { BASE_IMAGE_URL } from '../../../utils/tmdb.utils';
-import { FlatList } from 'react-native-gesture-handler';
 import ImageCard from '../../../components/image-card.component';
+import { FlatList } from 'react-native-gesture-handler';
+import UpcomingCard from '../components/upcoming.component';
+import NowPlaying from '../components/now-playing.component';
+import { sortUpcomingMovies } from '../../../utils/time.utils';
 
 type MoviesProps = {} & BottomTabScreenProps<
   HomeStackParamsList & RootStackParamsList,
@@ -56,19 +54,23 @@ const ExploreScreen: FC<MoviesProps> = ({ navigation }) => {
   const [loading, setLoading] = useState(false),
     [recentMovie, setRecentMovie] = useState(''),
     [nowPlaying, setNowPlaying] = useState<TMDBMovie[]>([]),
-    [trending, setTrending] = useState<TMDBMovie[]>();
+    [trending, setTrending] = useState<TMDBMovie[]>(),
+    [upcoming, setUpcoming] = useState<TMDBMovie[]>();
 
   async function getShows() {
     setLoading(true);
 
     try {
-      const [nowPlayingMovies, trendingShows] = await Promise.all([
-        fetchNowPlayingMovies(),
-        fetchTrendingShows(),
-      ]);
+      const [nowPlayingMovies, trendingShows, upcomingMovies] =
+        await Promise.all([
+          fetchNowPlayingMovies(),
+          fetchTrendingShows(),
+          fetchUpcomingMovies(),
+        ]);
 
       setTrending(trendingShows);
       setNowPlaying(nowPlayingMovies);
+      setUpcoming(sortUpcomingMovies(upcomingMovies));
       setRecentMovie(trendingShows[0].backdrop_path);
     } catch (error) {
       console.log('An error occurred while fetching movies', error);
@@ -136,7 +138,19 @@ const ExploreScreen: FC<MoviesProps> = ({ navigation }) => {
           </Pressable>
         </ImageBackground>
 
-        <HeroImage nowPlayingMovies={nowPlaying} />
+        <NowPlaying nowPlayingMovies={nowPlaying} onPress={onPressHandler} />
+
+        <View style={styles.section}>
+          <TextComponent type="title">Vem aí!</TextComponent>
+        </View>
+
+        <FlatList
+          data={upcoming}
+          renderItem={({ item }) => (
+            <UpcomingCard show={item} onPress={onPressHandler} />
+          )}
+          horizontal
+        />
 
         <View style={styles.section}>
           <TextComponent type="title">Em alta</TextComponent>
