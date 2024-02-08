@@ -41,6 +41,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import UpcomingCard from '../components/upcoming.component';
 import NowPlaying from '../components/now-playing.component';
 import { sortUpcomingMovies } from '../../../utils/time.utils';
+import Header from '../../../components/layout/header.component';
 
 type MoviesProps = {} & BottomTabScreenProps<
   HomeStackParamsList & RootStackParamsList,
@@ -114,29 +115,7 @@ const ExploreScreen: FC<MoviesProps> = ({ navigation }) => {
   return (
     <SafeAreaComponent>
       <ScrollView style={styles.container}>
-        <ImageBackground
-          source={{ uri: `${BASE_IMAGE_URL}${recentMovie}` }}
-          style={styles.header}
-        >
-          <View>
-            <TextComponent type="title">Explorar</TextComponent>
-            <TextComponent type="caption">Descubra novos mundos</TextComponent>
-          </View>
-
-          <Pressable
-            style={({ pressed }) => [
-              styles.searchContainer,
-              pressed && styles.onPressed,
-            ]}
-            onPress={searchHandler}
-          >
-            <Ionicons
-              name="search"
-              size={theme.SIZES.xlg}
-              color={theme.COLORS.red}
-            />
-          </Pressable>
-        </ImageBackground>
+        <Header backgroundImage={recentMovie} onPress={searchHandler} />
 
         <NowPlaying nowPlayingMovies={nowPlaying} onPress={onPressHandler} />
 
@@ -179,27 +158,8 @@ const ExploreScreen: FC<MoviesProps> = ({ navigation }) => {
 export default ExploreScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    paddingBottom: theme.SPACING.xxxlg,
-  },
+  container: { paddingBottom: theme.SPACING.xxxlg },
   section: { padding: theme.SPACING.xlg },
-  header: {
-    height: 100,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    padding: theme.SPACING.xlg,
-  },
-  searchContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 44,
-    height: 44,
-    backgroundColor: theme.COLORS.lightDark,
-    padding: theme.SPACING.lg,
-    borderRadius: theme.SIZES.md,
-  },
-  onPressed: { opacity: 0.5 },
   showList: {
     flexDirection: 'row',
     flexWrap: 'wrap',

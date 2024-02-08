@@ -20,8 +20,11 @@ import { setMovieGenre } from '../../../redux/movies/movie.slice';
 import { SUPAEpisode } from '../../../interfaces/show.interface';
 import { BASE_IMAGE_URL } from '../../../utils/tmdb.utils';
 import { formatLongDateTime } from '../../../utils/time.utils';
+import Header from '../../../components/layout/header.component';
+import { useNavigation } from '@react-navigation/native';
 
 export default function HomeScreen() {
+  const navigation = useNavigation();
   const dispatch = useAppDispatch();
 
   const [recentlyActivity, setRecentlyActivity] = useState<SUPAEpisode[]>([]);
