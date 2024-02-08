@@ -131,10 +131,17 @@ export type WatchedMovie = {
 };
 
 export type SUPAEpisode = {
+  userId: string;
   showId: number;
+  showName: string;
   seasonNumber: number;
   episodeId: number;
-  userId: string;
+  episodeName: string;
+  episodeNumber: number;
+  stillPath: string;
+  created_at?: string;
+  showPoster: string;
+  showBackdropPath: string;
 };
 
 export type MovieGenre = {

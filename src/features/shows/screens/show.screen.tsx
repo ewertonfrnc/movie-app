@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import {
   FlatList,
   Pressable,
@@ -57,6 +57,8 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
     useAppSelector(({ movies }) => movies);
 
   const [loading, setLoading] = useState(false);
+  const [textShown, setTextShown] = useState(false);
+  const [lengthMore, setLengthMore] = useState(false);
 
   async function checkIfWatchedMovie() {
     setLoading(true);
@@ -184,6 +186,12 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
     }
   }
 
+  const toggleNumberOfLines = () => setTextShown(!textShown);
+
+  const onTextLayout = useCallback((e: any) => {
+    setLengthMore(e.nativeEvent.lines.length >= 4);
+  }, []);
+
   useEffect(() => {
     checkIfWatchedMovie();
 
@@ -236,7 +244,27 @@ const ShowScreen: FC<ShowScreenProps> = ({ navigation, route }) => {
         )}
 
         <SectionContainer title="Sinopse">
-          <TextComponent type={'body'}>{TMDBMovie.overview}</TextComponent>
+          <TextComponent
+            type={'body'}
+            textProps={{
+              onTextLayout: onTextLayout,
+              numberOfLines: textShown ? undefined : 4,
+            }}
+          >
+            {TMDBMovie.overview}
+          </TextComponent>
+
+          {lengthMore && (
+            <TextComponent
+              type="body"
+              textProps={{
+                onPress: toggleNumberOfLines,
+                style: { color: theme.COLORS.red },
+              }}
+            >
+              {textShown ? 'Ler menos' : 'Ler mais'}
+            </TextComponent>
+          )}
         </SectionContainer>
 
         <SectionContainer title="Elenco principal">

@@ -46,7 +46,14 @@ export default function NowPlayingCard({ show, onPress }: NowPlayingCardProps) {
           />
 
           <View>
-            <TextComponent type="body">{show.title}</TextComponent>
+            <TextComponent
+              type="body"
+              textProps={{
+                style: { fontWeight: 'bold', color: 'white' },
+              }}
+            >
+              {show.title}
+            </TextComponent>
             <View style={styles.stats}>
               <TextComponent type="caption">
                 {getFullYear(show.release_date)}

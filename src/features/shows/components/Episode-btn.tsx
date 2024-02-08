@@ -45,9 +45,11 @@ export default function EpisodeBtn({
 
     if (!hasWatched) {
       const formattedEpisode = {
-        showId: movie.movieId,
         userId: user.id,
+        showId: movie.movieId,
         showName: movie.title,
+        showBackdropPath: movie.backdropPath,
+        showPoster: movie.posterPath,
         episodeId: episode.id,
         seasonNumber: episode.season_number,
         stillPath: episode.still_path,

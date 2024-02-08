@@ -135,11 +135,10 @@ export async function checkForWatchedEpisodes(
 export async function getRecentlyWatchedEpisodes() {
   let { data: watched_episodes, error } = await supabase
     .from('watched_episodes')
-    .select('*');
+    .select('*')
+    .order('created_at', { ascending: false });
 
-  if (error) {
-    throw new Error(error.message);
-  }
+  if (error) throw new Error(error.message);
 
   return watched_episodes;
 }

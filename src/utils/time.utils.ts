@@ -17,8 +17,34 @@ export const getFullYear = (date: string) => {
   return new Date(date).getFullYear();
 };
 
-export function formatDate(date: string) {
-  return moment(date).format('ll');
+export function formatDate(dateTime: string) {
+  const date = new Intl.DateTimeFormat('pt-BR', {
+    dateStyle: 'long',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  }).format(new Date(dateTime));
+
+  return `${date}`;
+}
+
+export function formatLongDateTime(dateTime: string) {
+  const date = new Intl.DateTimeFormat('pt-BR', {
+    dateStyle: 'long',
+    day: '2-digit',
+    month: 'short',
+    year: '2-digit',
+  }).format(new Date(dateTime));
+
+  const time = new Intl.DateTimeFormat('pt-BR', {
+    timeStyle: 'short',
+    hour: 'numeric',
+    minute: 'numeric',
+    timeZone: 'America/Sao_Paulo',
+  }).format(new Date(dateTime));
+
+  // return `📅 ${date} 🕓 ${time}`;
+  return `Assistido em ${date} às ${time}`;
 }
 
 export function countReleaseDays(date: string) {
