@@ -7,10 +7,18 @@ import TextComponent from '../../../components/typography/text.component';
 import { theme } from '../../../constants';
 import { getRecentlyWatchedEpisodes } from '../../../services/supabase/movie.service';
 import moment from 'moment';
+import { useAppDispatch } from '../../../hooks/redux';
+import { fetchMovieGenres } from '../../../services/tmdb/shows.service';
+import { setMovieGenre } from '../../../redux/movies/movie.slice';
 
 export default function HomeScreen() {
+  const dispatch = useAppDispatch();
+
   const [recentlyActivity, setRecentlyActivity] = useState([]);
   async function fetchRecentlyWatchedShows() {
+    const movieGenres = await fetchMovieGenres();
+    dispatch(setMovieGenre(movieGenres));
+
     const response = await getRecentlyWatchedEpisodes();
     setRecentlyActivity(response);
     console.log('response', response);

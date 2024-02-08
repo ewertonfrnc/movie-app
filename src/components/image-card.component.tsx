@@ -21,7 +21,7 @@ const ImageCard: FC<ImageCardProps> = ({ show, onPress, type = 'normal' }) => {
         onPress={onPress.bind(this, { showId: id, showType: media_type })}
       >
         <Image
-          style={type === 'normal' ? styles.image : styles.smallImage}
+          style={styles.smallImage}
           source={{
             uri: `${BASE_IMAGE_URL}${show.poster_path}`,
           }}
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   image: {
     width: 150,
     height: 230,
-    borderRadius: theme.SPACING.md,
+    borderRadius: theme.SPACING.lg,
   },
   onPressed: {
     opacity: 0.5,
@@ -48,6 +48,6 @@ const styles = StyleSheet.create({
   smallImage: {
     width: 100,
     height: 150,
-    borderRadius: theme.SPACING.md,
+    borderRadius: theme.SPACING.lg,
   },
 });

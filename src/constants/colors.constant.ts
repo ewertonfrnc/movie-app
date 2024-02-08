@@ -1,9 +1,9 @@
 export const COLORS = {
   dark: '#0f0f0f',
-  lightDark: '#161A1D',
+  lightDark: '#1c1c1a',
 
   darkRed: '#660708',
-  red: '#BA181B',
+  red: '#f40308',
   lightRed: '#E5383B',
 
   ashGrey: '#D6D5C9',

@@ -22,10 +22,7 @@ export type TMDBMovie = {
     backdrop_path: string;
   };
   budget: number;
-  genres: Array<{
-    id: number;
-    name: string;
-  }>;
+  genre_ids: { id: number }[];
   homepage: string;
   id: number;
   imdb_id: string;
@@ -138,4 +135,9 @@ export type SUPAEpisode = {
   seasonNumber: number;
   episodeId: number;
   userId: string;
+};
+
+export type MovieGenre = {
+  id: number;
+  name: string;
 };

@@ -1,10 +1,35 @@
 import { api } from '../index';
 import { SeasonDetails, TMDBMovie } from '../../interfaces/show.interface';
 
+// ALL
+export async function fetchTrendingShows() {
+  try {
+    const { data } = await api.get('/trending/all/day', {
+      params: { language: 'pt-BR' },
+    });
+
+    return data.results;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 // Movies
 export async function fetchTrendingMovies() {
   try {
     const { data } = await api.get('/trending/movie/day', {
+      params: { language: 'pt-BR' },
+    });
+
+    return data.results;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function fetchNowPlayingMovies() {
+  try {
+    const { data } = await api.get('/movie/now_playing', {
       params: { language: 'pt-BR' },
     });
 
@@ -89,6 +114,19 @@ export async function searchShows(searchValue: string) {
     });
 
     return data.results;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// GENRES
+export async function fetchMovieGenres() {
+  try {
+    const { data } = await api.get('genre/movie/list', {
+      params: { language: 'pt-BR' },
+    });
+
+    return data;
   } catch (error) {
     console.error(error);
   }
