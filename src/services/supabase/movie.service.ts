@@ -1,5 +1,6 @@
 import supabase from './index';
 import {
+  SerializedShow,
   Show,
   SUPAEpisode,
   WatchedMovie,
@@ -141,4 +142,40 @@ export async function getRecentlyWatchedEpisodes() {
   if (error) throw new Error(error.message);
 
   return watched_episodes;
+}
+
+// Watched Shows
+export async function readWatchlistedShows(userId: string) {
+  console.log({ userId });
+
+  let { data: watchlisted_shows, error } = await supabase
+    .from('watchlisted_shows')
+    .select('*')
+    .eq('userId', userId)
+    .order('created_at', { ascending: false });
+
+  if (error) throw new Error(error.message);
+
+  return watchlisted_shows;
+}
+
+export async function updateWatchlistedShows(shows: SerializedShow) {
+  const { data, error } = await supabase
+    .from('watchlisted_shows')
+    .insert([shows])
+    .select('*');
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function removeWatchlistedShows(showId: number, userId: string) {
+  const { error } = await supabase
+    .from('watchlisted_shows')
+    .delete()
+    .eq('showId', showId)
+    .eq('userId', userId);
+
+  if (error) throw new Error(error.message);
 }

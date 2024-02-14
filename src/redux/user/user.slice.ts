@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { UserData } from '../../interfaces/user.interface';
-import { TMDBMovie } from '../../interfaces/show.interface';
+import { TMDBShow } from '../../interfaces/show.interface';
 
 type InitialState = {
   userData: UserData | null;
-  watchedMovies: TMDBMovie[];
+  watchedMovies: TMDBShow[];
   error: Error | null;
 };
 
@@ -21,7 +21,7 @@ const userSlice = createSlice({
     setUser: (state, action: PayloadAction<UserData>) => {
       state.userData = action.payload;
     },
-    updateWatchedMovies: (state, action: PayloadAction<TMDBMovie[]>) => {
+    updateWatchedMovies: (state, action: PayloadAction<TMDBShow[]>) => {
       if (state.userData) {
         state.userData = { ...state.userData, watchedMovies: action.payload };
       }

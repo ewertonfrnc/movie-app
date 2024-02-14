@@ -44,18 +44,25 @@ export default function ShowHeader({
           }}
         />
 
-        <View style={styles.watchBtnContainer}>
-          <Button
-            label={isWatched ? '➖ Remover da lista' : '➕ Adicionar à lista'}
-            loading={loading}
-            onPress={onPress}
-          />
+        <View style={styles.sectionContainer}>
+          <TextComponent type={'subtitle'}>{title}</TextComponent>
+          <TextComponent type={'caption'}>{tagline}</TextComponent>
         </View>
       </View>
 
-      <View style={styles.sectionContainer}>
-        <TextComponent type={'title'}>{title}</TextComponent>
-        <TextComponent type={'body'}>{tagline}</TextComponent>
+      <View style={styles.watchBtnContainer}>
+        <Button
+          label={false ? 'Remover' : 'Assistir'}
+          loading={loading}
+          onPress={onPress}
+        />
+
+        <Button
+          outlined
+          label={isWatched ? 'Remover da lista' : 'Adicionar à lista'}
+          loading={loading}
+          onPress={onPress}
+        />
       </View>
     </View>
   );
@@ -81,14 +88,17 @@ const styles = StyleSheet.create({
     bottom: -50,
     left: 20,
   },
-  watchBtnContainer: {
+  sectionContainer: {
     width: '65%',
     position: 'absolute',
     bottom: -50,
-    right: 20,
+    right: 35,
   },
-  sectionContainer: {
+  watchBtnContainer: {
+    flexDirection: 'row',
+    gap: theme.SPACING.lg,
     paddingHorizontal: theme.SPACING.xlg,
+    paddingVertical: theme.SPACING.xlg,
     marginTop: theme.SPACING.xxxlg,
   },
 });

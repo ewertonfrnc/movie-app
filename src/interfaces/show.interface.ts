@@ -11,56 +11,33 @@ export type VideoTrailer = {
   id: string;
 };
 
-export type TMDBMovie = {
-  credits: { cast: Cast[] };
+export type TMDBShow = {
   adult: boolean;
   backdrop_path: string;
-  belongs_to_collection: null | {
+  belongs_to_collection: {
     id: number;
     name: string;
     poster_path: string;
     backdrop_path: string;
   };
-  budget: number;
-  genre_ids: { id: number }[];
-  homepage: string;
-  id: number;
-  imdb_id: string;
-  original_language: string;
-  original_title: string;
-  overview: string;
-  popularity: number;
-  poster_path: string;
-  production_companies: Array<{
+  genres: {
     id: number;
-    logo_path: string | null;
     name: string;
-    origin_country: string;
-  }>;
-  production_countries: Array<{
-    iso_3166_1: string;
-    name: string;
-  }>;
+  }[];
+  id: number;
+  overview: string;
+  poster_path: string;
   release_date: string;
   revenue: number;
   runtime: number;
-  spoken_languages: Array<{
-    english_name: string;
-    iso_639_1: string;
-    name: string;
-  }>;
   status: string;
   tagline: string;
   title: string;
-  video: boolean;
   vote_average: number;
   vote_count: number;
-  videos: { results: VideoTrailer[] };
   name: string;
-  first_air_date: string;
   type: string;
   media_type: string;
-  isWatched: boolean;
   seasons: SeasonDetails[];
 };
 
@@ -147,4 +124,14 @@ export type SUPAEpisode = {
 export type MovieGenre = {
   id: number;
   name: string;
+};
+
+export type SerializedShow = {
+  showId: number;
+  userId: string;
+  title: string;
+  backdrop_path: string;
+  tagline: string;
+  status: string;
+  runtime: number;
 };
